@@ -1,15 +1,8 @@
-# Module Imports
 import mariadb
-import sys
 
 from models import UserModel
 from utils.encrypt import Encrypt
 from cryptography.fernet import Fernet
-
-encrypted = Encrypt.encrypt("1234")
-decrypted_encrypted = Encrypt.decrypt(encrypted)
-print( encrypted )
-print( decrypted_encrypted )
 
 # Connect to MariaDB Platform
 try:
@@ -22,10 +15,10 @@ try:
   )
 except mariadb.Error as e:
   print(f"Error connecting to MariaDB Platform: {e}")
-  sys.exit(1)
 
 # Get Cursor
 username = 'admin'
+
 cur = conn.cursor()
 cur.execute('''
   SELECT T1.USER_ID
@@ -50,3 +43,7 @@ for result in rv:
   data = dict(zip(row_headers, result))
 
   user = UserModel( data )
+
+  print( user.user_pwd )
+
+conn.close()
