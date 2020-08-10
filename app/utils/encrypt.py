@@ -1,4 +1,5 @@
-from cryptography.fernet import Fernet
+import traceback
+from cryptography.fernet import Fernet, InvalidToken
 
 class Encrypt(object):
   key = None
@@ -24,11 +25,19 @@ class Encrypt(object):
     return key
 
   @classmethod
-  def encrypt(cls, data):
+  def encrypt(cls, plain):
     key = cls.load_key()
-    return Fernet(key).encrypt(data.encode())
+    return Fernet(key).encrypt(plain.encode("utf-8")).decode("utf-8")
 
   @classmethod
-  def decrypt(cls, data):
+  def decrypt(cls, encrypted):
     key = cls.load_key()
-    return Fernet(key).decrypt(data)
+    try:    
+      return Fernet(key).decrypt(encrypted.encode("utf-8")).decode("utf-8")
+    except InvalidToken as e:
+      traceback.print_exc()
+    return None
+    
+  @classmethod
+  def compare(cls, plain, encrypted):
+    return plain == cls.decrypt(encrypted)

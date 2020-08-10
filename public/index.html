@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LoginText</title>
+  </head>
+  <body>
+    <div id="root">
+      {% if user is not none %}
+      <h3>{{ user.nick }}</h3>
+      <form action="/logout" method="POST">
+        <button type="submit">logout</button>
+      </form>
+      {% else %}
+      <form method="POST" action="/login">
+        <input type="text" name="user_id" placeholder="Please write your id.">
+        <input type="password" name="user_pwd" placeholder="Please write your password.">
+        <button type="submit">login</button>
+      </form>      
+      {% endif %}
+    </div>
+  </body>
+</html>

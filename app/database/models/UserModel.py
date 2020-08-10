@@ -1,5 +1,5 @@
 import inspect
-from utils.encrypt import Encrypt
+from app.utils.encrypt import Encrypt
 
 class BaseModel(object):
   def __init__(self, data=None):
