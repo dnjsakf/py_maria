@@ -9,11 +9,11 @@
     <div id="root">
       {% if user is not none %}
       <h3>{{ user.nick }}</h3>
-      <form action="/logout" method="POST">
+      <form method="POST" action="/auth/logout">
         <button type="submit">logout</button>
       </form>
       {% else %}
-      <form method="POST" action="/login">
+      <form method="POST" action="/auth/login">
         <input type="text" name="user_id" placeholder="Please write your id.">
         <input type="password" name="user_pwd" placeholder="Please write your password.">
         <button type="submit">login</button>

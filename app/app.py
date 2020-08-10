@@ -25,7 +25,7 @@ def create_app(*args, **kwargs):
   
   with app.app_context():
     # Set Routes
-    from .routes import route_index
+    import app.routes as routes
     
     # Set CORS
     CORS(app=app, resources={
@@ -35,7 +35,7 @@ def create_app(*args, **kwargs):
     # Set Context
     app.before_request(get_db)    
     app.teardown_appcontext(close_db)
-      
+    
     return app
     
     

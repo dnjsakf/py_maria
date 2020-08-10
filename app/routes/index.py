@@ -17,25 +17,6 @@ from flask import (
 
 from app.utils.encrypt import Encrypt
 
-def make_token(data):
-  secret_key = app.config["secret_key"]
-  expires = int(datetime.timestamp(datetime.utcnow()+timedelta(hours=24)))
-  
-  payload = {
-    "sub": request.host
-    , "iss": "jwt_tester"
-    , "exp": expires
-  }
-  
-  if isinstance(data, dict):
-    payload.update(data)
-  
-  token = jwt.encode(payload, secret_key, algorithm='HS256')
-  
-  return ( token, expires )
-  
-
-
 def check_login( func ):
   @wraps( func )
   def wrapper(*args, **kwargs):
@@ -61,51 +42,3 @@ def check_login( func ):
 @check_login
 def index(user=None):
   return render_template("index.html", user=user)
-
-@app.route("/login", methods=["POST"])
-def do_login():
-  user_id = request.form.get("user_id", None)
-  user_pwd = request.form.get("user_pwd", None)
-  
-  db = g.get('db', None)
-  data = db.select_one('''
-    SELECT T1.USER_ID
-         , T1.USER_NAME
-         , T1.USER_PWD
-         , T1.USER_NICK
-         , T2.AUTH_ID
-      FROM DOCHI.AT_USER T1
-      LEFT OUTER JOIN DOCHI.AT_USER_AUTH_MAP T2
-        ON T2.USER_ID = T1.USER_ID
-       AND T2.IS_MAJOR = 'Y'
-     WHERE 1=1
-       AND T1.USER_ID = ?
-  ''', user_id )
-  
-  matched = False
-  if data is not None:
-    matched = Encrypt.compare(user_pwd, data.get("user_pwd"))
-  
-  if matched == False:
-    return redirect(url_for("index"))
-    
-  token, expires = make_token({
-    "user": {
-      "name": data.get("user_name"),
-      "nick": data.get("user_nick"),
-      "auth": data.get("auth_id")
-    }
-  })
-  
-  print( expires )
-  
-  resp = make_response(redirect(url_for("index")))
-  resp.set_cookie('access_token', value=token, expires=expires, httponly=True)  
-  
-  return resp
-  
-@app.route("/logout", methods=["GET", "POST"])
-def do_logout():
-  resp = make_response(redirect(url_for("index")))
-  resp.set_cookie('access_token', value="", expires=0, httponly=True)
-  return resp

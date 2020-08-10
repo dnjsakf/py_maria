@@ -12,6 +12,7 @@ class MariaDB(object):
       database=database
     )
 
+  @property
   def connection(self):
     return self.__connection
 

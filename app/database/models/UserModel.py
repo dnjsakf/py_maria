@@ -59,7 +59,7 @@ class UserModel(BaseModel):
 
   @user_pwd.setter
   def user_pwd(self, user_pwd):
-    self.__user_pwd = Encrypt.decrypt(user_pwd.encode("utf-8")).decode("utf-8")
+    self.__user_pwd = user_pwd
 
   @property
   def user_nick(self):
