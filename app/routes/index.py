@@ -22,11 +22,10 @@ def check_login( func ):
   def wrapper(*args, **kwargs):
     user = None
     try:
-      secret_key = app.config["secret_key"]
       token = request.cookies.get("access_token")
       
       if token is not None:      
-        decoded_token = jwt.decode(token, secret_key, algorithm='HS256')
+        decoded_token = jwt.decode(token, app.secret_key, algorithm='HS256')
         
         print( decoded_token )
         

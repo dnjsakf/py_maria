@@ -14,7 +14,8 @@ def create_app(*args, **kwargs):
     template_folder=kwargs.get("template_folder", "../public")
   )
   
-  app.config["secret_key"] = "Dochi-MariaDB-Login"
+  app.secret_key = "Dochi-MariaDB-Login"
+  
   app.config["MARIADB_CONFIG"] = {
     "user": "DOCHI",
     "password": "dochi",

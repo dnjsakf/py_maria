@@ -1,8 +1,6 @@
 import jwt
 import traceback
 
-from datetime import datetime, timedelta, timezone
-
 from flask import (
   current_app as app,
   make_response,
@@ -11,23 +9,20 @@ from flask import (
   url_for
 )
 
-from app.utils.datetime import getNow
+import app.utils.datetime as dt
 from app.database.service.user import UserService
 
 def make_token(data):
-  secret_key = app.config["secret_key"]
-  expires = getNow(minutes=30)
-
   payload = {
     "sub": request.host
     , "iss": "jwt_tester"
-    , "exp": datetime.timestamp(expires)
+    , "exp": dt.nowTS(minutes=30)
   }
   
   if isinstance(data, dict):
     payload.update(data)
   
-  return jwt.encode(payload, secret_key, algorithm='HS256')
+  return jwt.encode(payload, app.secret_key, algorithm='HS256')
 
 @app.route("/auth/login", methods=["POST"])
 def do_login():
@@ -36,6 +31,8 @@ def do_login():
   user_pwd = request.form.get("user_pwd", None)
 
   matched, user = UserService.checkMatchPassword(user_id, user_pwd)
+  
+  print( user.to_dict() )
   
   if matched == False or user is None:
     return redirect(url_for("index", success=False))
@@ -47,11 +44,9 @@ def do_login():
       "auth": user.auth_id
     }
   })
-
-  expires = datetime.timestamp(getNow(minutes=30))
   
   resp = make_response(redirect(url_for("index", success=True)))
-  resp.set_cookie('access_token', value=token, expires=expires, httponly=True)  
+  resp.set_cookie('access_token', value=token, expires=dt.nowTS(minutes=30), httponly=True)  
   
   return resp
   

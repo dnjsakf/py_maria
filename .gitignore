@@ -1,2 +1,6 @@
 .venv
 key.key
+
+test.py
+
+__pycache__

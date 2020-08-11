@@ -1,5 +1,6 @@
 import mariadb
 
+from functools import wraps
 from flask import current_app as app, g
 
 class MariaDB(object):
@@ -33,7 +34,7 @@ class MariaDB(object):
     cur.execute( sql, args )
     
     headers = [x[0].lower() for x in cur.description]
-    rv = cur.fetchall()    
+    rv = cur.fetchall()
     
     if rv is not None:
       return [ dict(zip(headers, res)) for res in rv ]
@@ -60,3 +61,12 @@ def close_db(error):
   db = g.pop('db', None)
   if db is not None:
     db.close()
+    
+def with_db(func):
+  @wraps(func)
+  def wrapper(self, *args, **kwargs):
+    db = g.get("db", None)
+    if db is None:
+      return None
+    return func(self, db, *args, **kwargs)
+  return wrapper
