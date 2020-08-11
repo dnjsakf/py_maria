@@ -3,6 +3,8 @@ import app.utils.datetime as dt
 
 class BaseModel(object):
   def __init__(self, data=None):
+    print( data )
+  
     self.__reg_user = 'SYSTEM'
     self.__reg_dttm = dt.now().strftime("%Y%m%d%H%M%S")
   
@@ -22,6 +24,13 @@ class BaseModel(object):
   def set_dict(self, data):
     if isinstance(data, dict):
       [ setattr(self, key, data[key] ) for key in data ]
+      
+  def validate(self):
+    if self.required is not None:
+      for key in self.required:
+        if getattr(self, key) is None:
+          return False
+    return True
 
   @property
   def reg_user(self):

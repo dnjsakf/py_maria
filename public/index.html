@@ -7,18 +7,20 @@
   </head>
   <body>
     <div id="root">
-      {% if user is not none %}
+    {% if user is not none %}
       <h3>{{ user.nick }}</h3>
       <form method="POST" action="/auth/logout">
         <button type="submit">logout</button>
       </form>
-      {% else %}
+    {% else %}
       <form method="POST" action="/auth/login">
-        <input type="text" name="user_id" placeholder="Please write your id.">
-        <input type="password" name="user_pwd" placeholder="Please write your password.">
+        <input type="text" name="user_id" placeholder="Please write your id."></br>
+        <input type="password" name="user_pwd" placeholder="Please write your password."></br>
         <button type="submit">login</button>
-      </form>      
-      {% endif %}
+      </form>
+      <a href="/auth/register">register</a>
+      {% block register %}{% endblock %}
+    {% endif %}
     </div>
   </body>
 </html>

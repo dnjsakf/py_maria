@@ -31,7 +31,23 @@ class UserService(BaseService):
   @classmethod
   @with_db
   def insertUserInfo(cls, db, user:UserModel):
-    pass
+    cur = db.insert_one('''
+      INSERT INTO DOCHI.AT_USER (
+        USER_ID, USER_PWD, USER_NAME
+        , USER_NICK, EMAIL, CELL_PHONE
+        , REG_USER, REG_DTTM
+      ) VALUES (
+        ?, ?, ?
+        , ?, ?, ?
+        , ?, ?
+      )
+    ''',
+    user.user_id, user.user_pwd, user.user_name
+    , user.user_nick, user.email, user.cell_phone
+    , user.reg_user, user.reg_dttm
+    )
+    
+    print( dir(cur) )
 
   @classmethod
   def checkMatchPassword(cls, user_id, user_pwd):

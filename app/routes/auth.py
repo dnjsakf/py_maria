@@ -1,38 +1,25 @@
-import jwt
-import traceback
-
 from flask import (
   current_app as app,
   make_response,
+  render_template,
+  jsonify,
   request,
-  redirect,
-  url_for
+  url_for,
+  redirect
 )
 
 import app.utils.datetime as dt
+from app.utils.auth import make_token
+from app.database.models.user import UserModel
 from app.database.service.user import UserService
 
-def make_token(data):
-  payload = {
-    "sub": request.host
-    , "iss": "jwt_tester"
-    , "exp": dt.nowTS(minutes=30)
-  }
-  
-  if isinstance(data, dict):
-    payload.update(data)
-  
-  return jwt.encode(payload, app.secret_key, algorithm='HS256')
 
-@app.route("/auth/login", methods=["POST"])
+@app.route("/auth/login", methods=["GET","POST"])
 def do_login():
-  print( 'json', request.json )
   user_id = request.form.get("user_id", None)
   user_pwd = request.form.get("user_pwd", None)
 
   matched, user = UserService.checkMatchPassword(user_id, user_pwd)
-  
-  print( user.to_dict() )
   
   if matched == False or user is None:
     return redirect(url_for("index", success=False))
@@ -50,8 +37,30 @@ def do_login():
   
   return resp
   
-@app.route("/auth/logout", methods=["GET", "POST"])
+@app.route("/auth/logout", methods=["GET","POST"])
 def do_logout():
   resp = make_response(redirect(url_for("index")))
   resp.set_cookie('access_token', value="", expires=0, httponly=True)
   return resp
+  
+@app.route("/auth/register", methods=["GET"])
+def index_register():
+  resp = make_response(render_template("register.html", user=None))
+  return resp
+  
+@app.route("/auth/register", methods=["POST"])
+def do_register():
+  user = UserModel(request.form)
+  valid = user.validate()
+  
+  if valid == False:
+    resp = make_response(jsonify({"success": valid, "user": user.to_dict() }))
+    return resp
+
+  res = UserService.insertUserInfo(user)
+  
+  print( res )
+  
+  resp = make_response(jsonify({"success": valid, "user": user.to_dict() }))
+  return resp
+

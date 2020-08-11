@@ -1,3 +1,4 @@
+import traceback
 import mariadb
 
 from functools import wraps
@@ -52,6 +53,18 @@ class MariaDB(object):
       return dict(zip(headers, rv))
       
     return None
+    
+  def insert_one(self, sql, *args):
+    try:
+      cur = self.__connection.cursor()
+      cur.execute( sql, args )
+      
+      self.__connection.commit()
+    except:
+      traceback.print_exc()
+      self.__connection.rollback()
+    
+    return cur
     
 def get_db():
   if 'db' not in g:
