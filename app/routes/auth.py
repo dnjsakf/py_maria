@@ -10,6 +10,7 @@ from flask import (
 
 import app.utils.datetime as dt
 from app.utils.auth import make_token
+from app.utils.encrypt import Encrypt
 from app.database.models.user import UserModel
 from app.database.service.user import UserService
 
@@ -20,7 +21,7 @@ def do_login():
   user_pwd = request.form.get("user_pwd", None)
 
   matched, user = UserService.checkMatchPassword(user_id, user_pwd)
-  
+
   if matched == False or user is None:
     return redirect(url_for("index", success=False))
     
@@ -50,17 +51,23 @@ def index_register():
   
 @app.route("/auth/register", methods=["POST"])
 def do_register():
-  user = UserModel(request.form)
-  valid = user.validate()
+  form = dict(request.form) if request.form is not None else dict()
+
+  pwd = form.get("user_pwd", None)
+  pwd_chk = form.pop("user_pwd_chk", None)
   
+  if pwd != pwd_chk:
+    return make_response(jsonify({"success": False, "message": "No matched password." }))
+
+  user = UserModel(form)
+  valid = user.validate()
+
   if valid == False:
-    resp = make_response(jsonify({"success": valid, "user": user.to_dict() }))
+    resp = make_response(jsonify({"success": valid, "user": user.to_primitive(role="public") }))
     return resp
 
   res = UserService.insertUserInfo(user)
-  
-  print( res )
-  
-  resp = make_response(jsonify({"success": valid, "user": user.to_dict() }))
+
+  resp = make_response(jsonify({"success": valid, "user": user.to_primitive(role="public") }))
   return resp
 

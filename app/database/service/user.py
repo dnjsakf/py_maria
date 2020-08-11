@@ -30,24 +30,24 @@ class UserService(BaseService):
    
   @classmethod
   @with_db
-  def insertUserInfo(cls, db, user:UserModel):
-    cur = db.insert_one('''
+  def insertUserInfo(cls, db, user:UserModel) -> int:
+    columns = []
+    values = []
+    for key, val in user.to_primitive(role="save").items():
+      columns.append(key.upper())
+      values.append(val)
+
+    inserted = db.insert_one(f'''
       INSERT INTO DOCHI.AT_USER (
-        USER_ID, USER_PWD, USER_NAME
-        , USER_NICK, EMAIL, CELL_PHONE
-        , REG_USER, REG_DTTM
+        { ",".join(columns) }
       ) VALUES (
         ?, ?, ?
         , ?, ?, ?
         , ?, ?
       )
-    ''',
-    user.user_id, user.user_pwd, user.user_name
-    , user.user_nick, user.email, user.cell_phone
-    , user.reg_user, user.reg_dttm
-    )
-    
-    print( dir(cur) )
+    ''', *values)
+
+    return inserted
 
   @classmethod
   def checkMatchPassword(cls, user_id, user_pwd):

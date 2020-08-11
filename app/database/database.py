@@ -21,6 +21,7 @@ class MariaDB(object):
   def connect(self, **config):
     try:
       self.__connection = mariadb.connect(**config)
+      self.__connection.autocommit = False
     except mariadb.Error as e:
       print(f"Error connecting to MariaDB Platform: {e}")
       
@@ -29,8 +30,14 @@ class MariaDB(object):
   def close(self):
     if self.__connection is not None:
       self.__connection.close()
+
+  def commit(self):
+    self.__connection.commit()
+  
+  def rollback(self):
+    self.__connection.rollback()
       
-  def select(self, sql, *args):
+  def select(self, sql, *args, **kwargs):
     cur = self.__connection.cursor()
     cur.execute( sql, args )
     
@@ -42,7 +49,7 @@ class MariaDB(object):
     
     return None
     
-  def select_one(self, sql, *args):
+  def select_one(self, sql, *args, **kwargs):
     cur = self.__connection.cursor()
     cur.execute( sql, args )
     
@@ -54,17 +61,18 @@ class MariaDB(object):
       
     return None
     
-  def insert_one(self, sql, *args):
+  def insert_one(self, sql, *args, **kwargs):
+    print( sql, args )
     try:
       cur = self.__connection.cursor()
       cur.execute( sql, args )
       
-      self.__connection.commit()
+      self.commit()
     except:
       traceback.print_exc()
-      self.__connection.rollback()
+      self.rollback()
     
-    return cur
+    return cur.rowcount
     
 def get_db():
   if 'db' not in g:

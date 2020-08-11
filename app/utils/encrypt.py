@@ -40,4 +40,5 @@ class Encrypt(object):
     
   @classmethod
   def compare(cls, plain, encrypted):
+    print( plain, encrypted, cls.decrypt(encrypted) )
     return plain == cls.decrypt(encrypted)

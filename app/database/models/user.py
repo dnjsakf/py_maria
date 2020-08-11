@@ -1,60 +1,26 @@
-from .base import BaseModel
+from schematics.models import Model
+from schematics.types import StringType
+from schematics.transforms import blacklist
+
+from app.database.models import BaseModel
 from app.utils.encrypt import Encrypt
 
+class EncyptedType(StringType):
+  def to_primitive(self, value, context=None):
+    return Encrypt.encrypt(value)
+
 class UserModel(BaseModel):
-  def __init__(self, data=None):
-    super().__init__(data=data)
-    
-    self.required = [
-      "user_id",
-      "user_pwd",
-      "user_name"
-    ]
+  user_id = StringType(required=True, max_length=50)
+  user_pwd = EncyptedType(required=True, max_length=100)
+  user_name = StringType(required=True, max_length=50)
+  user_nick = StringType(max_length=50)
+  email = StringType(max_length=100)
+  cell_phone = StringType(max_length=20)
 
-  @property
-  def user_id(self):
-    return self.__user_id
+  auth_id = StringType()
 
-  @user_id.setter
-  def user_id(self, user_id):
-    self.__user_id = user_id
-
-  @property
-  def user_pwd(self):
-    return self.__user_pwd
-
-  @user_pwd.setter
-  def user_pwd(self, user_pwd):
-    self.__user_pwd = Encrypt.encrypt(user_pwd)
-
-  @property
-  def user_name(self):
-    return self.__user_name
-
-  @user_name.setter
-  def user_name(self, user_name):
-    self.__user_name = user_name
-
-  @property
-  def user_nick(self):
-    return self.__user_nick
-
-  @user_nick.setter
-  def user_nick(self, user_nick):
-    self.__user_nick = user_nick
-
-  @property
-  def email(self):
-    return self.__email
-
-  @email.setter
-  def email(self, email):
-    self.__email = email
-
-  @property
-  def cell_phone(self):
-    return self.__cell_phone
-
-  @cell_phone.setter
-  def cell_phone(self, cell_phone):
-    self.__cell_phone = cell_phone
+  class Options:
+    roles = {
+      'public': blacklist('user_pwd'),
+      'save': blacklist('auth_id'),
+    }
