@@ -1,8 +1,7 @@
-from schematics.models import Model
-from schematics.types import StringType
+from app.database.models import BaseSchema
 
-from app.database.models import BaseModel
+from marshmallow import fields, validate, pprint
 
-class AuthModel(BaseModel):
-  auth_id = StringType(required=True, max_length=50)
-  auth_name = StringType(required=True, max_length=50)
+class AuthSchema(BaseSchema):
+  auth_id = fields.Str(required=True, validate=validate.Length(max=50))
+  auth_name = fields.Str(required=True, validate=validate.Length(max=50))

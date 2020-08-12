@@ -1,26 +1,75 @@
-from schematics.models import Model
-from schematics.types import StringType
-from schematics.transforms import blacklist
-
-from app.database.models import BaseModel
+from app.database.models import BaseSchema
 from app.utils.encrypt import Encrypt
 
-class EncyptedType(StringType):
-  def to_primitive(self, value, context=None):
-    return Encrypt.encrypt(value)
+from marshmallow import fields, validate, pprint
+from marshmallow.decorators import validates, validates_schema, pre_dump, post_load
+from marshmallow.exceptions import ValidationError
 
-class UserModel(BaseModel):
-  user_id = StringType(required=True, max_length=50)
-  user_pwd = EncyptedType(required=True, max_length=100)
-  user_name = StringType(required=True, max_length=50)
-  user_nick = StringType(max_length=50)
-  email = StringType(max_length=100)
-  cell_phone = StringType(max_length=20)
+class UserSchema(BaseSchema):
+  class Meta:
+    unknown = "include"
+        
+  user_id = fields.Str(required=True, validate=validate.Length(max=50))
+  user_pwd = fields.Str(required=True)
+  user_name = fields.Str(required=True, validate=validate.Length(max=50))
+  user_nick = fields.Str(validate=validate.Length(max=50))
+  email = fields.Str()
+  cell_phone = fields.Str(validate=validate.Length(max=20))
+  
+  @validates("user_pwd")
+  def validate_user_pwd(self, value):
+    print("="*15, "validate_user_pwd", "="*15)
+    pprint({ "data": value }, indent=2 )
+    size, min, max = ( len(value), 4, 100 )
+    
+    if min > size or size > max:
+      raise ValidationError("Length must be between %d and %d." % ( min, max ))
 
-  auth_id = StringType()
+  @validates("email")
+  def validate_email(self, value):
+    print("="*15, "validate_email", "="*15)
+    pprint({ "data": value }, indent=2 )
+    size, max = ( len(value), 100 )
 
-  class Options:
-    roles = {
-      'public': blacklist('user_pwd'),
-      'save': blacklist('auth_id'),
-    }
+    if size > max:
+      raise ValidationError("Length must be less than %d." % ( max ))
+
+  @validates_schema
+  def validate(self, data, **kwargs):
+    print("="*15, "validate", "="*15)
+    pprint({
+      "data": data,
+      "kwargs": kwargs
+    }, indent=2 )
+    
+    user_pwd = data.get("user_pwd", None)
+    user_pwd_chk = data.get("user_pwd_chk", None)
+    if user_pwd_chk is not None and user_pwd != user_pwd_chk:
+      raise ValidationError("Not matched password.")
+      
+  @pre_dump(pass_many=False)
+  def serializing(self, data, **kwargs):
+    print("="*15, "pre_dump", "="*15)
+    pprint({
+      "data": data,
+      "kwargs": kwargs
+    }, indent=2 )
+      
+    return data
+    
+  @post_load(pass_many=False)
+  def deserializing(self, data, **kwargs):
+    print("="*15, "post_load", "="*15)
+    pprint({
+      "data": data,
+      "kwargs": kwargs
+    }, indent=2 )
+    
+    user_pwd = data.get("user_pwd", None)
+    if user_pwd is not None:
+      data["user_pwd"] = Encrypt.encrypt(user_pwd)
+
+    if "user_pwd_chk" in data:
+      data.pop("user_pwd_chk")
+      
+    return data

@@ -1,3 +1,5 @@
+import traceback
+
 from flask import (
   current_app as app,
   make_response,
@@ -11,32 +13,31 @@ from flask import (
 import app.utils.datetime as dt
 from app.utils.auth import make_token
 from app.utils.encrypt import Encrypt
-from app.database.models.user import UserModel
+from app.database.models.user import UserSchema
 from app.database.service.user import UserService
 
 
 @app.route("/auth/login", methods=["GET","POST"])
 def do_login():
-  user_id = request.form.get("user_id", None)
-  user_pwd = request.form.get("user_pwd", None)
+  try:
+    matched, user = UserService.checkMatchPassword(**request.form)
 
-  matched, user = UserService.checkMatchPassword(user_id, user_pwd)
-
-  if matched == False or user is None:
-    return redirect(url_for("index", success=False))
+    if matched == False or user is None:
+      return redirect(url_for("index", success=False))
+      
+    token = make_token({
+      "user": user
+    })
     
-  token = make_token({
-    "user": {
-      "name": user.user_name,
-      "nick": user.user_nick,
-      "auth": user.auth_id
-    }
-  })
-  
-  resp = make_response(redirect(url_for("index", success=True)))
-  resp.set_cookie('access_token', value=token, expires=dt.nowTS(minutes=30), httponly=True)  
-  
-  return resp
+    resp = make_response(redirect(url_for("index", success=True)))
+    resp.set_cookie('access_token', value=token, expires=dt.nowTS(minutes=30), httponly=True)  
+    
+    return resp
+  except Exception as e:
+    traceback.print_exc()
+    resp = make_response(redirect(url_for("index", success=False, code=500)))
+    return resp
+
   
 @app.route("/auth/logout", methods=["GET","POST"])
 def do_logout():
@@ -51,23 +52,26 @@ def index_register():
   
 @app.route("/auth/register", methods=["POST"])
 def do_register():
-  form = dict(request.form) if request.form is not None else dict()
+  try:
+    valid, user, messages = UserSchema().setData(request.form)
+    if valid == False:
+      return make_response(jsonify({
+        "success": False, 
+        "user": user ,
+        "messages": messages
+      }))
 
-  pwd = form.get("user_pwd", None)
-  pwd_chk = form.pop("user_pwd_chk", None)
-  
-  if pwd != pwd_chk:
-    return make_response(jsonify({"success": False, "message": "No matched password." }))
-
-  user = UserModel(form)
-  valid = user.validate()
-
-  if valid == False:
-    resp = make_response(jsonify({"success": valid, "user": user.to_primitive(role="public") }))
-    return resp
-
-  res = UserService.insertUserInfo(user)
-
-  resp = make_response(jsonify({"success": valid, "user": user.to_primitive(role="public") }))
-  return resp
+    inserted = UserService.insertUserInfo(user)
+    return make_response(jsonify({
+      "success": True, 
+      "user": user ,
+      "messages": inserted,
+    }))
+  except Exception as e:
+    traceback.print_exc()
+    return make_response(jsonify({
+      "success": False, 
+      "user": None,
+      "messages": str(e),
+    }))
 

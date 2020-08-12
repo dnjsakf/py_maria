@@ -62,17 +62,21 @@ class MariaDB(object):
     return None
     
   def insert_one(self, sql, *args, **kwargs):
-    print( sql, args )
+    inserted = -1
     try:
       cur = self.__connection.cursor()
       cur.execute( sql, args )
+
+      inserted = cur.rowcount
       
       self.commit()
-    except:
+    
+      return inserted
+
+    except Exception as e:
       traceback.print_exc()
       self.rollback()
-    
-    return cur.rowcount
+      raise e
     
 def get_db():
   if 'db' not in g:

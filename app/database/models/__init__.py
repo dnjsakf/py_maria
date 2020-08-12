@@ -1,3 +1,3 @@
-from .base import BaseModel
-from .auth import AuthModel
-from .user import UserModel
+from .base import BaseSchema
+from .auth import AuthSchema
+from .user import UserSchema
