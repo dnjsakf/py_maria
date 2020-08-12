@@ -91,3 +91,14 @@ def with_db(func):
       return None
     return func(self, db, *args, **kwargs)
   return wrapper
+  
+def with_maria(config=None):
+  def decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+      db = MariaDB(**config)
+      res = func(*args, db, **kwargs)
+      db.close()
+      return res
+    return wrapper
+  return decorator
