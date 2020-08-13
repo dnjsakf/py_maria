@@ -1,2 +1,2 @@
 from .index import app as route_index
-from .auth import app as route_auth
+from .security import app as route_security

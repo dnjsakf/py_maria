@@ -14,16 +14,16 @@
       <h3>cell_phone: {{ user.cell_phone }}</h3>
       <h3>reg_user: {{ user.reg_user }}</h3>
       <h3>reg_dttm: {{ user.reg_dttm }}</h3>
-      <form method="POST" action="/auth/logout">
+      <form method="POST" action="/security/logout">
         <button type="submit">logout</button>
       </form>
     {% else %}
-      <form method="POST" action="/auth/login">
+      <form method="POST" action="/security/login">
         <input type="text" name="user_id" placeholder="Please write your id."></br>
         <input type="password" name="user_pwd" placeholder="Please write your password."></br>
         <button type="submit">login</button>
       </form>
-      <a href="/auth/register">register</a>
+      <a href="/security/register">register</a>
       {% block register %}{% endblock %}
     {% endif %}
     </div>

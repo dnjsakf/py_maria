@@ -1,5 +1,5 @@
 from app.database.models import BaseSchema
-from app.utils.encrypt import Encrypt
+from app.utils.security.encrypt import Encrypt
 
 from marshmallow import fields, validate, pprint
 from marshmallow.decorators import validates, validates_schema, pre_dump, post_load
@@ -65,9 +65,8 @@ class UserSchema(BaseSchema):
       "kwargs": kwargs
     }, indent=2 )
     
-    user_pwd = data.get("user_pwd", None)
-    if user_pwd is not None:
-      data["user_pwd"] = Encrypt.encrypt(user_pwd)
+    if "user_pwd" in data:
+      data["user_pwd"] = Encrypt.encrypt(data["user_pwd"])
 
     if "user_pwd_chk" in data:
       data.pop("user_pwd_chk")

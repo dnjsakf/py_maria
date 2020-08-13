@@ -19,12 +19,9 @@ class MariaDB(object):
     return self.__connection
 
   def connect(self, **config):
-    try:
-      self.__connection = mariadb.connect(**config)
-      self.__connection.autocommit = False
-    except mariadb.Error as e:
-      print(f"Error connecting to MariaDB Platform: {e}")
-      
+    self.__connection = mariadb.connect(**config)
+    self.__connection.autocommit = False
+    
     return self.__connection
 
   def close(self):
@@ -74,7 +71,6 @@ class MariaDB(object):
       return inserted
 
     except Exception as e:
-      traceback.print_exc()
       self.rollback()
       raise e
     
@@ -106,3 +102,4 @@ def with_maria(config=None):
       return res
     return wrapper
   return decorator
+  

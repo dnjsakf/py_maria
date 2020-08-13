@@ -11,3 +11,6 @@ def nowTS(**kwargs) -> float:
   
 def timestamp(dt:datetime) -> float:
   return datetime.timestamp(dt)
+
+def reform(str_dt, in_fmt="%Y%m%d%H%M%S", out_fmt="%Y-%m-%d %H:%M:%S"):
+  return datetime.strptime(str_dt, in_fmt).strftime(out_fmt)

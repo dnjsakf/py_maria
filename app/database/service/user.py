@@ -1,7 +1,11 @@
 from flask import g
+
+from marshmallow.exceptions import ValidationError
+
 from app.database.database import with_db
 from app.database.models import UserSchema
-from app.utils.encrypt import Encrypt
+from app.utils.security.encrypt import Encrypt
+from app.exceptions import NotFoundUserError, NoMatchedPasswordError
 
 from .base import BaseService
 
@@ -22,13 +26,17 @@ class UserService(BaseService):
        WHERE 1=1
          AND T1.USER_ID = ?
     ''', user_id )
-
+  
     if data is not None:
       return UserSchema().dump(data)
+        
+    raise NotFoundUserError
    
   @classmethod
   @with_db
-  def insertUserInfo(cls, db, user:dict) -> int:
+  def insertUserInfo(cls, db, data:dict) -> int:
+    user = UserSchema().load(data)
+  
     columns = []
     values = []
     for key, val in user.items():
@@ -40,12 +48,7 @@ class UserService(BaseService):
       values=", ".join([ "?" for _ in range(0, len(columns))])
     )
 
-    try:
-      inserted = db.insert_one( sql, *values)
-    except Exception as e:
-      raise e
-
-    return inserted
+    return db.insert_one(sql, *values)
 
   @classmethod
   def checkMatchPassword(cls, user_id=None, user_pwd=None, **kwargs):
@@ -54,10 +57,9 @@ class UserService(BaseService):
 
     matched = False
     user = cls.getUserInfo(user_id)
-    if "user_pwd" in user:
-      matched = user is not None and Encrypt.compare(user_pwd, user["user_pwd"])
-
-      if matched == True:
-        user.pop("user_pwd")
-
-    return ( matched, user )
+    
+    if Encrypt.compare(user_pwd, user["user_pwd"]) == True:
+      user.pop("user_pwd")
+      return user
+    
+    raise NoMatchedPasswordError
