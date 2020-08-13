@@ -11,5 +11,5 @@ from app.decorators import with_cookies, check_token
 def index(user=None, exp=None, access_token=None, error=None):
   if error is not None:
     app.logger.error( error )
-    
+  
   return render_template("index.html", user=user)

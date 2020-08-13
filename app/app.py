@@ -33,7 +33,7 @@ def create_app(*args, **kwargs):
     
     # Set CORS
     CORS(app=app, resources={
-      r"*": {"origins": "*" }
+      r"*": { "origins": "*" }
     })
     
     # Set Context
@@ -72,13 +72,13 @@ def handle_errors(app):
       "valid": e.valid_data,
       "messages": e.messages,
       "message": str(e)
-    })    
+    })
   
   @app.errorhandler(Error.DochiError)
   @app.errorhandler(Marshmallow.MarshmallowError)
   @app.errorhandler(JWT.PyJWTError)
   @app.errorhandler(MariaDB.Error)
-  @app.errorhandler(Exception)
+  # @app.errorhandler(Exception)
   def handle_global_error(e):
     app.logger.error(traceback.format_exc())
     
