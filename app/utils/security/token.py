@@ -50,7 +50,9 @@ class Token(object):
         return temp
       else:
         return payload
-    except AssertionError as e:
+    except (
+        AssertionError,
+        jwt.exceptions.DecodeError,
+        Exception
+      ) as e:
       return dict( error=e )
-    except jwt.esceptions.DecodeError as e:
-      return dict( error=traceback.format_exc() )

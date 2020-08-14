@@ -5,7 +5,7 @@ from marshmallow.exceptions import ValidationError
 from app.database.database import with_db
 from app.database.models import UserSchema
 from app.utils.security.encrypt import Encrypt
-from app.exceptions import NotFoundUserError, NoMatchedPasswordError
+from app.exceptions import NotFoundUserError, NoMatchedPasswordError, EmptyDataError
 
 from .base import BaseService
 
@@ -52,14 +52,13 @@ class UserService(BaseService):
 
   @classmethod
   def checkMatchPassword(cls, user_id=None, user_pwd=None, **kwargs):
-    assert user_id is not None, "No 'user_id'"
-    assert user_pwd is not None, "No 'user_pwd"
-
-    matched = False
+    if user_id is None or user_id == "": raise EmptyDataError("Empty 'user_id'")
+    if user_pwd is None or user_pwd == "": raise EmptyDataError("Empty 'user_pwd'")
+      
     user = cls.getUserInfo(user_id)
     
     if Encrypt.compare(user_pwd, user["user_pwd"]) == True:
       user.pop("user_pwd")
       return user
-    
-    raise NoMatchedPasswordError
+      
+    raise NoMatchedPasswordError("No matched password. ")

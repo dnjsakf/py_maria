@@ -32,7 +32,13 @@ def check_token(attr=None):
   def decorator(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-      token = kwargs.get("access_token", None)
+      token = None
+      
+      auth = request.headers.get("Authorization", None)      
+      if auth is not None:
+        token = auth.split(" ")[-1]
+    
+      #token = kwargs.get("access_token", None)
       
       payload = Token.check(token, attr)
       

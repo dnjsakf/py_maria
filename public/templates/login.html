@@ -1,0 +1,8 @@
+{# {% extends "index.html" %} #}
+{# {% block login %} #}
+<form method="POST" action="/security/login">
+  <input type="text" name="user_id" placeholder="Please write your id."></br>
+  <input type="password" name="user_pwd" placeholder="Please write your password."></br>
+  <button type="submit" onclick="handleLogin(event, this.parentElement)">login</button>
+</form>
+{# {% endblock %} #}

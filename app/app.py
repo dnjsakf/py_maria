@@ -54,34 +54,38 @@ def handle_errors(app):
   
   from cryptography.fernet import InvalidToken
 
-  from flask import jsonify, redirect, url_for
+  from flask import jsonify, make_response
   
-  @app.errorhandler(InvalidToken) # Security Only?
-  @app.errorhandler(Error.NotFoundUserError)
-  @app.errorhandler(Error.NoMatchedPasswordError)
-  def handle_dochi_error(e):
-    app.logger.error(traceback.format_exc())
-  
-    return redirect(url_for("index", success=False))
+  #@app.errorhandler(InvalidToken) # Security Only?
+  #@app.errorhandler(Error.NotFoundUserError)
+  #@app.errorhandler(Error.NoMatchedPasswordError)
+  #def handle_dochi_error(e):
+  #  app.logger.error(traceback.format_exc())
+  #
+  #  return redirect(url_for("index", success=False))
   
   @app.errorhandler(Marshmallow.ValidationError)
   def handle_mashmallow_error(e):
     app.logger.error(traceback.format_exc())
+    
+    resp = make_response(jsonify({
+      "success": False,
+      "messages": e.message,
+      "invalid": e.messages
+    }))
   
-    return jsonify({
-      "valid": e.valid_data,
-      "messages": e.messages,
-      "message": str(e)
-    })
+    return resp
   
   @app.errorhandler(Error.DochiError)
   @app.errorhandler(Marshmallow.MarshmallowError)
   @app.errorhandler(JWT.PyJWTError)
   @app.errorhandler(MariaDB.Error)
-  # @app.errorhandler(Exception)
   def handle_global_error(e):
     app.logger.error(traceback.format_exc())
     
-    return jsonify({
+    resp = make_response(jsonify({
+      "success": False,
       "message": str(e)
-    })
+    }))
+    
+    return resp
