@@ -1,17 +1,18 @@
-async function request(uri, _options){
-  const options = {
-    method: "POST",
-    headers: new Headers({
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
-      "Authorization": localStorage.access_token ? "Bearer "+localStorage.access_token : "",
-    }),
+async function request(uri, options){
+  const headers = new Headers({
+    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+  });
+
+  if( localStorage.access_token ){
+    headers.append("Authorization", "Bearer "+localStorage.access_token)
   }
+
+  const _options = Object.assign({
+    method: "GET",
+    headers: headers,
+  }, options);
   
-  if( _options ){
-    Object.assign(options, _options);
-  }
-  
-  return await fetch(uri, options);
+  return await fetch(uri, _options);
 }
 
 function handleLogin(event, form){
@@ -62,9 +63,7 @@ function handleLogout(event, form){
   }).then( resp => resp.json() )
   .then( json => {
     console.log(json);
-    
-    localStorage.access_token = null;
-    
+    localStorage.removeItem("access_token");
   }).catch(( error )=>{
     console.log( error );
   });

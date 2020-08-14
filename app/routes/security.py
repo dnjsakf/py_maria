@@ -52,10 +52,9 @@ def do_login():
     "user": user,
     "access_token": token.decode()
   }))
-  resp.headers["Content-Type"] = "application/json; charset=UTF-8;"
   
-  #resp = make_response(redirect(url_for("index", success=True)))
-  #resp.set_cookie('access_token', value=token, expires=dt.nowTS(minutes=30), httponly=True)
+  resp.headers["Content-Type"] = "application/json; charset=UTF-8;"
+  resp.set_cookie('access_token', value=token, expires=dt.nowTS(minutes=30), httponly=True)
   
   return resp
     

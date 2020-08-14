@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LoginText</title>
+    <title>Flask Login with JWT</title>
   </head>
   <body>
     <div id="root">
@@ -41,6 +41,6 @@
       </form>
 
     </div>
-    <script src="/static/js/index.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
   </body>
 </html>
