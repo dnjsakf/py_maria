@@ -1,9 +1,13 @@
+import os
 import json
+
 from flask import Flask, render_template, make_response, jsonify
 from flask_cors import CORS
 
 from .database.database import get_db, close_db
 from .utils.security.token import Token
+
+from .config.flask_config import Config
 
 from flask import g
 
@@ -16,17 +20,16 @@ def create_app(*args, **kwargs):
     template_folder=kwargs.get("template_folder", "../public")
   )
   
-  app.secret_key = "Dochi-MariaDB-Login"
-  Token.secret_key = app.secret_key
-  
-  app.config["MARIADB_CONFIG"] = {
-    "user": "DOCHI",
-    "password": "dochi",
-    "host": "127.0.0.1",
-    "port": 3306,
-    "database": "DOCHI"
-  }
-  
+  app.config.from_object(Config("development"))
+
+  import pprint
+  pprint.pprint( app.config )
+
+  Token.init(
+    secret_key=app.config.get("SECRET_KEY", None),
+    expires=app.config.get("JWT_TOKEN_EXPIRES", 30)
+  )
+
   with app.app_context():
     # Set Routes
     import app.routes as routes
@@ -70,7 +73,7 @@ def handle_errors(app):
     
     resp = make_response(jsonify({
       "success": False,
-      "messages": e.message,
+      "message": str(e),
       "invalid": e.messages
     }))
   

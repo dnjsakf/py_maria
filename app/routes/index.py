@@ -23,14 +23,3 @@ def dated_url_for(endpoint, **values):
       file_path = os.path.join(app.static_folder, filename)
       values['q'] = int(os.stat(file_path).st_mtime)
   return url_for(endpoint, **values)
-
-'''
-@app.route("/", methods=["GET", "POST"])
-@with_cookies(attr="access_token")
-@check_token(attr=["user", "error"])
-def index(user=None, exp=None, access_token=None, error=None):
-  if error is not None:
-    app.logger.error( error )
-  
-  return render_template("index.html", user=user)
-'''

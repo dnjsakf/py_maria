@@ -4,7 +4,6 @@ import traceback
 from app.utils.time import datetime as dt
 from app.exceptions import NotExistsToken
 
-
 class Token(object):
   secret_key = "Dochi Secret Key"
   algorithm = "HS256"
@@ -13,9 +12,17 @@ class Token(object):
   issuer = "dochi"
   issued = None
   expires = 30
+
+  @classmethod
+  def init(cls, **kwargs):
+    for key, value in kwargs.items():
+      setattr(cls, key, value )
   
   @classmethod
-  def make(cls, data, expires=30):
+  def make(cls, data, expires=None):
+    if expires is None:
+      expires = cls.expires
+
     payload = {
       "sub": cls.subject,
       "iss": cls.issuer,

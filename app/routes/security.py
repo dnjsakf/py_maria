@@ -34,9 +34,8 @@ def post_register():
   inserted = UserService.insertUserInfo(request.form)
 
   resp = make_response(jsonify({
-    "success": True, 
-    "user": request.form,
-    "messages": inserted,
+    "success": True,
+    "inserted": inserted
   }))
 
   return resp
@@ -64,7 +63,6 @@ def do_logout():
     "success": True
   }))
 
-  #resp = make_response(redirect(url_for("index")))
   resp.set_cookie('access_token', value="", expires=0, httponly=True)
   
   return resp
