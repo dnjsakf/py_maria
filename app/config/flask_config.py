@@ -57,7 +57,7 @@ class MariaDBConfig(object):
   class Meta:
     mode = "development"
     
-  host = "127.0.0.01"
+  host = "127.0.0.1"
   port = 3306
   database = "DOCHI"
   user = "DOCHI"

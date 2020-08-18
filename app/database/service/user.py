@@ -12,11 +12,10 @@ from .base import BaseService
 class UserService(BaseService):
   @classmethod
   @with_db
-  def getUserInfo(cls, db, user_id) -> dict:
-    data = db.select_one('''
+  def selectUserInfo(cls, db, user_id) -> dict:
+    selected = db.select_one('''
       SELECT T1.USER_ID
            , T1.USER_NAME
-           , T1.USER_PWD
            , T1.USER_NICK
            , T1.EMAIL
            , T1.CELL_PHONE
@@ -25,40 +24,91 @@ class UserService(BaseService):
         FROM DOCHI.AT_USER T1
        WHERE 1=1
          AND T1.USER_ID = ?
-    ''', user_id )
+    ''', (user_id, ))
   
-    if data is not None:
-      return UserSchema().dump(data)
+    if selected is None:
+      raise NotFoundUserError
         
-    raise NotFoundUserError
+    return UserSchema().dump(selected)
+        
    
   @classmethod
   @with_db
   def insertUserInfo(cls, db, data:dict) -> int:
     user = UserSchema().load(data)
-  
+    
     columns = []
+    prepared = []
     values = []
+    
     for key, val in user.items():
-      columns.append(key.upper())
-      values.append(val)
-
-    sql = '''INSERT INTO DOCHI.AT_USER ( {columns} ) VALUES ( {values} )'''.format(
-      columns=", ".join(columns),
-      values=", ".join([ "?" for _ in range(0, len(columns))])
+      columns.append( key.upper() )
+      prepared.append( "?" )
+      values.append( val )
+    
+    sql = '''
+    INSERT INTO DOCHI.AT_USER ( 
+      %s
+    ) VALUES ( 
+      %s
+    )
+    ''' % (
+      ",".join( columns ), 
+      ",".join( prepared )
     )
 
-    return db.insert_one(sql, *values)
+    return db.insert_one(sql, values)
+    
+  @classmethod
+  @with_db
+  def updateUserInfo(cls, db, data:dict) -> int:
+    user = UserSchema().load(data)
+    
+    prepared = []
+    values = []
+    conds = [ user.pop("user_id", None) ]
+    
+    for key, val in user.items():
+      prepared.append( key.upper()+" = ?" )
+      values.append( val )
+        
+    sql = '''
+    UPDATE DOCHI.AT_USER
+       SET %s
+     WHERE 1=1
+       AND USER_ID = ?
+    ''' % ( 
+      ", ".join( prepared )
+    )
+    
+    return db.update_one(sql, values, conds)
+    
+  @classmethod
+  @with_db
+  def deleteUserInfo(cls, db, user_id:str) -> int:
+    return db.delete_one('''
+    DELETE FROM DOCHI.AT_USER
+     WHERE 1=1
+       AND USER_ID = ?
+    ''', (user_id, ))
 
   @classmethod
-  def checkMatchPassword(cls, user_id=None, user_pwd=None, **kwargs):
+  @with_db
+  def getSignedUser(cls, db, user_id, user_pwd) -> dict:
     if user_id is None or user_id == "": raise EmptyDataError("Empty 'user_id'")
     if user_pwd is None or user_pwd == "": raise EmptyDataError("Empty 'user_pwd'")
-      
-    user = cls.getUserInfo(user_id)
     
-    if Encrypt.compare(user_pwd, user["user_pwd"]) == True:
-      user.pop("user_pwd")
-      return user
+    selected = db.select_one('''
+      SELECT T1.USER_PWD
+        FROM DOCHI.AT_USER T1
+       WHERE 1=1
+         AND T1.USER_ID = ?
+    ''', (user_id, ))
+  
+    if selected is None:
+      raise NotFoundUserError
       
-    raise NoMatchedPasswordError("No matched password. ")
+    if Encrypt.compare(user_pwd, selected["user_pwd"]) == False:
+      raise NoMatchedPasswordError("No matched password. ")
+    
+    return cls.selectUserInfo(user_id)

@@ -2,7 +2,6 @@ import traceback
 
 from functools import wraps
 from flask import request
-from jwt.exceptions import DecodeError
 
 from app.utils.security.token import Token
 

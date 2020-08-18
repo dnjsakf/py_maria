@@ -22,9 +22,6 @@ def create_app(*args, **kwargs):
   
   app.config.from_object(Config("development"))
 
-  import pprint
-  pprint.pprint( app.config )
-
   Token.init(
     secret_key=app.config.get("SECRET_KEY", None),
     expires=app.config.get("JWT_TOKEN_EXPIRES", 30)
@@ -66,6 +63,7 @@ def handle_errors(app):
   #  app.logger.error(traceback.format_exc())
   #
   #  return redirect(url_for("index", success=False))
+  
   
   @app.errorhandler(Marshmallow.ValidationError)
   def handle_mashmallow_error(e):

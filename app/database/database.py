@@ -34,9 +34,9 @@ class MariaDB(object):
   def rollback(self):
     self.__connection.rollback()
       
-  def select(self, sql, *args, **kwargs):
+  def select(self, sql, values, **kwargs):
     cur = self.__connection.cursor()
-    cur.execute( sql, args )
+    cur.execute( sql, values )
     
     headers = [x[0].lower() for x in cur.description]
     rv = cur.fetchall()
@@ -46,9 +46,9 @@ class MariaDB(object):
     
     return None
     
-  def select_one(self, sql, *args, **kwargs):
+  def select_one(self, sql, values, *args, **kwargs):
     cur = self.__connection.cursor()
-    cur.execute( sql, args )
+    cur.execute( sql, values )
     
     headers = [x[0].lower() for x in cur.description]
     rv = cur.fetchone()
@@ -58,11 +58,11 @@ class MariaDB(object):
       
     return None
     
-  def insert_one(self, sql, *args, **kwargs):
+  def insert_one(self, sql, values, **kwargs):
     inserted = -1
     try:
       cur = self.__connection.cursor()
-      cur.execute( sql, args )
+      cur.execute( sql, values )
 
       inserted = cur.rowcount
       
@@ -73,6 +73,43 @@ class MariaDB(object):
     except Exception as e:
       self.rollback()
       raise e
+      
+  def update_one(self, sql, values, conds, **kwargs):
+    updated = -1
+    try:
+      prepared = list(values)
+      prepared.extend(conds)
+    
+      cur = self.__connection.cursor()
+      cur.execute( sql, prepared )
+
+      updated = cur.rowcount
+      
+      self.commit()
+    
+      return updated
+
+    except Exception as e:
+      self.rollback()
+      raise e
+      
+  def delete_one(self, sql, conds, **kwargs):
+    deleted = -1
+    try:
+      cur = self.__connection.cursor()
+      cur.execute( sql, conds )
+
+      deleted = cur.rowcount
+      
+      self.commit()
+    
+      return deleted
+
+    except Exception as e:
+      self.rollback()
+      raise e
+      
+      
     
 def get_db():
   if 'db' not in g:

@@ -15,7 +15,7 @@ async function request(uri, options){
   return await fetch(uri, _options);
 }
 
-function handleLogin(event, form){
+function handleSignIn(event, form){
   event.preventDefault();
   
   const uri = form.action;
@@ -34,7 +34,7 @@ function handleLogin(event, form){
   });
 }
 
-function handleRegister(event, form){
+function handleSignUp(event, form){
   event.preventDefault();
   
   const uri = form.action;
@@ -51,7 +51,7 @@ function handleRegister(event, form){
   });
 }
 
-function handleLogout(event, form){
+function handleSignOut(event, form){
   event.preventDefault();
   
   const uri = form.action;
@@ -70,7 +70,25 @@ function handleLogout(event, form){
 }
 
 
-function handleCheck(event, form){
+function handleSignCheck(event, form){
+  event.preventDefault();
+  
+  const uri = form.action;
+  const body = new URLSearchParams(new FormData(form));
+
+  request( uri, {
+    method: form.method,
+    body: body
+  }).then( resp => resp.json() )
+  .then( json => {
+    console.log(json);
+  }).catch(( error )=>{
+    console.log( error );
+  });
+}
+
+
+function handleResign(event, form){
   event.preventDefault();
   
   const uri = form.action;

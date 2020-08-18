@@ -43,7 +43,7 @@ class Token(object):
     try:
       assert token is not None, NotExistsToken("Not exists token.")
 
-      payload = jwt.decode(token, cls.secret_key, algorithm=cls.algorithm)
+      payload = jwt.decode(token, cls.secret_key, algorithms=[cls.algorithm])
         
       if isinstance(attr, list):
         temp = dict()

@@ -4,42 +4,68 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flask Login with JWT</title>
+    <style type="text/css">
+      li {
+        position: relative;
+        margin-bottom: 5px;
+        display: inline-block;
+      }
+    </style>
   </head>
   <body>
     <div id="root">
-      <!-- 토큰체크 -->
-      <form method="POST" action="/security/check">
-        <button type="submit" onclick="handleCheck(event, this.parentElement)">확인</button>
-      </form>
-      
-      <!-- 로그인 -->
-      <form method="POST" action="/security/login">
-        <input type="text" name="user_id" placeholder="Please write your id."></br>
-        <input type="password" name="user_pwd" placeholder="Please write your password."></br>
-        <button type="submit" onclick="handleLogin(event, this.parentElement)">로그인</button>
-      </form>
-      
-      <!-- 로그아웃 -->
-      <form method="POST" action="/security/logout">
-        <button type="submit" onclick="handleLogout(event, this.parentElement)">로그아웃</button>
-      </form>
-      
-      <!-- 회원가입 -->
-      <form method="POST" action="/security/register">
-        <!-- Required -->
-        <input type="text" name="user_id" placeholder="id" maxlength="50" required></br>
-        <input type="password" name="user_pwd" placeholder="password" maxlength="16" required></br>
-        <input type="password" name="user_pwd_chk" placeholder="password check" maxlength="16" required></br>
-        <input type="text" name="user_name" placeholder="name" maxlength="30" required></br>
-        <!-- Required -->
-        <!-- Optional -->
-        <input type="text" name="user_nick" placeholder="nickname" maxlength="30"></br>
-        <input type="text" name="email" placeholder="email"></br>
-        <input type="text" name="cell_phone" placeholder="id"></br>
-        <!-- Optional -->
-        <button type="submit" onclick="handleRegister(event, this.parentElement)">회원가입</button>
-      </form>
-
+      <ul>
+          
+        <!-- 회원가입 -->
+        <li>
+          <form method="POST" action="/security/signup">
+            <!-- Required -->
+            <input type="text" name="user_id" placeholder="id" maxlength="50" required></br>
+            <input type="password" name="user_pwd" placeholder="password" maxlength="16" required></br>
+            <input type="password" name="user_pwd_chk" placeholder="password check" maxlength="16" required></br>
+            <input type="text" name="user_name" placeholder="name" maxlength="30" required></br>
+            <!-- Required -->
+            <!-- Optional -->
+            <input type="text" name="user_nick" placeholder="nickname" maxlength="30"></br>
+            <input type="text" name="email" placeholder="email"></br>
+            <input type="text" name="cell_phone" placeholder="id"></br>
+            <!-- Optional -->
+            <button type="submit" onclick="handleSignUp(event, this.parentElement)">회원가입</button>
+          </form>
+        </li>
+        
+        <!-- 로그인 -->
+        <li>
+          <form method="POST" action="/security/signin">
+            <input type="text" name="user_id" placeholder="Please write your id."></br>
+            <input type="password" name="user_pwd" placeholder="Please write your password."></br>
+            <button type="submit" onclick="handleSignIn(event, this.parentElement)">로그인</button>
+          </form>
+        </li>
+        
+        <!-- 토큰체크 -->
+        <li>
+          <form method="POST" action="/security/signcheck">
+            <button type="submit" onclick="handleSignCheck(event, this.parentElement)">확인</button>
+          </form>
+        </li>
+          
+        <!-- 로그아웃 -->
+        <li>
+          <form method="POST" action="/security/signout">
+            <button type="submit" onclick="handleSignOut(event, this.parentElement)">로그아웃</button>
+          </form>
+        </li>
+        
+        <!-- 회원탈퇴 -->
+        <li>
+          <form method="POST" action="/security/resign">
+            <input type="text" name="user_id" placeholder="Please write your id."></br>
+            <input type="password" name="user_pwd" placeholder="Please write your password."></br>
+            <button type="submit" onclick="handleResign(event, this.parentElement)">회원탈퇴</button>
+          </form>
+        </li>
+      </ul>
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
   </body>

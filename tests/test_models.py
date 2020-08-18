@@ -1,9 +1,12 @@
+import pytest
+
+from pprint import pprint
 from app.utils.time import datetime as dt
 
 from app.utils.security.encrypt import Encrypt
 from app.database.database import with_maria
 
-from marshmallow import Schema, fields, validate, pprint
+from marshmallow import Schema, fields, validate
 from marshmallow.exceptions import ValidationError
 from marshmallow.decorators import validates, validates_schema, pre_dump, post_load
 
@@ -127,40 +130,44 @@ class UserSchema(BaseSchema):
       
     return data
 
-'''
-  Deserializing
-'''
-user = UserSchema(many=False).setData(dict(
-  id="user01",
-  pwd="user01",
-  pwd_chk="user01",
-  name="user01",
-  nick=u"사용자"
-))
-pprint( user, indent=2 )
+@pytest.mark.skip
+def test_loading():
+  '''
+    Deserializing
+  '''
+  user = UserSchema(many=False).setData(dict(
+    id="user01",
+    pwd="user01",
+    pwd_chk="user01",
+    name="user01",
+    nick=u"사용자"
+  ))
+  pprint( user, indent=2 )
 
-auth = AuthSchema(many=True).setData([
-  dict(id="0", name="public")
-])
-pprint( auth, indent=2 )
+  auth = AuthSchema(many=True).setData([
+    dict(id="0", name="public")
+  ])
+  pprint( auth, indent=2 )
 
-'''
-  Serializing
-'''
-#user = UserSchema(many=False).dump(dict(
-#  id="user01",
-#  pwd="gAAAAABfM54C8ck3r-XkpYD-iLH2Teg0hHrMFhpMtffBazvc5Nu-X23RESECp0xTwZABM-OvxZVLTOcGDG-PErfb-Y97n4KvMw==",
-#  name="user01",
-#  nick=u"사용자"
-#))
-#pprint( user, indent=2 )
-#
-#auth = AuthSchema(many=True).dump([
-#  dict(id="0", name="public")
-#])
-#pprint( auth, indent=2 )
+@pytest.mark.skip
+def test_dumping():
+  '''
+    Serializing
+  '''
+  #user = UserSchema(many=False).dump(dict(
+  #  id="user01",
+  #  pwd="gAAAAABfM54C8ck3r-XkpYD-iLH2Teg0hHrMFhpMtffBazvc5Nu-X23RESECp0xTwZABM-OvxZVLTOcGDG-PErfb-Y97n4KvMw==",
+  #  name="user01",
+  #  nick=u"사용자"
+  #))
+  #pprint( user, indent=2 )
+  #
+  #auth = AuthSchema(many=True).dump([
+  #  dict(id="0", name="public")
+  #])
+  #pprint( auth, indent=2 )
 
-schema = UserSchema(many=False)
-user = schema.getData(id="admin")
-pprint( user, indent=2 )
+  schema = UserSchema(many=False)
+  user = schema.getData(id="admin")
+  pprint( user, indent=2 )
 

@@ -1,7 +1,9 @@
+from pprint import pprint
+
 from app.database.models import BaseSchema
 from app.utils.security.encrypt import Encrypt
 
-from marshmallow import fields, validate, pprint
+from marshmallow import fields, validate
 from marshmallow.decorators import validates, validates_schema, pre_dump, post_load
 from marshmallow.exceptions import ValidationError
 
@@ -9,9 +11,9 @@ class UserSchema(BaseSchema):
   class Meta:
     unknown = "include"
         
-  user_id = fields.Str(required=True, validate=validate.Length(max=50))
+  user_id = fields.Str(required=True, validate=validate.Length(min=4, max=50))
   user_pwd = fields.Str(required=True)
-  user_name = fields.Str(required=True, validate=validate.Length(max=50))
+  user_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
   user_nick = fields.Str(validate=validate.Length(max=50))
   email = fields.Str()
   cell_phone = fields.Str(validate=validate.Length(max=20))
@@ -30,9 +32,12 @@ class UserSchema(BaseSchema):
     print("="*15, "validate_email", "="*15)
     pprint({ "data": value }, indent=2 )
     size, max = ( len(value), 100 )
-
+  
     if size > max:
       raise ValidationError("Length must be less than %d." % ( max ))
+      
+    if size > 0:
+      validate.Email()(value)
 
   @validates_schema
   def validate(self, data, **kwargs):
