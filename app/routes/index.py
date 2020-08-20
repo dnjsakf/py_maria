@@ -1,7 +1,5 @@
-import os
 from flask import (
   current_app as app,
-  url_for,
   render_template
 )
 
@@ -11,15 +9,3 @@ from app.decorators import with_cookies, check_token
 @check_token(attr=["user"])
 def index(user=None, error=None):
   return render_template("index.html")
-
-@app.context_processor
-def override_url_for():
-  return dict(url_for=dated_url_for)
-
-def dated_url_for(endpoint, **values):
-  if endpoint == 'static':
-    filename = values.get('filename', None)
-    if filename:
-      file_path = os.path.join(app.static_folder, filename)
-      values['q'] = int(os.stat(file_path).st_mtime)
-  return url_for(endpoint, **values)

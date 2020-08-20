@@ -4,38 +4,62 @@ import mariadb
 from functools import wraps
 from flask import current_app as app, g
 
-class MariaDB(object):
-  def __init__(self, user, password, host, port, database, **kwargs):      
-    self.connect(
-      user=user,
-      password=password,
-      host=host,
-      port=port,
-      database=database
-    )
 
-  @property
-  def connection(self):
-    return self.__connection
+class AbstractMariaDB(object):
+  auto_commit = False
 
-  def connect(self, **config):
-    self.__connection = mariadb.connect(**config)
-    self.__connection.autocommit = False
+  @classmethod
+  def init(cls, **kwargs):
+    for key, item in kwargs.items():
+      setattr(cls, key, item)
+      
+  @classmethod
+  def get_db(cls, **kwargs):
+    return cls(**kwargs)
     
-    return self.__connection
+  @classmethod
+  def connect(cls, **kwargs):
+    required = [ "host", "port", "database", "user", "password" ]
+    
+    config = dict()
+    for key in required:
+      config[key] = kwargs.get(key, getattr(cls, key, None))
+      if config[key] is None:
+        raise Exception("Required argument '%s'." % ( key ))
+        
+    conn = mariadb.connect(**config)
+    conn.autocommit = cls.auto_commit
+    
+    print("Connected, %s" % ( conn.connection_id ))
+        
+    return conn
+    
+  @classmethod
+  def getCursor(cls):
+    conn = getattr(cls, "__conn", None)
+    print( conn )
+
+class MariaDB(AbstractMariaDB):
+  def __init__(self, *args, **kwargs):
+    self.args = args
+    self.kwargs = kwargs
+    
+    self.__conn = self.connect()
+    
+    print( self.getCursor() )
 
   def close(self):
-    if self.__connection is not None:
-      self.__connection.close()
+    if self.__conn is not None:
+      self.__conn.close()
 
   def commit(self):
-    self.__connection.commit()
-  
+    self.__conn.commit()
+    
   def rollback(self):
-    self.__connection.rollback()
+    self.__conn.rollback()
       
   def select(self, sql, values, **kwargs):
-    cur = self.__connection.cursor()
+    cur = self.__conn.cursor()
     cur.execute( sql, values )
     
     headers = [x[0].lower() for x in cur.description]
@@ -47,7 +71,7 @@ class MariaDB(object):
     return None
     
   def select_one(self, sql, values, *args, **kwargs):
-    cur = self.__connection.cursor()
+    cur = self.__conn.cursor()
     cur.execute( sql, values )
     
     headers = [x[0].lower() for x in cur.description]
@@ -61,7 +85,7 @@ class MariaDB(object):
   def insert_one(self, sql, values, **kwargs):
     inserted = -1
     try:
-      cur = self.__connection.cursor()
+      cur = self.__conn.cursor()
       cur.execute( sql, values )
 
       inserted = cur.rowcount
@@ -80,7 +104,7 @@ class MariaDB(object):
       prepared = list(values)
       prepared.extend(conds)
     
-      cur = self.__connection.cursor()
+      cur = self.__conn.cursor()
       cur.execute( sql, prepared )
 
       updated = cur.rowcount
@@ -96,7 +120,7 @@ class MariaDB(object):
   def delete_one(self, sql, conds, **kwargs):
     deleted = -1
     try:
-      cur = self.__connection.cursor()
+      cur = self.__conn.cursor()
       cur.execute( sql, conds )
 
       deleted = cur.rowcount
@@ -108,17 +132,7 @@ class MariaDB(object):
     except Exception as e:
       self.rollback()
       raise e
-      
-      
-    
-def get_db():
-  if 'db' not in g:
-    g.db = MariaDB(**app.config["MARIADB_CONFIG"])
-    
-def close_db(error):
-  db = g.pop('db', None)
-  if db is not None:
-    db.close()
+
     
 def with_db(func):
   @wraps(func)

@@ -1,14 +1,20 @@
+import os
 from cryptography.fernet import Fernet, InvalidToken
 
 class Encrypt(object):
-  __key = None
   __encoding = "utf-8"
+  __key = None  
+  __keyfile = "key.key"
+  
+  @classmethod
+  def init(cls, *args, **kwargs):
+    cls.__keyfile = kwargs.get("keyfile", "key.key")
 
   @classmethod
   def write_key(cls):
     cls.__key = Fernet.generate_key()
     
-    with open("key.key", "wb") as key_file:
+    with open(cls.__keyfile, "wb") as key_file:
       key_file.write(key)
       
     return cls.__key
@@ -19,7 +25,7 @@ class Encrypt(object):
       return cls.__key
       
     try:
-      return open("key.key", "rb").read()
+      return open(cls.__keyfile, "rb").read()
     except FileNotFoundError as e:
       return cls.write_key()
     except Exception as e:

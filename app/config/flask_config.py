@@ -49,7 +49,6 @@ class Field(object):
   def dict(cls, __cls, **kwargs):
     return cls.class_to_dict(__cls, kwargs)
 
-
 '''
   Database Configurations
 '''
@@ -74,7 +73,16 @@ class TokenConfig(object):
   
   SUBJECT = "DochiLoginToken"
   EXPIRES = 1 # Minutes
-
+  
+'''
+  Encrypt Configurations
+'''
+class EncryptConfig(object):
+  class Meta:
+    mode = "development"
+    prefix = "ENCRYPT"
+  
+  KEY_FILE = "app/config/key.key"
 
 '''
   Flask Configurations
@@ -83,18 +91,24 @@ class FlaskConfig(object):
   class Meta:
     mode = "development"
     extends = [
-      TokenConfig
+      TokenConfig,
+      EncryptConfig
     ]
 
   SECRET_KEY = "Dochi-MariaDB-Login"
   MARIADB_CONFIG = Field.dict(MariaDBConfig)
 
-
+  
 '''
   Integrated Configuration.
 '''
 class Config(object):
   def __init__(self, mode="production", *args, **kwargs):
-    config = Field.dict(FlaskConfig)
-    for key, item in config.items():
+    for key, item in self.to_dict().items():
       setattr(self, key, item)
+      
+  def to_dict(self):
+    data = Field.dict(FlaskConfig)
+    if data is None:
+      return dict()
+    return data
