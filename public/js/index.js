@@ -220,8 +220,15 @@ function handleResign(event, form){
       }, props));
       
       module.__proto__ = (function(_config){
+        let el = null;
+        
         const funcs = {
-          renderEl: _createElement
+          renderEl: (_opt)=>{
+            el = _createElement(_opt);
+            
+            return el;
+          },
+          ref: ()=>(el)
         }
         
         Object.keys(config).forEach(( key )=>{
@@ -240,8 +247,12 @@ function handleResign(event, form){
     }
     return Renderer
   }
-
   
+  
+  
+  /**
+   * Common Components
+   */
   const Title = Dochi({
     init( props ){
       this.handleClick.bind(this);
@@ -253,13 +264,22 @@ function handleResign(event, form){
     },
     render(){
       const {
+        className,
         label,
         onClick,
+        fullWidth,
         ...rest
       } = this.props;
       
+      const clsx = [
+        fullWidth && "w12"
+      ].concat(
+        className,
+      ).filter( item => !!item );
+      
       return this.renderEl({
         tag: "h3",
+        classList: clsx,
         label,
         onClick: this.handleClick,
       });
@@ -275,20 +295,27 @@ function handleResign(event, form){
       this.handleChange.bind(this);
     },
     handleChange(event){
-      this.setState("value", event.target.value);
-      
       if( this.props.onChange ){
         this.props.onChange(event, this.state.value);
       }
     },
     render(){
       const {
+        className,
         onChange,
+        fullWidth,
         ...rest
       } = this.props;
       
+      const clsx = [
+        fullWidth && "w12"
+      ].concat(
+        className,
+      ).filter( item => !!item );
+      
       return this.renderEl({
         tag: "input",
+        classList: clsx,
         onChange: this.handleChange,
         ...rest
       });
@@ -306,43 +333,178 @@ function handleResign(event, form){
     },
     render(){
       const {
+        className,
         onSubmit,
+        fullWidth,
         ...rest
       } = this.props;
       
+      const clsx = [
+        fullWidth && "w12"
+      ].concat(
+        className,
+      ).filter( item => !!item );
+      
       return this.renderEl({
         tag: "button",
+        classList: clsx,
         onSubmit: this.handleSubmit,
         ...rest
       });
     }
-  })
-  
-  const ListItem = Dochi({
-    render(){
-      return this.renderEl({
-        tag: "li",
-        ...this.props
-      });
-    }
   });
   
-  const List = Dochi({
+  const GridItem = Dochi({
     render(){
       const {
-        items,
+        className,
         ...rest
       } = this.props;
       
-      const children = items.map( item => ListItem(item) );
+      const clsx = [
+        "col",
+        className
+      ].filter( item => !!item );
       
       return this.renderEl({
-        tag: "ul",
-        children,
+        tag: "div",
+        classList: clsx,
+        ...rest
+      });      
+    }
+  });
+  
+  const GridRow = Dochi({
+    render(){
+      const {
+        className,
+        cols,
+        ...rest
+      } = this.props;
+      
+      const clsx = [
+        "row",
+        className
+      ].filter( item => !!item );
+      
+      return this.renderEl({
+        tag: "div",
+        classList: clsx,
+        children: [].concat( cols ).map( col => GridItem({ children: col }) ),
         ...rest
       });
     }
   });
+  /**
+   * Common Components
+   */
+  
+  
+  /**
+   * Custom Components
+   */
+  /**
+   * Custom Components
+   */
+  
+  
+  const SignInForm = Dochi({
+    init( props ){
+      this.state = {
+        user_id: "",
+        user_pwd: "",
+      }
+      this.handleChange.bind(this);
+      this.handleSubmit.bind(this);
+    },
+    handleChange(event, value){
+      this.setState(event.target.name, value);
+    },
+    handleSubmit(event){
+      event.preventDefault();
+      
+      const formData = {}
+      const inputs = this.ref().querySelectorAll("input[name], select[name]");
+      inputs.forEach(( input )=>{
+        const name = input.name;
+        const value = input.value;
+        
+        formData[name] = value;
+      });
+      
+      request( this.props.action, {
+        method: this.props.method,
+        body: new URLSearchParams(formData)
+      }).then( resp => resp.json() )
+      .then( json => {
+        localStorage.setItem("access_token", json.access_token);
+        
+        console.log( json );
+      }).catch(( error )=>{
+        console.log( error );
+      });
+    },
+    render(){
+      const {
+        className,
+        fullWidth,
+        ...rest
+      } = this.props;
+      
+      const clsx = [
+        className,
+        fullWidth && "w12",
+      ].filter( item => !!item );
+      
+      const InputUserId = GridRow({
+        children: (
+          InputText({
+            name: "user_id",
+            type: "text",
+            fullWidth: true,
+            placeholder: "id",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const InputUserPwd = GridRow({
+        children: (
+          InputText({
+            name: "user_pwd",
+            type: "password",
+            fullWidth: true,
+            placeholder: "password",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const ButtonRow = GridRow({
+        classList: ["center", "w4"],
+        children: (
+          SubmitButton({
+            type: "submit",
+            label: "SignIn",
+            fullWidth: true,
+            onClick: this.handleSubmit
+          })
+        )
+      });
+      
+      return this.renderEl({
+        tag: "form",
+        classList: clsx,
+        children: [
+          InputUserId,
+          InputUserPwd,
+          ButtonRow
+        ],
+        ...rest
+      });
+    }
+  });
+  
   
   const SignUpForm = Dochi({
     init( props ){
@@ -357,38 +519,330 @@ function handleResign(event, form){
       this.setState(event.target.name, value);
     },
     handleSubmit(event){
-      console.log(this.state);
+      event.preventDefault();
+      
+      const formData = {}
+      const inputs = this.ref().querySelectorAll("input[name], select[name]");
+      inputs.forEach(( input )=>{
+        const name = input.name;
+        const value = input.value;
+        
+        formData[name] = value;
+      });
+      
+      request( this.props.action, {
+        method: this.props.method,
+        body: new URLSearchParams(formData)
+      }).then( resp => resp.json() )
+      .then( json => {
+        localStorage.setItem("access_token", json.access_token);
+        
+        console.log( json );
+      }).catch(( error )=>{
+        console.log( error );
+      });
     },
     render(){
       const {
+        className,
+        fullWidth,
         ...rest
       } = this.props;
       
-      const FormList = List({
-        items: [
+      const clsx = [
+        className,
+        fullWidth && "w12",
+      ].filter( item => !!item );
+      
+      const InputUserId = GridRow({
+        children: (
           InputText({
             name: "user_id",
             type: "text",
-            placeholder: "Write your ID.",
+            fullWidth: true,
+            placeholder: "id",
             onChange: this.handleChange
-          }),
+          })
+        )
+      });
+      
+      const InputUserPwd = GridRow({
+        children: (
           InputText({
             name: "user_pwd",
             type: "password",
-            placeholder: "Write your Password.",
+            fullWidth: true,
+            placeholder: "password",
             onChange: this.handleChange
-          }),
+          })
+        )
+      });
+      
+      const InputUserPwdChk = GridRow({
+        children: (
+          InputText({
+            name: "user_pwd_chk",
+            type: "password",
+            fullWidth: true,
+            placeholder: "password check",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const InputUserName = GridRow({
+        children: (
+          InputText({
+            name: "user_name",
+            type: "text",
+            fullWidth: true,
+            placeholder: "username",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const InputUserNick = GridRow({
+        children: (
+          InputText({
+            name: "user_name",
+            type: "text",
+            fullWidth: true,
+            placeholder: "nickname",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const ButtonRow = GridRow({
+        classList: ["center", "w4"],
+        children: (
           SubmitButton({
-            type: "submit",    
-            label: "submit",
-            onSubmit: this.handleSubmit
-          }),
-        ]
+            type: "submit",
+            label: "SignUp",
+            fullWidth: true,
+            onClick: this.handleSubmit
+          })
+        )
       });
       
       return this.renderEl({
         tag: "form",
-        children: FormList,
+        classList: clsx,
+        children: [
+          InputUserId,
+          InputUserPwd,
+          InputUserPwdChk,
+          InputUserName,
+          InputUserNick,
+          ButtonRow
+        ],
+        ...rest
+      });
+    }
+  });
+  
+  
+  const SignOutForm = Dochi({
+    init( props ){
+      this.state = {
+      }
+      this.handleSubmit.bind(this);
+    },
+    handleSubmit(event){
+      event.preventDefault();
+      
+      request( this.props.action, {
+        method: this.props.method,
+      }).then( resp => resp.json() )
+      .then( json => {
+        console.log( json );
+        localStorage.removeItem("access_token");
+      }).catch(( error )=>{
+        console.log( error );
+      });
+    },
+    render(){
+      const {
+        className,
+        fullWidth,
+        ...rest
+      } = this.props;
+      
+      const clsx = [
+        className,
+        fullWidth && "w12",
+      ].filter( item => !!item );
+      
+      const ButtonRow = GridRow({
+        classList: ["center", "w4"],
+        children: (
+          SubmitButton({
+            type: "submit",
+            label: "SignOut",
+            fullWidth: true,
+            onClick: this.handleSubmit
+          })
+        )
+      });
+      
+      return this.renderEl({
+        tag: "form",
+        classList: clsx,
+        children: [
+          ButtonRow
+        ],
+        ...rest
+      });
+    }
+  });
+  
+  const ResignForm = Dochi({
+    init( props ){
+      this.state = {
+        user_id: "",
+        user_pwd: "",
+      }
+      this.handleChange.bind(this);
+      this.handleSubmit.bind(this);
+    },
+    handleChange(event, value){
+      this.setState(event.target.name, value);
+    },
+    handleSubmit(event){
+      event.preventDefault();
+      
+      const formData = {}
+      const inputs = this.ref().querySelectorAll("input[name], select[name]");
+      inputs.forEach(( input )=>{
+        const name = input.name;
+        const value = input.value;
+        
+        formData[name] = value;
+      });
+      
+      request( this.props.action, {
+        method: this.props.method,
+        body: new URLSearchParams(formData)
+      }).then( resp => resp.json() )
+      .then( json => {
+        localStorage.setItem("access_token", json.access_token);
+        
+        console.log( json );
+      }).catch(( error )=>{
+        console.log( error );
+      });
+    },
+    render(){
+      const {
+        className,
+        fullWidth,
+        ...rest
+      } = this.props;
+      
+      const clsx = [
+        className,
+        fullWidth && "w12",
+      ].filter( item => !!item );
+      
+      const InputUserId = GridRow({
+        children: (
+          InputText({
+            name: "user_id",
+            type: "text",
+            fullWidth: true,
+            placeholder: "id",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const InputUserPwd = GridRow({
+        children: (
+          InputText({
+            name: "user_pwd",
+            type: "password",
+            fullWidth: true,
+            placeholder: "password",
+            onChange: this.handleChange
+          })
+        )
+      });
+      
+      const ButtonRow = GridRow({
+        classList: ["center", "w4"],
+        children: (
+          SubmitButton({
+            type: "submit",
+            label: "Resign",
+            fullWidth: true,
+            onClick: this.handleSubmit
+          })
+        )
+      });
+      
+      return this.renderEl({
+        tag: "form",
+        classList: clsx,
+        children: [
+          InputUserId,
+          InputUserPwd,
+          ButtonRow
+        ],
+        ...rest
+      });
+    }
+  });
+  
+  const CheckTokenForm = Dochi({
+    init( props ){
+      this.state = {
+      }
+      this.handleSubmit.bind(this);
+    },
+    handleSubmit(event){
+      event.preventDefault();
+      
+      request( this.props.action, {
+        method: this.props.method,
+      }).then( resp => resp.json() )
+      .then( json => {
+        console.log( json );
+        localStorage.removeItem("access_token");
+      }).catch(( error )=>{
+        console.log( error );
+      });
+    },
+    render(){
+      const {
+        className,
+        fullWidth,
+        ...rest
+      } = this.props;
+      
+      const clsx = [
+        className,
+        fullWidth && "w12",
+      ].filter( item => !!item );
+      
+      const ButtonRow = GridRow({
+        classList: ["center", "w4"],
+        children: (
+          SubmitButton({
+            type: "submit",
+            label: "SignOut",
+            fullWidth: true,
+            onClick: this.handleSubmit
+          })
+        )
+      });
+      
+      return this.renderEl({
+        tag: "form",
+        classList: clsx,
+        children: [
+          ButtonRow
+        ],
         ...rest
       });
     }
@@ -402,14 +856,50 @@ function handleResign(event, form){
       console.log( event, self );
     },
     render(){
+      
+      const SignIn = SignInForm({
+        id: "signin_form",
+        action: "/security/signin",
+        method: "POST",
+        className: "w2",
+      });
+      
+      const SignUp = SignUpForm({
+        id: "signup_form",
+        action: "/security/signup",
+        method: "POST",
+        className: "w2",
+      });
+      
+      const SignOut = SignOutForm({
+        id: "signout_form",
+        action: "/security/signout",
+        method: "POST",
+        className: "w2",
+      });
+      
+      const Resign = ResignForm({
+        id: "resign_form",
+        action: "/security/resign",
+        method: "POST",
+        className: "w2",
+      });
+      
+      const SignCheck = CheckTokenForm({
+        id: "signcheck_form",
+        action: "/security/signcheck",
+        method: "POST",
+        className: "w2",
+      });
+      
       return this.renderEl({
         tag: this.props.root,
         children: [
-          SignUpForm({
-            id: "login_form",
-            action: "/security/signup",
-            method: "POST",
-          }),
+          SignIn,
+          SignUp,
+          SignOut,
+          Resign,
+          SignCheck,
         ]
       });;
     }

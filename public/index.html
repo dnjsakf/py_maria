@@ -4,71 +4,69 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flask Login with JWT</title>
-    <style type="text/css">
-      li {
-        position: relative;
-        margin-bottom: 5px;
-        display: inline-block;
-      }
-    </style>
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
   </head>
   <body>
     <div id="root">
-      <ul>
-          
+      <div class="row"  style="display: none;">
         <!-- 회원가입 -->
-        <li>
+        <div class="col w4">
           <form method="POST" action="/security/signup">
-            <!-- Required -->
-            <input type="text" name="user_id" placeholder="id" maxlength="50" required></br>
-            <input type="password" name="user_pwd" placeholder="password" maxlength="16" required></br>
-            <input type="password" name="user_pwd_chk" placeholder="password check" maxlength="16" required></br>
-            <input type="text" name="user_name" placeholder="name" maxlength="30" required></br>
-            <!-- Required -->
-            <!-- Optional -->
-            <input type="text" name="user_nick" placeholder="nickname" maxlength="30"></br>
-            <input type="text" name="email" placeholder="email"></br>
-            <input type="text" name="cell_phone" placeholder="id"></br>
+            <div class="row">
+              <input type="text" name="user_id" class="col w12" placeholder="id" maxlength="50" required>
+            </div>
+            <div class="row">
+              <div class="col w6">
+                <input type="password" name="user_pwd" class="w12" placeholder="password" maxlength="16" required></br>
+              </div>
+              <div class="col w6">
+                <input type="password" name="user_pwd_chk" class="w12" placeholder="password check" maxlength="16" required></br>
+              </div>
+            </div>
+              <input type="text" name="user_name" placeholder="name" maxlength="30" required></br>
+              <!-- Required -->
+              <!-- Optional -->
+              <input type="text" name="user_nick" placeholder="nickname" maxlength="30"></br>
+              <input type="text" name="email" placeholder="email"></br>
+              <input type="text" name="cell_phone" placeholder="id"></br>
             <!-- Optional -->
             <button type="submit" onclick="handleSignUp(event, this.parentElement)">회원가입</button>
           </form>
-        </li>
+        </div>
         
         <!-- 로그인 -->
-        <li>
+        <div class="col w1">
           <form method="POST" action="/security/signin">
             <input type="text" name="user_id" placeholder="Please write your id."></br>
             <input type="password" name="user_pwd" placeholder="Please write your password."></br>
             <button type="submit" onclick="handleSignIn(event, this.parentElement)">로그인</button>
           </form>
-        </li>
+        </div>
         
         <!-- 토큰체크 -->
-        <li>
+        <div class="col w1">
           <form method="POST" action="/security/signcheck">
             <button type="submit" onclick="handleSignCheck(event, this.parentElement)">확인</button>
           </form>
-        </li>
+        </div>
           
         <!-- 로그아웃 -->
-        <li>
+        <div class="col w1">
           <form method="POST" action="/security/signout">
             <button type="submit" onclick="handleSignOut(event, this.parentElement)">로그아웃</button>
           </form>
-        </li>
+        </div>
         
         <!-- 회원탈퇴 -->
-        <li>
+        <div class="col w1">
           <form method="POST" action="/security/resign">
             <input type="text" name="user_id" placeholder="Please write your id."></br>
             <input type="password" name="user_pwd" placeholder="Please write your password."></br>
             <button type="submit" onclick="handleResign(event, this.parentElement)">회원탈퇴</button>
           </form>
-        </li>
-      </ul>
-      <div id="templates">
-      
+        </div>
       </div>
+      <div id="templates"></div>
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
   </body>

@@ -25,11 +25,11 @@ def handle_request():
     
   @app.context_processor
   def override_url_for():
-    print("context_processor")
+    app.logger.info("context_processor")
     return dict(url_for=dated_url_for)
 
   def dated_url_for(endpoint, **values):
-    if endpoint == 'static':
+    if endpoint == "static":
       filename = values.get('filename', None)
       if filename:
         file_path = os.path.join(app.static_folder, filename)
@@ -38,14 +38,14 @@ def handle_request():
   
   @app.before_request
   def get_db(error=None):
-    print("before_request")
+    app.logger.info("before_request")
     if request.endpoint != "static":
       if "db" not in g:
         g.db = MariaDB.get_db()
   
   @app.teardown_appcontext
   def close_db(error=None, *args, **kwargs):
-    print("teardown_appcontext")
+    app.logger.info("teardown_appcontext")
     db = g.pop('db', None)
     if db is not None:
       db.close()

@@ -4,7 +4,6 @@ import mariadb
 from functools import wraps
 from flask import current_app as app, g
 
-
 class AbstractMariaDB(object):
   auto_commit = False
 
@@ -29,15 +28,8 @@ class AbstractMariaDB(object):
         
     conn = mariadb.connect(**config)
     conn.autocommit = cls.auto_commit
-    
-    print("Connected, %s" % ( conn.connection_id ))
         
     return conn
-    
-  @classmethod
-  def getCursor(cls):
-    conn = getattr(cls, "__conn", None)
-    print( conn )
 
 class MariaDB(AbstractMariaDB):
   def __init__(self, *args, **kwargs):
@@ -45,8 +37,6 @@ class MariaDB(AbstractMariaDB):
     self.kwargs = kwargs
     
     self.__conn = self.connect()
-    
-    print( self.getCursor() )
 
   def close(self):
     if self.__conn is not None:
@@ -57,9 +47,12 @@ class MariaDB(AbstractMariaDB):
     
   def rollback(self):
     self.__conn.rollback()
+    
+  def getCursor(self):
+    return self.__conn.cursor()
       
   def select(self, sql, values, **kwargs):
-    cur = self.__conn.cursor()
+    cur = self.getCursor()
     cur.execute( sql, values )
     
     headers = [x[0].lower() for x in cur.description]
@@ -71,7 +64,7 @@ class MariaDB(AbstractMariaDB):
     return None
     
   def select_one(self, sql, values, *args, **kwargs):
-    cur = self.__conn.cursor()
+    cur = self.getCursor()
     cur.execute( sql, values )
     
     headers = [x[0].lower() for x in cur.description]
@@ -85,7 +78,7 @@ class MariaDB(AbstractMariaDB):
   def insert_one(self, sql, values, **kwargs):
     inserted = -1
     try:
-      cur = self.__conn.cursor()
+      cur = self.getCursor()
       cur.execute( sql, values )
 
       inserted = cur.rowcount
@@ -104,7 +97,7 @@ class MariaDB(AbstractMariaDB):
       prepared = list(values)
       prepared.extend(conds)
     
-      cur = self.__conn.cursor()
+      cur = self.getCursor()
       cur.execute( sql, prepared )
 
       updated = cur.rowcount
@@ -120,7 +113,7 @@ class MariaDB(AbstractMariaDB):
   def delete_one(self, sql, conds, **kwargs):
     deleted = -1
     try:
-      cur = self.__conn.cursor()
+      cur = self.getCursor()
       cur.execute( sql, conds )
 
       deleted = cur.rowcount
@@ -133,7 +126,7 @@ class MariaDB(AbstractMariaDB):
       self.rollback()
       raise e
 
-    
+
 def with_db(func):
   @wraps(func)
   def wrapper(self, *args, **kwargs):
@@ -142,7 +135,8 @@ def with_db(func):
       return None
     return func(self, db, *args, **kwargs)
   return wrapper
-  
+
+
 def with_maria(config=None):
   def decorator(func):
     @wraps(func)
