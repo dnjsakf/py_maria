@@ -9,7 +9,7 @@ def client():
   print("create app")
   
   ROOT_PATH = "../"
-  STATIC_FOLDER = os.path.join(ROOT_PATH, "public")
+  STATIC_FOLDER = os.path.join(ROOT_PATH, "src")
   TEMPLATE_FOLDER = STATIC_FOLDER
 
   app = create_app(

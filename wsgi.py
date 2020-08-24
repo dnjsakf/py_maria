@@ -5,7 +5,7 @@ from app.app import create_app
 
 # Set Constant Variables
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-STATIC_FOLDER = os.path.join(ROOT_PATH, "public")
+STATIC_FOLDER = os.path.join(ROOT_PATH, "src")
 TEMPLATE_FOLDER = STATIC_FOLDER
 
 app = create_app(

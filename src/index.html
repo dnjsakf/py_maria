@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Login with JWT</title>
+    <link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.10.4/polyfill.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clsx@1.1.1/dist/clsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/7.2.0/react-redux.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/redux-actions@2.6.5/dist/redux-actions.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <h3>test</h3>
+    <script type="text/babel" src="{{ url_for('static', filename='store.js') }}"></script>
+    <script type="text/babel" src="{{ url_for('static', filename='App.js') }}"></script>
+  </body>
+</html>
