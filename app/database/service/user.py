@@ -29,8 +29,7 @@ class UserService(BaseService):
     if selected is None:
       raise NotFoundUserError
         
-    return UserSchema().dump(selected)
-        
+    return selected
    
   @classmethod
   @with_db
@@ -112,3 +111,13 @@ class UserService(BaseService):
       raise NoMatchedPasswordError("No matched password. ")
     
     return cls.selectUserInfo(user_id)
+
+  @classmethod
+  @with_db
+  def checkDuplication(cls, db, user_id) -> bool:
+    try:
+      return cls.selectUserInfo(user_id) is not None
+    except NotFoundUserError as e:
+      return False
+    except Exception as e:
+      return True

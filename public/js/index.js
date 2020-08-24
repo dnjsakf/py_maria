@@ -142,6 +142,10 @@ function handleResign(event, form){
                 element.addEventListener('change', value, false);
               }
               break;
+            case 'onKeypress': // value: Function
+              if( value instanceof Function ){
+                element.addEventListener('keypress', value, false);
+              }
           }
           continue;
         }
@@ -203,12 +207,9 @@ function handleResign(event, form){
   }
    
   function DochiModule(props){
-    const state = {}
-    
     this.props = props;
     
-    this.setState = (k,v)=>{ state[k] = v; }
-    this.getState = (k)=>( state[k] );
+    this.setState = (k,v)=>{ this.state[k] = v; }
   }
 
   function Dochi(config){
@@ -295,6 +296,8 @@ function handleResign(event, form){
       this.handleChange.bind(this);
     },
     handleChange(event){
+      this.setState("value", event.target.value);
+      
       if( this.props.onChange ){
         this.props.onChange(event, this.state.value);
       }
@@ -317,12 +320,13 @@ function handleResign(event, form){
         tag: "input",
         classList: clsx,
         onChange: this.handleChange,
+        value: this.state.value,
         ...rest
       });
     }
   });
   
-  const SubmitButton = Dochi({
+  const Button = Dochi({
     init( props ){
       this.handleSubmit.bind(this);
     },
@@ -403,11 +407,6 @@ function handleResign(event, form){
   /**
    * Custom Components
    */
-  /**
-   * Custom Components
-   */
-  
-  
   const SignInForm = Dochi({
     init( props ){
       this.state = {
@@ -481,13 +480,18 @@ function handleResign(event, form){
       });
       
       const ButtonRow = GridRow({
-        classList: ["center", "w4"],
+        classList: "center",
         children: (
-          SubmitButton({
-            type: "submit",
-            label: "SignIn",
-            fullWidth: true,
-            onClick: this.handleSubmit
+          GridItem({
+            className: "w4",
+            children: (
+              Button({
+                type: "submit",
+                label: "SignIn",
+                fullWidth: true,
+                onClick: this.handleSubmit
+              })
+            )
           })
         )
       });
@@ -511,9 +515,16 @@ function handleResign(event, form){
       this.state = {
         user_id: "",
         user_pwd: "",
+        user_pwd_chk: "",
+        user_name: "",
+        user_nick: "",
+        email: "",
+        cell_phone: ""
       }
       this.handleChange.bind(this);
       this.handleSubmit.bind(this);
+      this.handleDuplCheck.bind(this);
+      this.handlePasswordMaching.bind(this);
     },
     handleChange(event, value){
       this.setState(event.target.name, value);
@@ -542,6 +553,35 @@ function handleResign(event, form){
         console.log( error );
       });
     },
+    
+    handleDuplCheck(event){
+      event.preventDefault();
+
+      const uri = "/security/duplcheck";
+      const body = new URLSearchParams({
+        user_id: this.state.user_id
+      });
+      
+      request( uri, {
+        method: "POST",
+        body: body
+      }).then( resp => resp.json() )
+      .then( json => {
+        console.log(json);
+      }).catch(( error )=>{
+        console.log( error );
+      });
+    },
+    handlePasswordMaching(event, value){
+      event.preventDefault();
+      
+      this.setState(event.target.name, value);
+      
+      console.log({
+        "pwd": this.state.user_pwd,
+        "pwd_chk":  this.state.user_pwd_chk
+      });
+    },
     render(){
       const {
         className,
@@ -555,73 +595,141 @@ function handleResign(event, form){
       ].filter( item => !!item );
       
       const InputUserId = GridRow({
-        children: (
-          InputText({
-            name: "user_id",
-            type: "text",
-            fullWidth: true,
-            placeholder: "id",
-            onChange: this.handleChange
+        children: [
+          GridItem({
+            className: "w8",
+            children: (
+              InputText({
+                name: "user_id",
+                type: "text",
+                fullWidth: true,
+                placeholder: "id",
+                onChange: this.handleChange
+              })
+            )
+          }),
+          GridItem({
+            className: "w4",
+            children: (
+              Button({
+                name: "btn_dupl_chk",
+                label: "중복확인",
+                fullWidth: true,
+                onClick: this.handleDuplCheck
+              })
+            )
           })
-        )
+        ]
       });
       
       const InputUserPwd = GridRow({
-        children: (
-          InputText({
-            name: "user_pwd",
-            type: "password",
-            fullWidth: true,
-            placeholder: "password",
-            onChange: this.handleChange
+        children: [
+          GridItem({
+            className: "w6",
+            children: (
+              InputText({
+                name: "user_pwd",
+                type: "password",
+                fullWidth: true,
+                placeholder: "password",
+                onChange: this.handlePasswordMaching,
+                
+              })
+            )
+          }),
+          GridItem({
+            className: "w6",
+            children: (
+              InputText({
+                name: "user_pwd_chk",
+                type: "password",
+                fullWidth: true,
+                placeholder: "password check",
+                onChange: this.handlePasswordMaching
+              })
+            )
           })
-        )
-      });
-      
-      const InputUserPwdChk = GridRow({
-        children: (
-          InputText({
-            name: "user_pwd_chk",
-            type: "password",
-            fullWidth: true,
-            placeholder: "password check",
-            onChange: this.handleChange
-          })
-        )
+        ]
       });
       
       const InputUserName = GridRow({
-        children: (
-          InputText({
-            name: "user_name",
-            type: "text",
-            fullWidth: true,
-            placeholder: "username",
-            onChange: this.handleChange
+        children: [
+          GridItem({
+            className: "w6",
+            children: (
+              InputText({
+                name: "user_name",
+                type: "text",
+                fullWidth: true,
+                placeholder: "username",
+                onChange: this.handleChange
+              })
+            )
+          }),
+          GridItem({
+            className: "w6",
+            children: (
+              InputText({
+                name: "user_name",
+                type: "text",
+                fullWidth: true,
+                placeholder: "nickname",
+                onChange: this.handleChange
+              })
+            )
           })
-        )
+        ]
       });
       
-      const InputUserNick = GridRow({
-        children: (
-          InputText({
-            name: "user_name",
-            type: "text",
-            fullWidth: true,
-            placeholder: "nickname",
-            onChange: this.handleChange
+      const InputEmail = GridRow({
+        className: "center",
+        children: [
+          GridItem({
+            className: "w10",
+            children: (
+              InputText({
+                name: "email",
+                type: "text",
+                fullWidth: true,
+                placeholder: "email",
+                onChange: this.handleChange
+              })
+            )
           })
-        )
+        ]
+      });
+      
+      const InputCellPhone = GridRow({
+        className: "center",
+        children: [
+          GridItem({
+            className: "w10",
+            children: (
+              InputText({
+                name: "cell_phone",
+                type: "text",
+                fullWidth: true,
+                placeholder: "cell phone",
+                onChange: this.handleChange
+              })
+            )
+          })
+        ]
       });
       
       const ButtonRow = GridRow({
-        classList: ["center", "w4"],
+        classList: "center",
         children: (
-          SubmitButton({
-            type: "submit",
-            label: "SignUp",
-            fullWidth: true,
-            onClick: this.handleSubmit
+          GridItem({
+            className: "w4",
+            children: (
+              Button({
+                type: "submit",
+                label: "SignUp",
+                fullWidth: true,
+                onClick: this.handleSubmit
+              })
+            )
           })
         )
       });
@@ -632,9 +740,9 @@ function handleResign(event, form){
         children: [
           InputUserId,
           InputUserPwd,
-          InputUserPwdChk,
           InputUserName,
-          InputUserNick,
+          InputEmail,
+          InputCellPhone,
           ButtonRow
         ],
         ...rest
@@ -675,13 +783,18 @@ function handleResign(event, form){
       ].filter( item => !!item );
       
       const ButtonRow = GridRow({
-        classList: ["center", "w4"],
+        classList: "center",
         children: (
-          SubmitButton({
-            type: "submit",
-            label: "SignOut",
-            fullWidth: true,
-            onClick: this.handleSubmit
+          GridItem({
+            className: "w4",
+            children: (
+              Button({
+                type: "submit",
+                label: "SignOut",
+                fullWidth: true,
+                onClick: this.handleSubmit
+              })
+            )
           })
         )
       });
@@ -770,13 +883,18 @@ function handleResign(event, form){
       });
       
       const ButtonRow = GridRow({
-        classList: ["center", "w4"],
+        classList: "center",
         children: (
-          SubmitButton({
-            type: "submit",
-            label: "Resign",
-            fullWidth: true,
-            onClick: this.handleSubmit
+          GridItem({
+            className: "w4",
+            children: (
+              Button({
+                type: "submit",
+                label: "Resign",
+                fullWidth: true,
+                onClick: this.handleSubmit
+              })
+            )
           })
         )
       });
@@ -826,13 +944,18 @@ function handleResign(event, form){
       ].filter( item => !!item );
       
       const ButtonRow = GridRow({
-        classList: ["center", "w4"],
+        classList: "center",
         children: (
-          SubmitButton({
-            type: "submit",
-            label: "SignOut",
-            fullWidth: true,
-            onClick: this.handleSubmit
+          GridItem({
+            className: "w4",
+            children: (
+              Button({
+                type: "submit",
+                label: "SignOut",
+                fullWidth: true,
+                onClick: this.handleSubmit
+              })
+            )
           })
         )
       });
@@ -856,7 +979,6 @@ function handleResign(event, form){
       console.log( event, self );
     },
     render(){
-      
       const SignIn = SignInForm({
         id: "signin_form",
         action: "/security/signin",

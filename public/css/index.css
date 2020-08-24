@@ -28,4 +28,4 @@ li {
   display: inline-block;
 }
 
-.center{ display: block; margin: 0 auto; }
+.center{ display: flex; justify-content: center; }

@@ -96,6 +96,19 @@ def post_resign():
   
   return resp
 
+@app.route("/security/duplcheck", methods=["POST"])
+def do_dupl_check():
+  duplication = UserService.checkDuplication(
+    user_id=request.form.get("user_id", None)
+  )
+
+  resp = make_response(jsonify({
+    "success": True,
+    "duplication": duplication
+  }))
+  
+  return resp
+
 @app.route("/security/edit", methods=["POST"])
 def post_edit():
   user = UserService.checkMatchPassword(

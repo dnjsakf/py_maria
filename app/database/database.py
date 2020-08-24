@@ -63,7 +63,7 @@ class MariaDB(AbstractMariaDB):
     
     return None
     
-  def select_one(self, sql, values, *args, **kwargs):
+  def select_one(self, sql, values, *args, **kwargs) -> dict:
     cur = self.getCursor()
     cur.execute( sql, values )
     
@@ -75,7 +75,7 @@ class MariaDB(AbstractMariaDB):
       
     return None
     
-  def insert_one(self, sql, values, **kwargs):
+  def insert_one(self, sql, values, **kwargs) -> int:
     inserted = -1
     try:
       cur = self.getCursor()
@@ -91,7 +91,7 @@ class MariaDB(AbstractMariaDB):
       self.rollback()
       raise e
       
-  def update_one(self, sql, values, conds, **kwargs):
+  def update_one(self, sql, values, conds, **kwargs) -> int:
     updated = -1
     try:
       prepared = list(values)
@@ -110,7 +110,7 @@ class MariaDB(AbstractMariaDB):
       self.rollback()
       raise e
       
-  def delete_one(self, sql, conds, **kwargs):
+  def delete_one(self, sql, conds, **kwargs) -> int:
     deleted = -1
     try:
       cur = self.getCursor()

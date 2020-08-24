@@ -187,3 +187,30 @@ class TestResign(object):
     self.resign(client, user)
     
 
+    
+class TestDuplCheck(object):
+  '''
+    TestDuplCheck
+  '''
+  uri = "/security/duplcheck"
+  message = "Duplicated 'User ID'"
+  
+  def resign(self, client, user):
+    resp = client.post(self.uri, data=user)
+  
+  @pytest.mark.parametrize(
+    "user", ({
+      "user_id": "admin"
+    },)
+  )
+  def test_dupl(self, client, user):
+    resp = client.post(self.uri, data=user)
+    
+    assert resp.status_code == 200
+    assert resp.headers["Content-Type"].split(";")[0] == "application/json"
+    
+    rv = json.loads(resp.data)
+    
+    print( rv )
+    
+    assert rv.get("success", None) == True, rv.get("message", self.message)
