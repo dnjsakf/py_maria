@@ -1,4 +1,6 @@
 const { useState, useEffect, useCallback } = React;
+const { useDispatch, useSelector } = ReactRedux;
+const { Provider: StoreProvider } = ReactRedux;
 
 const GridRow = ( props )=>{
   const {
@@ -116,10 +118,12 @@ const SignIn = ( props )=>{
     className,
     ...rest
   } = props;
+
+  const dispatch = useDispatch();
   
   const [ userId, setUserId ] = useState("");
   const [ userPwd, setUserPwd ] = useState("");
-  
+
   const handleChange = useCallback(( event, value )=>{    
     if( event.target.name == "user_id" ){
       setUserId(value);
@@ -127,11 +131,11 @@ const SignIn = ( props )=>{
       setUserPwd(value);
     }
   }, []);
-  
-  const handleSubmit = useCallback( async ( event )=>{
+
+  const handleSignIn = useCallback( async ( event )=>{
     event.preventDefault();
-    
-    const resp = await axios({
+
+    axios({
       method: "POST",
       url: "/security/signin",
       headers: new Headers({
@@ -141,12 +145,51 @@ const SignIn = ( props )=>{
         user_id: userId,
         user_pwd: userPwd
       })
+    }).then(( resp )=>{
+      console.log( resp.data );
+      if( !resp.data.success ){
+        throw new Error("Signed Failure");
+      }
+      localStorage.setItem("access_token", resp.data.access_token);
+      dispatch(
+        authActions.signSuccess({
+          user: resp.data.user
+        })
+      );
+    }).catch(( error )=>{
+      console.error( error );
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
     });
-    
-    console.log( resp.data );
-    //.then( resp => console.log( resp ) )
-    //.catch( error => console.error( error ) );
-    
+  }, [ userId, userPwd ]);
+
+  const handleReSign = useCallback( async ( event )=>{
+    event.preventDefault();
+
+    axios({
+      method: "POST",
+      url: "/security/resign",
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+      }),
+      data: new URLSearchParams({
+        user_id: userId,
+        user_pwd: userPwd
+      })
+    }).then(( resp )=>{
+      console.log( resp.data );
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    }).catch(( error )=>{
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    });
   }, [ userId, userPwd ]);
   
   return (
@@ -179,7 +222,15 @@ const SignIn = ( props )=>{
         <GridItem w6>
           <Button
             fullWidth
-            onClick={ handleSubmit }
+            onClick={ handleReSign }
+          >
+            ReSign
+          </Button>
+        </GridItem>
+        <GridItem w6>
+          <Button
+            fullWidth
+            onClick={ handleSignIn }
           >
             SignIn
           </Button>
@@ -189,16 +240,265 @@ const SignIn = ( props )=>{
   );
 }
 
-const App = ( props )=>{
+const SignUp = ( props )=>{
+  const {
+    className,
+    ...rest
+  } = props;
+
+  const dispatch = useDispatch();
   
+  const [ userId, setUserId ] = useState("");
+  const [ userPwd, setUserPwd ] = useState("");
+  const [ userPwdChk, setUserPwdChk ] = useState("");
+  const [ userName, setUserName ] = useState("");
+  const [ userNick, setUserNick ] = useState("");
+  const [ email, setEmail ] = useState("");
+  const [ cellPhone, setcellPhone ] = useState("");
+
+  const handleChange = useCallback(( event, value )=>{    
+    if( event.target.name == "user_id" ){
+      setUserId(value);
+    } else if ( event.target.name == "user_pwd" ){
+      setUserPwd(value);
+    } else if ( event.target.name == "user_pwd_chk" ){
+      setUserPwdChk(value);
+    } else if ( event.target.name == "user_name" ){
+      setUserName(value);
+    } else if ( event.target.name == "user_nick" ){
+      setUserNick(value);
+    } else if ( event.target.name == "email" ){
+      setEmail(value);
+    } else if ( event.target.name == "cell_phone" ){
+      setcellPhone(value);
+    }
+  }, []);
+
+  const handleSubmit = useCallback(( event )=>{
+    event.preventDefault();
+
+    axios({
+      method: "POST",
+      url: "/security/signup",
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+      }),
+      data: new URLSearchParams({
+        user_id: userId,
+        user_pwd: userPwd,
+        user_pwd_chk: userPwdChk,
+        user_name: userName,
+        user_nick: userNick,
+        email: email,
+        cell_phone: cellPhone
+      })
+    }).then(( resp )=>{
+      console.log( resp.data );
+      if( !resp.data.success ){
+        throw new Error("SignUp Failure");
+      }
+      localStorage.setItem("access_token", resp.data.access_token);
+      // dispatch(
+      //   authActions.signSuccess({
+      //     user: resp.data.user
+      //   })
+      // );
+    }).catch(( error )=>{
+      console.error( error );
+      // localStorage.removeItem("access_token");
+      // dispatch(
+      //   authActions.signFailure()
+      // );
+    });
+
+
+    console.log({
+      userId, userPwd, userPwdChk, userName, userNick, cellPhone, email
+    })
+  }, [ userId, userPwd, userPwdChk, userName, userNick, cellPhone, email ]);
+
   return (
-    <React.StrictMode>
-      <GridRow>
-        <GridItem w2>
-          <SignIn />
+    <form
+      { ...rest }
+    >
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="text"
+            name="user_id"
+            placeholder="id"
+            onChange={ handleChange }
+          />
         </GridItem>
       </GridRow>
-    </React.StrictMode>
+      <GridRow center>
+        <GridItem w5>
+          <Input
+            fullWidth
+            type="password"
+            name="user_pwd"
+            placeholder="password"
+            onChange={ handleChange }
+          />
+        </GridItem>
+        <GridItem w5>
+          <Input
+            fullWidth
+            type="password"
+            name="user_pwd_chk"
+            placeholder="password check"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="text"
+            name="user_name"
+            placeholder="name"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="text"
+            name="user_nick"
+            placeholder="nickname"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="text"
+            name="email"
+            placeholder="email"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="text"
+            name="user_nick"
+            placeholder="cell_phone"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w6>
+          <Button
+            fullWidth
+            onClick={ handleSubmit }
+          >
+            SignUp
+          </Button>
+        </GridItem>
+      </GridRow>
+    </form>
+  );
+}
+
+const SignedCheck = ( props )=>{
+  const {
+    ...rest
+  } = props;
+
+  const dispatch = useDispatch();
+
+  const signed = useSelector(authSelectors.getSigned);
+  const user = useSelector(authSelectors.getUser);
+
+  const handleSignOut = useCallback(( event )=>{
+    event.preventDefault();
+    
+    axios({
+      method: "POST",
+      url: "/security/signout",
+    }).then(( resp )=>{
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    }).catch(( error )=>{
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    });
+  }, []);
+
+  useEffect(()=>{
+    const access_token = localStorage.getItem("access_token");
+    if( access_token ){
+      axios({
+        method: "POST",
+        url: "/security/signcheck",
+        headers: new Headers({
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+          "Authorization": "Bearer "+access_token
+        }),
+      }).then(( resp )=>{
+        if( !resp.data.success ){
+          throw new Error("Signed Failure");
+        }
+        localStorage.setItem("access_token", resp.data.access_token);
+        dispatch(
+          authActions.signSuccess({
+            user: resp.data.user
+          })
+        );
+      }).catch(( error )=>{
+        console.error( error );
+        localStorage.removeItem("access_token");
+        dispatch(
+          authActions.signFailure()
+        );
+      });
+    }
+  },[]);
+
+  return (
+    <GridRow>
+      <GridItem w2>
+        {
+          signed
+          ? (
+            <div>
+              <h1>Hello~{ user.user_nick }</h1>
+              <Button onClick={ handleSignOut }>SignOut</Button>
+            </div>
+            )
+          : (
+            <GridRow>
+              <SignIn />
+              <SignUp />
+            </GridRow>
+            )
+        }
+      </GridItem>
+    </GridRow>
+  );
+}
+
+const App = ( props )=>{
+  return (
+    <StoreProvider store={ store }>
+      <React.StrictMode>
+        <SignedCheck />
+      </React.StrictMode>
+    </StoreProvider>
   );
 }
 

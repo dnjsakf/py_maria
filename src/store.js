@@ -10,6 +10,7 @@ const authTypes = {
   SIGN_FAILURE: "SIGN_FAILURE",
 }
 
+/** ActionOptions **/
 const authOptions = {
   prefix: "auth",
   namespace: "/",
@@ -18,12 +19,12 @@ const authOptions = {
 /** Actions **/
 const authActions = createActions({
     [authTypes.SIGN_SUCCESS]: [
-      success => success,
-      success => { type: "value", success }
+      payload => payload,
+      payload => { type: "value", payload }
     ],
     [authTypes.SIGN_FAILURE]: [
-      success => success,
-      success => { type: "value", success }
+      payload => payload,
+      payload => { type: "value", payload }
     ]
   },
   authOptions
@@ -34,27 +35,41 @@ const authReducer = handleActions(
   new Map([
     [
       authActions.signSuccess
-      , ( state, action ) => (
-        Object.assign({}, state, {
-          ...action.payload
-        })
-      )
+      , ( state, action ) => {
+        return Object.assign({}, state, {
+          signed: true,
+          user: action.payload.user,
+        });
+      }
     ],
     [
       authActions.signFailure
-      , ( state, action ) => (
-        Object.assign({}, state, {
-          ...action.payload
-        })
-      )
+      , ( state, action ) => {
+        return Object.assign({}, state, {
+          signed: false,
+          user: null
+        });
+      }
     ],
   ]),
-  {
-    // Default State
-    success: false
+  { // Default State
+    signed: false,
+    user: {
+      user_id: null,
+      user_name: null,
+      user_nick: null,
+      cell_phone: null,
+      email: null,
+    }
   },
   authOptions,
 );
+
+/** Action Selector **/
+const authSelectors = {
+  getSigned: ({ auth })=>( auth.signed ),
+  getUser: ({ auth })=>( auth.user ),
+}
 
 /** Store **/
 const {
@@ -71,3 +86,4 @@ const store = createStore(
   rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
+
