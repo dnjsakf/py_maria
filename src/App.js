@@ -139,22 +139,28 @@ const SignIn = ( props )=>{
     ...rest
   } = props;
 
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const signed = useSelector(authSelectors.getSigned);
-  
-  const [ userId, setUserId ] = useState("");
-  const [ userPwd, setUserPwd ] = useState("");
 
-  const handleChange = useCallback(( event, value )=>{    
-    if( event.target.name == "user_id" ){
-      setUserId(value);
-    } else if ( event.target.name == "user_pwd" ) {
-      setUserPwd(value);
-    }
+  const [ formData, setFormData ] = useState({
+    user_id: "",
+    user_pwd: ""
+  })
+
+  const handleChange = useCallback(( event, value )=>{
+    const name = event.target.name;
+    setFormData(( state )=>({
+      ...state,
+      [name]: value
+    }));
   }, []);
 
   const handleSignIn = useCallback( async ( event )=>{
     event.preventDefault();
+
+    console.log( formData );
 
     axios({
       method: "POST",
@@ -162,10 +168,7 @@ const SignIn = ( props )=>{
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
       }),
-      data: new URLSearchParams({
-        user_id: userId,
-        user_pwd: userPwd
-      })
+      data: new URLSearchParams( formData )
     }).then(( resp )=>{
       console.log( resp.data );
       if( !resp.data.success ){
@@ -177,6 +180,8 @@ const SignIn = ( props )=>{
           user: resp.data.user
         })
       );
+      history.push("/");
+
     }).catch(( error )=>{
       console.error( error );
       localStorage.removeItem("access_token");
@@ -184,13 +189,8 @@ const SignIn = ( props )=>{
         authActions.signFailure()
       );
     });
-  }, [ userId, userPwd ]);
-  
-  if( signed ){
-    console.log( signed );
-    <Redirect exact to="/" />
-  }
-  
+  }, [ formData ]);
+
   return (
     <form
       action={ action }
@@ -239,32 +239,23 @@ const SignUp = ( props )=>{
     ...rest
   } = props;
 
-  const dispatch = useDispatch();
-  
-  const [ userId, setUserId ] = useState("");
-  const [ userPwd, setUserPwd ] = useState("");
-  const [ userPwdChk, setUserPwdChk ] = useState("");
-  const [ userName, setUserName ] = useState("");
-  const [ userNick, setUserNick ] = useState("");
-  const [ email, setEmail ] = useState("");
-  const [ cellPhone, setcellPhone ] = useState("");
+  const [ formData, setFormData ] = useState({
+    user_id: "",
+    user_pwd: "",
+    user_pdw_chk: "",
+    user_name: "",
+    user_nick: "",
+    email: "",
+    cell_phone: "",
+  });
 
-  const handleChange = useCallback(( event, value )=>{    
-    if( event.target.name == "user_id" ){
-      setUserId(value);
-    } else if ( event.target.name == "user_pwd" ){
-      setUserPwd(value);
-    } else if ( event.target.name == "user_pwd_chk" ){
-      setUserPwdChk(value);
-    } else if ( event.target.name == "user_name" ){
-      setUserName(value);
-    } else if ( event.target.name == "user_nick" ){
-      setUserNick(value);
-    } else if ( event.target.name == "email" ){
-      setEmail(value);
-    } else if ( event.target.name == "cell_phone" ){
-      setcellPhone(value);
-    }
+  const handleChange = useCallback(( event, value )=>{  
+    const name = event.target.name;
+    
+    setFormData(( state )=>({
+      ...state,
+      [name]: value
+    }));
   }, []);
 
   const handleSubmit = useCallback(( event )=>{
@@ -276,39 +267,17 @@ const SignUp = ( props )=>{
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
       }),
-      data: new URLSearchParams({
-        user_id: userId,
-        user_pwd: userPwd,
-        user_pwd_chk: userPwdChk,
-        user_name: userName,
-        user_nick: userNick,
-        email: email,
-        cell_phone: cellPhone
-      })
+      data: new URLSearchParams( formData )
     }).then(( resp )=>{
       console.log( resp.data );
       if( !resp.data.success ){
         throw new Error("SignUp Failure");
       }
       localStorage.setItem("access_token", resp.data.access_token);
-      // dispatch(
-      //   authActions.signSuccess({
-      //     user: resp.data.user
-      //   })
-      // );
     }).catch(( error )=>{
       console.error( error );
-      // localStorage.removeItem("access_token");
-      // dispatch(
-      //   authActions.signFailure()
-      // );
     });
-
-
-    console.log({
-      userId, userPwd, userPwdChk, userName, userNick, cellPhone, email
-    })
-  }, [ userId, userPwd, userPwdChk, userName, userNick, cellPhone, email ]);
+  }, [ formData ]);
 
   return (
     <form
@@ -414,15 +383,17 @@ const ReSign = ( props )=>{
 
   const dispatch = useDispatch();
   
-  const [ userId, setUserId ] = useState("");
-  const [ userPwd, setUserPwd ] = useState("");
+  const [ formData, setFormData ] = useState({
+    user_id: "",
+    user_pwd: ""
+  })
 
   const handleChange = useCallback(( event, value )=>{    
-    if( event.target.name == "user_id" ){
-      setUserId(value);
-    } else if ( event.target.name == "user_pwd" ) {
-      setUserPwd(value);
-    }
+    const name = event.target.name;
+    setFormData(( state )=>({
+      ...state,
+      [name]: value
+    }));
   }, []);
 
   const handleReSign = useCallback( async ( event )=>{
@@ -434,10 +405,7 @@ const ReSign = ( props )=>{
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
       }),
-      data: new URLSearchParams({
-        user_id: userId,
-        user_pwd: userPwd
-      })
+      data: new URLSearchParams( formData )
     }).then(( resp )=>{
       console.log( resp.data );
       localStorage.removeItem("access_token");
@@ -450,7 +418,7 @@ const ReSign = ( props )=>{
         authActions.signFailure()
       );
     });
-  }, [ userId, userPwd ]);
+  }, [ formData ]);
   
   return (
     <form
@@ -494,94 +462,17 @@ const ReSign = ( props )=>{
   );
 }
 
-const SignCheck = ( props )=>{
-  const {
-    ...rest
-  } = props;
-
-  const dispatch = useDispatch();
-
-  const signed = useSelector(authSelectors.getSigned);
-  const user = useSelector(authSelectors.getUser);
-
-  const handleSignOut = useCallback(( event )=>{
-    event.preventDefault();
-    
-    axios({
-      method: "POST",
-      url: "/security/signout",
-    }).then(( resp )=>{
-      localStorage.removeItem("access_token");
-      dispatch(
-        authActions.signFailure()
-      );
-    }).catch(( error )=>{
-      localStorage.removeItem("access_token");
-      dispatch(
-        authActions.signFailure()
-      );
-    });
-  }, []);
-
-  useEffect(()=>{
-    const access_token = localStorage.getItem("access_token");
-    if( access_token ){
-      axios({
-        method: "POST",
-        url: "/security/signcheck",
-        headers: new Headers({
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
-          "Authorization": "Bearer "+access_token
-        }),
-      }).then(( resp )=>{
-        if( !resp.data.success ){
-          throw new Error("Signed Failure");
-        }
-        localStorage.setItem("access_token", resp.data.access_token);
-        dispatch(
-          authActions.signSuccess({
-            user: resp.data.user
-          })
-        );
-      }).catch(( error )=>{
-        console.error( error );
-        localStorage.removeItem("access_token");
-        dispatch(
-          authActions.signFailure()
-        );
-      });
-    }
-  },[]);
-  
-  
-  if( signed ){
-    return (
-      <React.Fragment>
-        <h1>Hello~{ user.user_nick }</h1>
-        <Button onClick={ handleSignOut }>SignOut</Button>
-      </React.Fragment>
-    );
-  } else {
-    return (
-      <React.Fragment>
-        <SignIn />
-        <SignUp />
-      </React.Fragment>
-    );
-  }
-}
-
 const MainHader = ( props )=>{
   const {
     className,
     ...rest
   } = props;
 
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const signed = useSelector(authSelectors.getSigned);
   const user = useSelector(authSelectors.getUser);
-  
-  const history = useHistory();
   
   const handleRedirectSignIn = useCallback(( event )=>{
     history.push("/signin");
@@ -637,8 +528,19 @@ const MainHader = ( props )=>{
 
 const MainHome = ( props )=>{
   return (
-    <h3>Home</h3>
+    <React.Fragment>
+      <h3>Home</h3>
+      <ul>
+        <li><Link to="/board">Board</Link></li>
+      </ul>
+    </React.Fragment>
   );  
+}
+
+const Board = ( props )=>{
+  return (
+    <h3>Board</h3>
+  );
 }
 
 const MainLayout = ( props )=>{
@@ -687,13 +589,77 @@ const MainRoute = ( props )=>{
   );
 }
 
+const PrivateRoute = ( props )=>{
+  const {
+    component: Component,
+    ...rest
+  } = props;
+
+  const signed = useSelector(authSelectors.getSigned);
+
+
+  const history = useHistory();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const access_token = localStorage.getItem("access_token");
+    if( access_token ){
+      axios({
+        method: "POST",
+        url: "/security/signcheck",
+        headers: new Headers({
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+          "Authorization": "Bearer "+access_token
+        }),
+      }).then(( resp )=>{
+        if( !resp.data.success ){
+          throw new Error(resp.data.message||"Signed Failure");
+        }
+        localStorage.setItem("access_token", resp.data.access_token);
+        dispatch(
+          authActions.signSuccess({
+            user: resp.data.user
+          })
+        );
+        history.push(location.pathname);
+
+      }).catch(( error )=>{
+        console.error( error );
+        localStorage.removeItem("access_token");
+        dispatch(
+          authActions.signFailure()
+        );
+      });
+    }
+  },[]);
+
+  return (
+    <Route render={
+      ( matchProps )=>(
+        signed
+        ? <MainLayout >
+            <Component {...matchProps}/>
+          </MainLayout>
+        : <Redirect
+            to={{
+              pathname: "/signin", 
+              state: { 
+                from: matchProps.location 
+              }
+            }}
+          />
+      )
+    }/>
+  );
+}
+
 const App = ( props )=>{  
   return (
     <React.StrictMode>
       <StoreProvider store={ store }>
         <Router>
           <Switch>
-            <Redirect exact from="/" to="/signin" />
             <MainRoute
               exact
               path="/signin"
@@ -704,6 +670,12 @@ const App = ( props )=>{
               path="/"
               component={ MainHome }
             />
+            <PrivateRoute
+              exact
+              path="/board"
+              component={ Board }
+            />
+            <Redirect from="*" to="/" />
           </Switch>
         </Router>
       </StoreProvider>
