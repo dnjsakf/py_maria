@@ -1,12 +1,25 @@
+// import React, { useState, useEffect, useCallback } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { Provider as StoreProvider } from 'react-reudx';
+// import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+
 const { useState, useEffect, useCallback } = React;
 const { useDispatch, useSelector } = ReactRedux;
 const { Provider: StoreProvider } = ReactRedux;
+const { BrowserRouter: Router, Switch, Redirect } = ReactRouterDOM;
+const { Route, Link } = ReactRouterDOM;
+const { useHistory, useLocation } = ReactRouterDOM;
 
+/**
+ * Common Components
+ */
 const GridRow = ( props )=>{
   const {
     className,
     children,
     center,
+    right,
     ...rest
   } = props;
   
@@ -16,6 +29,7 @@ const GridRow = ( props )=>{
         clsx({ 
           "row": true,
           "center": !!center,
+          "right": !!right,
         }
         , className)}
     >
@@ -28,6 +42,8 @@ const GridItem = ( props )=>{
   const {
     className,
     children,
+    center,
+    right,
     ...rest
   } = props;
   
@@ -47,7 +63,8 @@ const GridItem = ( props )=>{
           "w9": !!rest.w9,
           "w10": !!rest.w10,
           "w11": !!rest.w11,
-          "w12": !!rest.w12
+          "w12": !!rest.w12,
+          "center": !!center,
         }, 
         className)
       }
@@ -116,10 +133,14 @@ const Button = ( props )=>{
 const SignIn = ( props )=>{
   const {
     className,
+    action,
+    method,
+    onSubmit,
     ...rest
   } = props;
 
   const dispatch = useDispatch();
+  const signed = useSelector(authSelectors.getSigned);
   
   const [ userId, setUserId ] = useState("");
   const [ userPwd, setUserPwd ] = useState("");
@@ -164,37 +185,17 @@ const SignIn = ( props )=>{
       );
     });
   }, [ userId, userPwd ]);
-
-  const handleReSign = useCallback( async ( event )=>{
-    event.preventDefault();
-
-    axios({
-      method: "POST",
-      url: "/security/resign",
-      headers: new Headers({
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
-      }),
-      data: new URLSearchParams({
-        user_id: userId,
-        user_pwd: userPwd
-      })
-    }).then(( resp )=>{
-      console.log( resp.data );
-      localStorage.removeItem("access_token");
-      dispatch(
-        authActions.signFailure()
-      );
-    }).catch(( error )=>{
-      localStorage.removeItem("access_token");
-      dispatch(
-        authActions.signFailure()
-      );
-    });
-  }, [ userId, userPwd ]);
+  
+  if( signed ){
+    console.log( signed );
+    <Redirect exact to="/" />
+  }
   
   return (
     <form
-      { ...rest }
+      action={ action }
+      method={ method }
+      onSubmit={ onSubmit }
     >
       <GridRow center>
         <GridItem w10>
@@ -219,14 +220,6 @@ const SignIn = ( props )=>{
         </GridItem>
       </GridRow>
       <GridRow center>
-        <GridItem w6>
-          <Button
-            fullWidth
-            onClick={ handleReSign }
-          >
-            ReSign
-          </Button>
-        </GridItem>
         <GridItem w6>
           <Button
             fullWidth
@@ -410,7 +403,98 @@ const SignUp = ( props )=>{
   );
 }
 
-const SignedCheck = ( props )=>{
+const ReSign = ( props )=>{
+  const {
+    className,
+    action,
+    method,
+    onSubmit,
+    ...rest
+  } = props;
+
+  const dispatch = useDispatch();
+  
+  const [ userId, setUserId ] = useState("");
+  const [ userPwd, setUserPwd ] = useState("");
+
+  const handleChange = useCallback(( event, value )=>{    
+    if( event.target.name == "user_id" ){
+      setUserId(value);
+    } else if ( event.target.name == "user_pwd" ) {
+      setUserPwd(value);
+    }
+  }, []);
+
+  const handleReSign = useCallback( async ( event )=>{
+    event.preventDefault();
+
+    axios({
+      method: "POST",
+      url: "/security/resign",
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+      }),
+      data: new URLSearchParams({
+        user_id: userId,
+        user_pwd: userPwd
+      })
+    }).then(( resp )=>{
+      console.log( resp.data );
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    }).catch(( error )=>{
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    });
+  }, [ userId, userPwd ]);
+  
+  return (
+    <form
+      action={ action }
+      method={ method }
+      onSubmit={ onSubmit }
+    >
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="text"
+            name="user_id"
+            placeholder="id"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w10>
+          <Input
+            fullWidth
+            type="password"
+            name="user_pwd"
+            placeholder="password"
+            onChange={ handleChange }
+          />
+        </GridItem>
+      </GridRow>
+      <GridRow center>
+        <GridItem w6>
+          <Button
+            fullWidth
+            onClick={ handleReSign }
+          >
+            ReSign
+          </Button>
+        </GridItem>
+      </GridRow>
+    </form>
+  );
+}
+
+const SignCheck = ( props )=>{
   const {
     ...rest
   } = props;
@@ -468,37 +552,162 @@ const SignedCheck = ( props )=>{
       });
     }
   },[]);
+  
+  
+  if( signed ){
+    return (
+      <React.Fragment>
+        <h1>Hello~{ user.user_nick }</h1>
+        <Button onClick={ handleSignOut }>SignOut</Button>
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <SignIn />
+        <SignUp />
+      </React.Fragment>
+    );
+  }
+}
 
+const MainHader = ( props )=>{
+  const {
+    className,
+    ...rest
+  } = props;
+
+  const dispatch = useDispatch();
+  const signed = useSelector(authSelectors.getSigned);
+  const user = useSelector(authSelectors.getUser);
+  
+  const history = useHistory();
+  
+  const handleRedirectSignIn = useCallback(( event )=>{
+    history.push("/signin");
+  }, []);
+
+  const handleSignOut = useCallback(( event )=>{
+    event.preventDefault();
+    
+    axios({
+      method: "POST",
+      url: "/security/signout",
+    }).then(( resp )=>{
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    }).catch(( error )=>{
+      localStorage.removeItem("access_token");
+      dispatch(
+        authActions.signFailure()
+      );
+    });
+  }, []);
+  
   return (
-    <GridRow>
-      <GridItem w2>
-        {
-          signed
-          ? (
-            <div>
-              <h1>Hello~{ user.user_nick }</h1>
-              <Button onClick={ handleSignOut }>SignOut</Button>
-            </div>
-            )
-          : (
-            <GridRow>
-              <SignIn />
-              <SignUp />
-            </GridRow>
-            )
-        }
-      </GridItem>
-    </GridRow>
+    <header
+      { ...rest }
+      className={ className }
+    >
+      <GridRow right>
+      {
+        signed
+        ? (
+            <React.Fragment>
+              <GridItem w1 center>
+                <span><strong>{ user.user_nick }</strong></span>
+              </GridItem>
+              <GridItem w1 center>
+                <Button onClick={ handleSignOut }>SignOut</Button>
+              </GridItem>
+            </React.Fragment>
+          )
+        : (
+            <GridItem w1 center>
+              <Button onClick={ handleRedirectSignIn }>SignIn</Button>
+            </GridItem>
+          )
+      }
+      </GridRow>
+    </header>
   );
 }
 
-const App = ( props )=>{
+const MainHome = ( props )=>{
   return (
-    <StoreProvider store={ store }>
-      <React.StrictMode>
-        <SignedCheck />
-      </React.StrictMode>
-    </StoreProvider>
+    <h3>Home</h3>
+  );  
+}
+
+const MainLayout = ( props )=>{
+  const {
+    className,
+    children,
+    ...rest
+  } = props;
+  
+  return (
+    <React.Fragment>
+      <MainHader style={{
+        height: "50px"
+      }}/>
+      <section>
+        <GridRow center>
+          <GridItem w4 center>
+            { children }
+          </GridItem>
+        </GridRow>
+      </section>
+    </React.Fragment>  
+  );
+}
+
+const MainRoute = ( props )=>{
+  const {
+    path,
+    component: Component,
+    exact,
+    ...rest
+  } = props;
+  
+  return (
+    <Route
+      { ...rest }
+      path={ path }
+      render={
+        ( matchProps )=>(
+          <MainLayout >
+            <Component {...matchProps}/>
+          </MainLayout>
+        )
+      }
+    />
+  );
+}
+
+const App = ( props )=>{  
+  return (
+    <React.StrictMode>
+      <StoreProvider store={ store }>
+        <Router>
+          <Switch>
+            <Redirect exact from="/" to="/signin" />
+            <MainRoute
+              exact
+              path="/signin"
+              component={ SignIn }
+            />
+            <MainRoute
+              exact
+              path="/"
+              component={ MainHome }
+            />
+          </Switch>
+        </Router>
+      </StoreProvider>
+    </React.StrictMode>
   );
 }
 

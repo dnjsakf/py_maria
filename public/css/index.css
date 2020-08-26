@@ -3,9 +3,8 @@ html, body { padding: 0; margin: 0; height: 100%; width: 100% }
 
 .grid-item { display: inline-block; }
 
-
-.row { }
-.row::after { content: ""; clear: both; display: block; }
+.row { display: flex; }
+.row::after { content: ""; clear: both; display: flex; }
 .row .col { float: left; left: auto; right: auto; }
 
 .w1 { width: 8.3% }
@@ -28,4 +27,5 @@ li {
   display: inline-block;
 }
 
-.center{ display: flex; justify-content: center; }
+.center{ justify-content: center; }
+.right{ justify-content: flex-end; }

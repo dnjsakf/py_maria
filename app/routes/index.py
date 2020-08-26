@@ -6,6 +6,7 @@ from flask import (
 from app.decorators import with_cookies, check_token
 
 @app.route("/", methods=["GET", "POST"])
+@app.route("/<path:path>", methods=["GET", "POST"])
 @check_token(attr=["user"])
-def index(user=None, error=None):
+def index(path=None, user=None, error=None):
   return render_template("index.html")
