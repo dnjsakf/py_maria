@@ -72,7 +72,7 @@ class TokenConfig(object):
     prefix = "JWT_TOKEN"
   
   SUBJECT = "DochiLoginToken"
-  EXPIRES = 1 # Minutes
+  EXPIRES = 5 # Minutes
   
 '''
   Encrypt Configurations

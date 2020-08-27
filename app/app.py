@@ -3,11 +3,20 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
+from socketio import Server, WSGIApp
+
 from .config.flask_config import Config
 from .utils.security.encrypt import Encrypt
 from .utils.security.token import Token
 from .database.database import MariaDB
 
+def create_socket(wsgi):
+  from app.sockets.namespace import ChatNamespace
+
+  sio = Server(async_mode="threading")
+  sio.register_namespace(ChatNamespace(sio, '/chat'))
+
+  return WSGIApp(sio, wsgi)
 
 def initialize(config):
   Encrypt.init(
@@ -18,7 +27,6 @@ def initialize(config):
     expires=config.get("JWT_TOKEN_EXPIRES", 30)
   )
   MariaDB.init(**config.get("MARIADB_CONFIG"))
-
 
 def handle_request():
   from flask import current_app as app, g, url_for, request
@@ -111,6 +119,9 @@ def create_app(*args, **kwargs):
   app.secret_key = config.get("SECRET_KEY", None)
   
   app.config.from_object(config)
+
+  # Set SocketIO WSGI Application
+  app.wsgi_app = create_socket(app.wsgi_app)
   
   initialize(config)
 

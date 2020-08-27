@@ -2,16 +2,16 @@ const MainBody = ( props )=>{
   const {
     className,
     children,
+    style,
     ...rest
   } = props;
 
   return (
-    <section className={ className }>
-      <GridRow center>
-        <GridColumn w4 center>
-          { children }
-        </GridColumn>
-      </GridRow>
-    </section>
+    <div
+      className={ className }
+      style={ style }
+    >
+      { children }
+    </div>
   );
 }

@@ -18,6 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.7.2/prop-types.min.js" integrity="sha512-ssNhh7jlzc+K93ckIlSXFHHz6fSFv0l619WOv8xbFNRbFOujbasb42LVMOggDrQR1ScJncoWb+KAJx1uF3ipjw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/redux-thunk/2.3.0/redux-thunk.min.js"></script>
     <script src="https://unpkg.com/redux-logger@4.0.0/dist/redux-logger.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
   </head>
   <body>
     <div id="root"></div>
@@ -34,10 +35,12 @@
     <!-- Layouts -->
     <script type="text/babel" src="{{ url_for('static', filename='layouts/MainLayout/MainHeader/MainHeader.js') }}"></script>
     <script type="text/babel" src="{{ url_for('static', filename='layouts/MainLayout/MainBody/MainBody.js') }}"></script>
+    <script type="text/babel" src="{{ url_for('static', filename='layouts/MainLayout/MainSideBar/MainSideBar.js') }}"></script>
     <script type="text/babel" src="{{ url_for('static', filename='layouts/MainLayout/MainLayout.js') }}"></script>
     <!-- Views -->
     <script type="text/babel" src="{{ url_for('static', filename='views/Home/Home.js') }}"></script>
     <script type="text/babel" src="{{ url_for('static', filename='views/Board/Board.js') }}"></script>
+    <script type="text/babel" src="{{ url_for('static', filename='views/Chat/Chat.js') }}"></script>
     <script type="text/babel" src="{{ url_for('static', filename='views/Sign/SignIn/SignIn.js') }}"></script>
     <script type="text/babel" src="{{ url_for('static', filename='views/Sign/SignUp/SignUp.js') }}"></script>
     <script type="text/babel" src="{{ url_for('static', filename='views/Sign/ReSign/ReSign.js') }}"></script>

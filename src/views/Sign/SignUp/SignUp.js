@@ -8,7 +8,7 @@ const SignUp = ( props )=>{
   const [ formData, setFormData ] = useState({
     user_id: "",
     user_pwd: "",
-    user_pdw_chk: "",
+    user_pwd_chk: "",
     user_name: "",
     user_nick: "",
     email: "",
@@ -40,6 +40,8 @@ const SignUp = ( props )=>{
         throw new Error("SignUp Failure");
       }
       localStorage.setItem("access_token", resp.data.access_token);
+
+      history.push("/signin");
     }).catch(( error )=>{
       console.error( error );
     });

@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
-html, body { padding: 0; margin: 0; height: 100%; width: 100% }
+html, body, #root { padding: 0; margin: 0; height: 100%; width: 100% }
 
-.row { display: flex; flex-direction: row; height: 100%; }
+.row { display: flex; flex-direction: row; }
 .row .col { height: 100%; display: flex; flex-direction: column; flex-wrap: wrap; align-items: flex-start; justify-content: flex-start; }
 
 .row.center{ justify-content: center; }
@@ -22,3 +22,6 @@ html, body { padding: 0; margin: 0; height: 100%; width: 100% }
 .w10 { width: 83.3% }
 .w11 { width: 91.6% }
 .w12 { width: 100% }
+
+
+.active-menu{ font-weight: 600;}

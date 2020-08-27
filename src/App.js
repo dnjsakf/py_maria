@@ -13,6 +13,12 @@ const App = ( props )=>{
         />
         <PublicRoute
           exact
+          path="/signup"
+          layout={ MainLayout }
+          component={ SignUp }
+        />
+        <PublicRoute
+          exact
           path="/"
           layout={ MainLayout }
           component={ MainHome }
@@ -22,6 +28,12 @@ const App = ( props )=>{
           path="/board"
           layout={ MainLayout }
           component={ Board }
+        />
+        <PrivateRoute
+          exact
+          path="/chat"
+          layout={ MainLayout }
+          component={ Chat }
         />
         <Redirect from="*" to="/" />
       </Switch>

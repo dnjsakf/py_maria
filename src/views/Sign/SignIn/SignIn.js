@@ -58,43 +58,62 @@ const SignIn = ( props )=>{
   }, [ formData ]);
 
   return (
-    <form
-      action={ action }
-      method={ method }
-      onSubmit={ onSubmit }
+    <GridRow
+      center
+      style={{
+        height: "100%"
+      }}
     >
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="text"
-            name="user_id"
-            placeholder="id"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="password"
-            name="user_pwd"
-            placeholder="password"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w6>
-          <BaseButton
-            fullWidth
-            onClick={ handleSignIn }
-          >
-            SignIn
-          </BaseButton>
-        </GridColumn>
-      </GridRow>
-    </form>
+      <GridColumn w12 center>
+        <form
+          action={ action }
+          method={ method }
+          onSubmit={ onSubmit }
+        >
+          <GridRow center>
+            <GridColumn w10>
+              <InputText
+                fullWidth
+                type="text"
+                name="user_id"
+                placeholder="id"
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow center>
+            <GridColumn w10>
+              <InputText
+                fullWidth
+                type="password"
+                name="user_pwd"
+                placeholder="password"
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow center>
+            <GridColumn w6>
+              <BaseButton
+                fullWidth
+                onClick={ handleSignIn }
+              >
+                SignIn
+              </BaseButton>
+            </GridColumn>
+            <GridColumn w6>
+              <BaseButton
+                fullWidth
+                onClick={ ()=>{
+                  history.push("/signup")
+                } }
+              >
+                SignUp
+              </BaseButton>
+            </GridColumn>
+          </GridRow>
+        </form>
+      </GridColumn>
+    </GridRow>
   );
 }

@@ -18,4 +18,4 @@ app = create_app(
 if __name__ == '__main__':
   dotenv.load_dotenv(dotenv_path=".env")
 
-  app.run(host="localhost", port=3000)
+  app.run(host="0.0.0.0", port=3000)

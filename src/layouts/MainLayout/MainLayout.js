@@ -18,12 +18,40 @@ const MainLayout = ( props )=>{
   
   return (
     <React.Fragment>
-      <MainHeader style={{
-        height: "50px"
-      }}/>
-      <MainBody>
-        { children }
-      </MainBody>
+      <MainHeader
+        style={{
+          height: "65px",
+          backgroundColor: "lightgreen",
+        }}
+      />
+      <section
+        style={{
+          position: "relative",
+          height: "100%",
+        }}
+      >
+        <MainSideBar 
+          style={{
+            zIndex: 200,
+            position: "absolute",
+            width: "250px",
+            height: "100%",
+            backgroundColor: "lightcoral"
+          }}
+        />
+        <MainBody
+          style={{
+            zIndex: 100,
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            paddingLeft: "250px",
+            overflow: "scroll"
+          }}
+        >
+          { children }
+        </MainBody>
+      </section>
     </React.Fragment>  
   );
 }
