@@ -70,20 +70,3 @@ const authSelectors = {
   getSigned: ({ auth })=>( auth.signed ),
   getUser: ({ auth })=>( auth.user ),
 }
-
-/** Store **/
-const {
-  combineReducers,
-  createStore
-} = Redux;
-
-const rootReducer = combineReducers({
-  auth: authReducer  
-});
-
-/** Store **/
-const store = createStore(
-  rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
