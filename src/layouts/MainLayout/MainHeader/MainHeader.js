@@ -5,6 +5,7 @@ const { useDispatch, useSelector } = ReactRedux;
 const MainHeader = ( props )=>{
   const {
     className,
+    children,
     ...rest
   } = props;
 
@@ -42,7 +43,7 @@ const MainHeader = ( props )=>{
       { ...rest }
       className={ className }
     >
-      <GridRow right>
+      <GridRow right style={{ height: "100%" }}>
       {
         signed
         ? (
@@ -60,6 +61,13 @@ const MainHeader = ( props )=>{
               <BaseButton onClick={ handleRedirectSignIn }>SignIn</BaseButton>
             </GridColumn>
           )
+      }
+      {
+        children && (
+          <GridColumn center w2>
+            { children }
+          </GridColumn>
+        )
       }
       </GridRow>
     </header>

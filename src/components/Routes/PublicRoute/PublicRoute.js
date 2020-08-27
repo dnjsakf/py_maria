@@ -6,6 +6,7 @@ const PublicRoute = ( props )=>{
     layout: Layout,
     component: Component,
     exact,
+    isDesktop,
     ...rest
   } = props;
   
@@ -15,7 +16,7 @@ const PublicRoute = ( props )=>{
       path={ path }
       render={
         ( matchProps )=>(
-          <Layout>
+          <Layout isDesktop={ isDesktop }>
             <Component {...matchProps}/>
           </Layout>
         )

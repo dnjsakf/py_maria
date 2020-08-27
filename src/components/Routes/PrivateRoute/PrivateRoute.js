@@ -6,6 +6,7 @@ const PrivateRoute = ( props )=>{
   const {
     layout: Layout,
     component: Component,
+    isDesktop,
     ...rest
   } = props;
 
@@ -51,7 +52,7 @@ const PrivateRoute = ( props )=>{
     <Route render={
       ( matchProps )=>(
         signed
-        ? <Layout >
+        ? <Layout isDesktop={ isDesktop }>
             <Component {...matchProps}/>
           </Layout>
         : <Redirect
