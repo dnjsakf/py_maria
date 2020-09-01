@@ -1,24 +1,40 @@
-const { useCallback } = React;
-const { useHistory } = ReactRouterDOM;
-const { useDispatch, useSelector } = ReactRedux;
+/** React **/
+import React, { useCallback }  from 'react';
+import PropTypes from 'prop-types';
 
+/** Router **/
+import { useHistory } from 'react-router-dom';
+
+/** Redux **/
+import { useDispatch, useSelector } from 'react-redux';
+
+/** Redux: Reducers **/
+import { selectors, actions } from '@reducers/authReducer';
+
+
+/** Main Component **/
 const MainHeader = ( props )=>{
+  /** Props **/
   const {
     className,
     children,
     ...rest
   } = props;
 
+  /** Hooks: Router **/
   const history = useHistory();
 
+  /** Hooks: Redux **/
   const dispatch = useDispatch();
-  const signed = useSelector(authSelectors.getSigned);
-  const user = useSelector(authSelectors.getUser);
+  const signed = useSelector(selectors.getSigned);
+  const user = useSelector(selectors.getUser);
   
+  /** Handlers: Redirect to Sign In Page **/
   const handleRedirectSignIn = useCallback(( event )=>{
     history.push("/signin");
   }, []);
 
+  /** Handlers: Sign Out **/
   const handleSignOut = useCallback(( event )=>{
     event.preventDefault();
     
@@ -28,16 +44,17 @@ const MainHeader = ( props )=>{
     }).then(( resp )=>{
       localStorage.removeItem("access_token");
       dispatch(
-        authActions.signFailure()
+        actions.signFailure()
       );
     }).catch(( error )=>{
       localStorage.removeItem("access_token");
       dispatch(
-        authActions.signFailure()
+        actions.signFailure()
       );
     });
   }, []);
   
+  /** Render **/
   return (
     <header
       { ...rest }
@@ -73,3 +90,16 @@ const MainHeader = ( props )=>{
     </header>
   );
 }
+
+/** Prop Types **/
+MainHeader.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.any,
+  style: PropTypes.any,
+}
+
+/** Default Props **/
+MainHeader.defaultProps = { }
+
+/** Exports **/
+export default MainHeader;

@@ -1,6 +1,17 @@
-const { NavLink } = ReactRouterDOM;
+/** React **/
+import React, { useCallback }  from 'react';
+import PropTypes from 'prop-types';
 
+/** Router **/
+import { NavLigk } from 'react-router-dom';
+
+/** Custom Components **/
+import { GridRow, GridColumn } from '@components/Grid';
+
+
+/** Main Component **/
 const MainSideBar = ( props )=>{
+  /** Props **/
   const {
     className,
     items,
@@ -8,6 +19,7 @@ const MainSideBar = ( props )=>{
     ...rest
   } = props;
 
+  /** Render **/
   return (
     <div style={ style }>
       <GridRow center>
@@ -40,11 +52,14 @@ const MainSideBar = ( props )=>{
   );
 }
 
+/** Prop Types **/
 MainSideBar.propTypes = {
   className: PropTypes.string,
   items: PropTypes.array,
+  style: PropTypes.any,
 }
 
+/** Default Props **/
 MainSideBar.defaultProps = {
   items: [
     {
@@ -59,3 +74,6 @@ MainSideBar.defaultProps = {
     }
   ]
 }
+
+/** Exports **/
+export default MainSideBar;

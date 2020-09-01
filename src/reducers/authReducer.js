@@ -1,40 +1,43 @@
 /** Actions **/
-const {
-  createActions,
-  handleActions
-} = ReduxActions;
+import { createActions, handleActions } from 'redux-actions';
 
 /** Types **/
-const authTypes = {
+export const types = {
   SIGN_SUCCESS: "SIGN_SUCCESS",
   SIGN_FAILURE: "SIGN_FAILURE",
 }
 
-/** ActionOptions **/
-const authOptions = {
+/** Options **/
+export const options = {
   prefix: "auth",
   namespace: "/",
 }
 
 /** Actions **/
-const authActions = createActions({
-    [authTypes.SIGN_SUCCESS]: [
+export const actions = createActions({
+    [types.SIGN_SUCCESS]: [
       payload => payload,
       payload => { type: "value", payload }
     ],
-    [authTypes.SIGN_FAILURE]: [
+    [types.SIGN_FAILURE]: [
       payload => payload,
       payload => { type: "value", payload }
     ]
   },
-  authOptions
+  options
 );
 
+/** Selectors **/
+export const selectors = {
+  getSigned: ({ auth })=>( auth.signed ),
+  getUser: ({ auth })=>( auth.user ),
+}
+
 /** Reducer **/
-const authReducer = handleActions(
+export default handleActions(
   new Map([
     [
-      authActions.signSuccess
+      actions.signSuccess
       , ( state, action ) => {
         return Object.assign({}, state, {
           signed: true,
@@ -43,7 +46,7 @@ const authReducer = handleActions(
       }
     ],
     [
-      authActions.signFailure
+      actions.signFailure
       , ( state, action ) => {
         return Object.assign({}, state, {
           signed: false,
@@ -62,11 +65,5 @@ const authReducer = handleActions(
       email: null,
     }
   },
-  authOptions,
+  options,
 );
-
-/** Action Selector **/
-const authSelectors = {
-  getSigned: ({ auth })=>( auth.signed ),
-  getUser: ({ auth })=>( auth.user ),
-}

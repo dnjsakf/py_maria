@@ -1,22 +1,49 @@
+/** React **/
+import React, { useRef, useState, useCallback }  from 'react';
+import PropTypes from 'prop-types';
 
+/** Router **/
+import { useHistory } from 'react-router-dom';
+
+/** Redux **/
+import { useDispatch } from 'react-redux';
+import { actions } from '@reducers/authReducer';
+
+/** Custom Components **/
+import { GridRow, GridColumn } from '@components/Grid';
+import { InputText } from '@components/Input';
+import { BaseButton } from '@components/Button';
+
+
+/** Constants **/
+const initFormData = {
+  user_id: "",
+  user_pwd: ""
+}
+
+/** Main Component **/
 const SignIn = ( props )=>{
+  /** Props **/
   const {
     className,
+    children,
+    style,
     action,
     method,
     onSubmit,
     ...rest
   } = props;
 
+  /** Hooks: Router **/
   const history = useHistory();
 
+  /** Hooks: Redux **/
   const dispatch = useDispatch();
 
-  const [ formData, setFormData ] = useState({
-    user_id: "",
-    user_pwd: ""
-  })
+  /** State **/
+  const [ formData, setFormData ] = useState(initFormData)
 
+  /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{
     const name = event.target.name;
     setFormData(( state )=>({
@@ -25,6 +52,7 @@ const SignIn = ( props )=>{
     }));
   }, []);
 
+  /** Handlers: Request Event. **/
   const handleSignIn = useCallback( async ( event )=>{
     event.preventDefault();
 
@@ -42,7 +70,7 @@ const SignIn = ( props )=>{
       }
       localStorage.setItem("access_token", resp.data.access_token);
       dispatch(
-        authActions.signSuccess({
+        actions.signSuccess({
           user: resp.data.user
         })
       );
@@ -52,11 +80,12 @@ const SignIn = ( props )=>{
       console.error( error );
       localStorage.removeItem("access_token");
       dispatch(
-        authActions.signFailure()
+        actions.signFailure()
       );
     });
   }, [ formData ]);
 
+  /** Render **/
   return (
     <GridRow
       center
@@ -117,3 +146,19 @@ const SignIn = ( props )=>{
     </GridRow>
   );
 }
+
+/** Prop Types **/
+SignIn.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.any,
+  style: PropTypes.any,
+  action: PropTypes.string,
+  method: PropTypes.string,
+  onSubmit: PropTypes.func,
+}
+
+/** Default Props **/
+SignIn.defaultProps = { }
+
+/** Exports **/
+export default SignIn;

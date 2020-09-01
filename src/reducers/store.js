@@ -1,17 +1,21 @@
-/** Store **/
-const {
+/** Redux **/
+import { 
   combineReducers,
   createStore,
   applyMiddleware,
-} = Redux;
+} from 'redux';
+
+/** Middleware **/
+import { logger as loggerMiddleware } from 'redux-logger';
+import thunkMiddleware from 'redux-thunk';
+
+/** Reducers **/
+import authReducer from './authReducer';
+
 
 const rootReducer = combineReducers({
   auth: authReducer  
 });
-
-/** MiddleWare **/
-const { logger: loggerMiddleware } = reduxLogger;
-const { default: thunkMiddleware } = ReduxThunk;
 
 /** Store **/
 const store = createStore(
@@ -21,3 +25,6 @@ const store = createStore(
     thunkMiddleware,
   )
 );
+
+/** Exports **/
+export default store;

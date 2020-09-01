@@ -1,20 +1,46 @@
+/** React **/
+import React, { useState, useCallback }  from 'react';
+import PropTypes from 'prop-types';
 
+/** Router **/
+import { useHistory } from 'react-router-dom';
+
+/** Custom Components **/
+import { GridRow, GridColumn } from '@components/Grid';
+import { InputText } from '@components/Input';
+import { BaseButton } from '@components/Button';
+
+
+/** Constants **/
+const initFormData = {
+  user_id: "",
+  user_pwd: "",
+  user_pwd_chk: "",
+  user_name: "",
+  user_nick: "",
+  email: "",
+  cell_phone: "",
+}
+
+/** Main Component **/
 const SignUp = ( props )=>{
   const {
     className,
+    children,
+    style,
+    action,
+    method,
+    onSubmit,
     ...rest
   } = props;
+  
+  /** Hooks: Router **/
+  const history = useHistory();
 
-  const [ formData, setFormData ] = useState({
-    user_id: "",
-    user_pwd: "",
-    user_pwd_chk: "",
-    user_name: "",
-    user_nick: "",
-    email: "",
-    cell_phone: "",
-  });
+  /** State **/
+  const [ formData, setFormData ] = useState(initFormData);
 
+  /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{  
     const name = event.target.name;
     
@@ -24,6 +50,7 @@ const SignUp = ( props )=>{
     }));
   }, []);
 
+  /** Handlers: Request Event. **/
   const handleSubmit = useCallback(( event )=>{
     event.preventDefault();
 
@@ -47,6 +74,7 @@ const SignUp = ( props )=>{
     });
   }, [ formData ]);
 
+  /** Render **/
   return (
     <form
       { ...rest }
@@ -139,3 +167,19 @@ const SignUp = ( props )=>{
     </form>
   );
 }
+
+/** Prop Types **/
+SignUp.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.any,
+  style: PropTypes.any,
+  action: PropTypes.string,
+  method: PropTypes.string,
+  onSubmit: PropTypes.func,
+}
+
+/** Default Props **/
+SignUp.defaultProps = { }
+
+/** Exports **/
+export default SignUp;

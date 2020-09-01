@@ -1,17 +1,23 @@
-/*
-import React from 'react';
+/** React **/
+import React, { useRef, useCallback }  from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'cslx';
-*/
 
-/*
+/** Router **/
+import { useHistory } from 'react-router-dom';
+
+/** Redux **/
+import { useDispatch, useSelector } from 'react-redux';
+
+/** Custom Components **/
 import { GridRow, GridColumn } from '@components/Grid';
-import MainHeader from './MainHaeder';
-*/
+import MainHeader from './MainHeader';
+import MainBody from './MainBody';
+import MainSideBar from './MainSideBar';
 
-const { useRef } = React;
 
+/** Main Component **/
 const MainLayout = ( props )=>{
+  /** Props **/
   const {
     className,
     children,
@@ -19,24 +25,40 @@ const MainLayout = ( props )=>{
     ...rest
   } = props;
 
+  /** Refs **/
   const layoutRef = useRef();
+  
+  /** State **/
+  const [ desktop, setDesktop ] = useState( isDesktop );
   const [ open, setOpen ] = useState( isDesktop != "sm" );
 
+  /** Handlers: Open Menu **/
   const handleOpenMenu = useCallback(( event )=>{
     setOpen(true);
   }, []);
+  
+  /** Handlers: Close Menu **/
   const handleCloseMenu = useCallback(( event )=>{
-    setOpen(false);
-  }, []);
+    console.log( desktop );
+    if( desktop == "sm" ){
+      setOpen(false); 
+    }
+  }, [ desktop ]);
 
+  /** Side Effects: Binding close menu event to ref **/
   useEffect(()=>{
     layoutRef.current.addEventListener("click", handleCloseMenu, false);
   }, []);
 
+  /** Side Effects: Open menu, when mounted component. **/
   useEffect(()=>{
-    setOpen( isDesktop != "sm" );
-  }, [ isDesktop ]);
+    console.log('layout:', desktop );
+    
+    setOpen( desktop != "sm" );
+  }, [ desktop ]);
   
+  
+  /** Render **/
   return (
     <div 
       ref={ layoutRef }
@@ -75,7 +97,7 @@ const MainLayout = ( props )=>{
             position: "relative",
             width: "100%",
             height: "100%",
-            paddingLeft: (open ? "250px" : ""),
+            paddingLeft: (open ? isDesktop == "sm" ? "0" : "250px" : ""),
             overflow: "scroll"
           }}
         >
@@ -86,15 +108,14 @@ const MainLayout = ( props )=>{
   );
 }
 
+/** Prop Types **/
 MainLayout.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
 }
 
-MainLayout.defaultProps = {
-  
-}
+/** Default Props **/
+MainLayout.defaultProps = { }
 
-/*
+/** Exports **/
 export default MainLayout;
-*/

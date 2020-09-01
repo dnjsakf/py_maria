@@ -1,12 +1,14 @@
-/*
-import React from 'react';
-import PropTypes from 'prop'types';
+/** React **/
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
+
+/** Others **/
 import clsx from 'clsx';
-*/
 
-const { forwardRef } = React;
 
+/** Main Component **/
 const GridRow = forwardRef(( props, ref )=>{
+  /** Props **/
   const {
     className,
     children,
@@ -16,6 +18,7 @@ const GridRow = forwardRef(( props, ref )=>{
     ...rest
   } = props;
   
+  /** Render **/
   return (
     <div 
       ref={ ref }
@@ -33,6 +36,7 @@ const GridRow = forwardRef(( props, ref )=>{
   );
 });
 
+/** Prop Types **/
 GridRow.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
@@ -41,10 +45,8 @@ GridRow.propTypes = {
   style: PropTypes.any,
 }
 
-GridRow.defaultProps = {
+/** Default Props **/
+GridRow.defaultProps = { }
 
-}
-
-/*
+/** Exports **/
 export default GridRow;
-*/

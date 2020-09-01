@@ -1,10 +1,14 @@
-/*
+/** React **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-*/
 
+/** Others **/
+import clsx from 'clsx';
+
+
+/** Main Component **/
 const BaseButton = ( props )=>{
+  /** Props **/
   const {
     className,
     children,
@@ -12,6 +16,7 @@ const BaseButton = ( props )=>{
     ...rest
   } = props;
   
+  /** Render **/
   return (
     <button 
       className={
@@ -26,16 +31,17 @@ const BaseButton = ( props )=>{
   );
 }
 
+/** Prop Types **/
 BaseButton.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   fullWidth: PropTypes.bool,
 }
 
+/** Default Props **/
 BaseButton.defaultProps = {
   fullWidth: false,
 }
 
-/*
+/** Exports **/
 export default BaseButton;
-*/

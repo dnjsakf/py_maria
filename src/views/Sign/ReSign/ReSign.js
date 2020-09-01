@@ -1,20 +1,43 @@
+/** React **/
+import React, { useRef, useState, useCallback }  from 'react';
+import PropTypes from 'prop-types';
 
+/** Redux **/
+import { useDispatch } from 'react-redux';
+import { actions } from '@reducers/authReducer';
+
+/** Custom Components **/
+import { GridRow, GridColumn } from '@components/Grid';
+import { InputText } from '@components/Input';
+import { BaseButton } from '@components/Button';
+
+
+/** Constants **/
+const initFormData = {
+  user_id: "",
+  user_pwd: ""
+}
+
+/** Main Component **/
 const ReSign = ( props )=>{
+  /** Props **/
   const {
     className,
+    children,
+    style,
     action,
     method,
     onSubmit,
     ...rest
   } = props;
 
+  /** Hooks: Router **/
   const dispatch = useDispatch();
   
-  const [ formData, setFormData ] = useState({
-    user_id: "",
-    user_pwd: ""
-  })
-
+  /** State **/
+  const [ formData, setFormData ] = useState(initFormData);
+  
+  /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{    
     const name = event.target.name;
     setFormData(( state )=>({
@@ -23,6 +46,7 @@ const ReSign = ( props )=>{
     }));
   }, []);
 
+  /** Handlers: Request Event. **/
   const handleReSign = useCallback( async ( event )=>{
     event.preventDefault();
 
@@ -37,16 +61,17 @@ const ReSign = ( props )=>{
       console.log( resp.data );
       localStorage.removeItem("access_token");
       dispatch(
-        authActions.signFailure()
+        actions.signFailure()
       );
     }).catch(( error )=>{
       localStorage.removeItem("access_token");
       dispatch(
-        authActions.signFailure()
+        actions.signFailure()
       );
     });
   }, [ formData ]);
   
+  /** Render **/
   return (
     <form
       action={ action }
@@ -88,3 +113,19 @@ const ReSign = ( props )=>{
     </form>
   );
 }
+
+/** Prop Types **/
+ReSign.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.any,
+  style: PropTypes.any,
+  action: PropTypes.string,
+  method: PropTypes.string,
+  onSubmit: PropTypes.func,
+}
+
+/** Default Props **/
+ReSign.defaultProps = { }
+
+/** Exports **/
+export default ReSign;

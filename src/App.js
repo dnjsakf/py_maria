@@ -1,6 +1,21 @@
-const { useEffect } = React;
-const { BrowserRouter: Router, Switch, Redirect } = ReactRouterDOM;
+/** React **/
+import React, { useState, useCallback } from 'react';
 
+/** Router **/
+import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
+
+/** Layouts **/
+import { MainLayout } from '@layouts';
+
+/** Views **/
+import { Home, Board, Chat } from '@views';
+import { SignIn, SignUp, ReSign } from '@views/Sign';
+
+/** Custom Components **/
+import { PublicRoute, PrivateRoute } from '@components/Routes';
+
+
+/** Functions: Check Windows Width **/
 const checkWidth = ( width )=>{
   if( width >= 1200 ){
     return "lg";
@@ -11,17 +26,22 @@ const checkWidth = ( width )=>{
   }
 }
 
+/** Main Component **/
 const App = ( props )=>{
+  /** State **/
   const [ isDesktop, setIsDesktop ] = useState(checkWidth(window.outerWidth));
 
+  /** Handlers: Set isDesktop state, when updated window size. **/
   const handleResizeWindow = useCallback(( event )=>{
     setIsDesktop(checkWidth(window.outerWidth));
   }, []);
 
+  /** Side Effects: Binding window resize event to window object. **/
   useEffect(()=>{
     window.addEventListener("resize", handleResizeWindow, false);
   }, []);
 
+  /** Render **/
   return (
     <Router>
       <Switch>
@@ -43,7 +63,7 @@ const App = ( props )=>{
           exact
           path="/"
           layout={ MainLayout }
-          component={ MainHome }
+          component={ Home }
           isDesktop={ isDesktop }
         />
         <PrivateRoute
@@ -65,3 +85,12 @@ const App = ( props )=>{
     </Router>
   );
 }
+
+/** Prop Types **/
+App.propTypes = { }
+
+/** Default Props **/
+App.defaultProps = { }
+
+/** Exports **/
+export default App;

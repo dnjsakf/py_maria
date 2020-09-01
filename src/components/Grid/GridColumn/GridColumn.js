@@ -1,12 +1,14 @@
-/*
-import React from 'react';
-import PropTypes from 'prop'types';
+/** React **/
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
+
+/** Others **/
 import clsx from 'clsx';
-*/
 
-const { forwardRef } = React;
 
+/** Main Component **/
 const GridColumn = forwardRef(( props, ref )=>{
+  /** Props **/
   const {
     className,
     children,
@@ -16,6 +18,7 @@ const GridColumn = forwardRef(( props, ref )=>{
     ...rest
   } = props;
   
+  /** Render **/
   return (
     <div
       ref={ ref }
@@ -45,6 +48,7 @@ const GridColumn = forwardRef(( props, ref )=>{
   );
 });
 
+/** Prop Types **/
 GridColumn.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
@@ -53,10 +57,8 @@ GridColumn.propTypes = {
   style: PropTypes.any,
 }
 
-GridColumn.defaultProps = {
+/** Default Props **/
+GridColumn.defaultProps = { }
 
-}
-
-/*
+/** Exports **/
 export default GridColumn;
-*/

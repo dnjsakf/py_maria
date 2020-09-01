@@ -1,11 +1,14 @@
-/*
-import React, { useState, useCallback } from 'react';
+/** React **/
+import React, { useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-*/
-const { useState, useCallback } = React;
 
+/** Others **/
+import clsx from 'clsx';
+
+
+/** Main Component **/
 const InputText = ( props )=>{
+  /** Props **/
   const {
     className,
     fullWidth,
@@ -13,8 +16,10 @@ const InputText = ( props )=>{
     ...rest
   } = props;
   
+  /** State **/
   const [value, setValue] = useState("");
   
+  /** Handlers **/
   const handleChange = useCallback(( event )=>{
     const v = event.target.value;
     
@@ -25,6 +30,7 @@ const InputText = ( props )=>{
     }
   }, []);
 
+  /** Render **/
   return (
     <input
       className={
@@ -39,16 +45,17 @@ const InputText = ( props )=>{
   );
 }
 
+/** Prop Types **/
 InputText.propTypes = {
   className: PropTypes.string,
   fullWidth: PropTypes.bool,
   onChange: PropTypes.func
 }
 
+/** Default Props **/
 InputText.defaultProps = {
   fullWidth: false,
 }
 
-/*
+/** Exports **/
 export default InputText;
-*/
