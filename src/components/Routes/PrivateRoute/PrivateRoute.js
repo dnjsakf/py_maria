@@ -3,13 +3,16 @@ import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Router **/
-import { Route, Redirect, useHistory, useLocation } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
 
 /** Redux: Reducer **/
 import { selectors, actions } from '@reducers/authReducer';
+
+/** Others **/
+import axios from 'axios';
 
 
 /** Main Component **/
@@ -20,12 +23,10 @@ const PrivateRoute = ( props )=>{
     component: Component,
     exact,
     isDesktop,
+    history,
+    location,
     ...rest
   } = props;
-
-  /** Hooks: Router **/
-  const history = useHistory();
-  const location = useLocation();
 
   /** Hooks: Redux **/
   const dispatch = useDispatch();

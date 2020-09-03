@@ -1,6 +1,6 @@
 const config = require("./webpack.config.js");
 
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const webpack = require("webpack");
 
 const CopyPlugin = require("copy-webpack-plugin");

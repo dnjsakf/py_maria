@@ -1,5 +1,6 @@
 .venv
 node_modules
+dist
 key.key
 
 __pycache__

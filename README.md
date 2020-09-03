@@ -17,7 +17,7 @@ npm install --save-dev html-webpack-plugin mini-css-extract-plugin optimize-css-
 npm install --save react react-dom react-router-dom
 
 # 2. Redux ( with. React Redux )
-npm install --save redux react-redux redux-actions
+npm install --save redux react-redux redux-actions redux-thunk redux-logger
 
 # 3. Template
 npm install --save @material-ui/core @material-ui/icons
@@ -27,13 +27,14 @@ npm install --save @babel/polyfill
 
 # 999. 3rd party
 npm install --save clsx
+npm install --save axios
 npm install --save notistack
 npm install --save prop-types
 npm install --save styled-components
-
+npm install --save socket.io-client
 
 
 [ Full Install ]
 npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-plugin-module-resolver babel-loader css-loader react-hot-loader @hot-loader/react-dom webpack webpack-cli webpack-dev-server webpack-merge html-webpack-plugin mini-css-extract-plugin optimize-css-assets-webpack-plugin clean-webpack-plugin copy-webpack-plugin terser-webpack-plugin
 
-npm install --save react react-dom react-router-dom redux react-redux redux-actions @babel/polyfill clsx notistack prop-types
+npm install --save react react-dom react-router-dom redux react-redux redux-actions redux-thunk redux-logger @material-ui/core @material-ui/icons @babel/polyfill clsx axios notistack prop-types socket.io-client

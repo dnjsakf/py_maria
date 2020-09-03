@@ -3,7 +3,7 @@ import React, { useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Router **/
-import { NavLigk } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 /** Custom Components **/
 import { GridRow, GridColumn } from '@components/Grid';

@@ -9,4 +9,5 @@ from app.decorators import with_cookies, check_token
 @app.route("/<path:path>", methods=["GET", "POST"])
 @check_token(attr=["user"])
 def index(path=None, user=None, error=None):
+  print( 'Hi index' );
   return render_template("index.html")

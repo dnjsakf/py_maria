@@ -2,14 +2,18 @@
 import React, { useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
-import { useHistory } from 'react-router-dom';
-
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
 
 /** Redux: Reducers **/
 import { selectors, actions } from '@reducers/authReducer';
+
+/** Others **/
+import axios from 'axios';
+
+/** Custom Components **/
+import { GridRow, GridColumn } from '@components/Grid';
+import { BaseButton } from '@components/Button';
 
 
 /** Main Component **/
@@ -18,11 +22,10 @@ const MainHeader = ( props )=>{
   const {
     className,
     children,
+    history,
+    location,
     ...rest
   } = props;
-
-  /** Hooks: Router **/
-  const history = useHistory();
 
   /** Hooks: Redux **/
   const dispatch = useDispatch();

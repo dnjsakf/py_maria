@@ -1,5 +1,6 @@
 /** React **/
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 /** Redux **/
 import { useSelector } from 'react-redux';
@@ -8,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectors } from '@reducers/authReducer';
 
 /** Socket **/
-import io from 'socket-client';
+import io from 'socket.io-client';
 
 /** Custom Components **/
 import { GridRow, GridColumn } from '@components/Grid';

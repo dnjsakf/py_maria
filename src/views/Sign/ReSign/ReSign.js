@@ -6,6 +6,9 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { actions } from '@reducers/authReducer';
 
+/** Others **/
+import axios from 'axios';
+
 /** Custom Components **/
 import { GridRow, GridColumn } from '@components/Grid';
 import { InputText } from '@components/Input';

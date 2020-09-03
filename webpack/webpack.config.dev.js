@@ -1,6 +1,6 @@
 const config = require("./webpack.config.js");
 
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 
@@ -51,6 +51,9 @@ module.exports = merge(config, {
     publicPath: config.output.publicPath,
     historyApiFallback: true,
     proxy: {
+      '/': {
+        target: "http://localhost:3000/"
+      },
       '/api': {
         target: "http://localhost:4001/api"
       }

@@ -2,9 +2,6 @@
 import React, { useRef, useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
-import { useHistory } from 'react-router-dom';
-
 /** Redux **/
 import { useDispatch } from 'react-redux';
 import { actions } from '@reducers/authReducer';
@@ -13,6 +10,9 @@ import { actions } from '@reducers/authReducer';
 import { GridRow, GridColumn } from '@components/Grid';
 import { InputText } from '@components/Input';
 import { BaseButton } from '@components/Button';
+
+/** Others **/
+import axios from 'axios';
 
 
 /** Constants **/
@@ -31,11 +31,9 @@ const SignIn = ( props )=>{
     action,
     method,
     onSubmit,
+    history,
     ...rest
   } = props;
-
-  /** Hooks: Router **/
-  const history = useHistory();
 
   /** Hooks: Redux **/
   const dispatch = useDispatch();
@@ -84,6 +82,11 @@ const SignIn = ( props )=>{
       );
     });
   }, [ formData ]);
+  
+  /** Handlers: Change route to SignUp Page. **/
+  const handleSignUp = useCallback( async ( event )=>{
+    history.push("/signup");
+  }, []);
 
   /** Render **/
   return (
@@ -133,9 +136,7 @@ const SignIn = ( props )=>{
             <GridColumn w6>
               <BaseButton
                 fullWidth
-                onClick={ ()=>{
-                  history.push("/signup")
-                } }
+                onClick={ handleSignUp }
               >
                 SignUp
               </BaseButton>

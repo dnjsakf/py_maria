@@ -1,5 +1,5 @@
 /** React **/
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 /** Router **/
 import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';

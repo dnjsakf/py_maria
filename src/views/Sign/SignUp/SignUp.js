@@ -2,8 +2,8 @@
 import React, { useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
-import { useHistory } from 'react-router-dom';
+/** Others **/
+import axios from 'axios';
 
 /** Custom Components **/
 import { GridRow, GridColumn } from '@components/Grid';
@@ -31,11 +31,9 @@ const SignUp = ( props )=>{
     action,
     method,
     onSubmit,
+    history,
     ...rest
   } = props;
-  
-  /** Hooks: Router **/
-  const history = useHistory();
 
   /** State **/
   const [ formData, setFormData ] = useState(initFormData);

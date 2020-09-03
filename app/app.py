@@ -110,7 +110,7 @@ def create_app(*args, **kwargs):
   # Create Flask Application
   app = Flask(
     __name__,
-    static_url_path=kwargs.get("static_url_path","/static/"),
+    static_url_path=kwargs.get("static_url_path","/public/"),
     static_folder=kwargs.get("static_folder", "../public"),
     template_folder=kwargs.get("template_folder", "../public")
   )

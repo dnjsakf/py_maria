@@ -34,15 +34,14 @@ function render(Component){
           anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'left',
-          }}>
+          }}
         >
-          <App />
+          <Component />
         </SnackbarProvider>
       </StoreProvider>
     </React.StrictMode>
    ), document.getElementById("root"));
 }
-
 
 /** Render Application **/
 render(App);
