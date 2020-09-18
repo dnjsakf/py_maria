@@ -10,6 +10,8 @@ html, body, #root { padding: 0; margin: 0; height: 100%; width: 100% }
 .col.center{ justify-content: center; align-items: center; }
 .col.right{ justify-content: flex-end; align-items: flex-end; }
 
+.full-height { height: 100% }
+
 .w1 { width: 8.3% }
 .w2 { width: 16.6% }
 .w3 { width: 25% }

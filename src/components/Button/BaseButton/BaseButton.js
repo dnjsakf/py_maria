@@ -2,6 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/** Material-UI **/
+import Button from '@material-ui/core/Button/Button';
+
 /** Others **/
 import clsx from 'clsx';
 
@@ -18,7 +21,7 @@ const BaseButton = ( props )=>{
   
   /** Render **/
   return (
-    <button 
+    <Button
       className={
         clsx({
           "w12": !!fullWidth
@@ -27,7 +30,7 @@ const BaseButton = ( props )=>{
       { ...rest }
     >
       { children }
-    </button>
+    </Button>
   );
 }
 

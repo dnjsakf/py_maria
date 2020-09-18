@@ -2,8 +2,21 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
+/** Material-UI **/
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid/Grid';
+
 /** Others **/
 import clsx from 'clsx';
+
+/** Custom Hooks **/
+const useStyles = makeStyles({
+  root: {
+  },
+  fullHeight: {
+    height: "100%",
+  },
+});
 
 
 /** Main Component **/
@@ -12,27 +25,25 @@ const GridRow = forwardRef(( props, ref )=>{
   const {
     className,
     children,
-    center,
-    right,
-    style,
+    fullHeight,
     ...rest
   } = props;
+
+  /** Material Hooks: Styles **/
+  const classes = useStyles();
   
   /** Render **/
   return (
-    <div 
-      ref={ ref }
-      className={
-        clsx({ 
-          "row": true,
-          "center": !!center,
-          "right": !!right,
-        }
-        , className)}
-      style={ style }
+    <Grid
+      container
+      className={ clsx({
+        [classes.root]: true,
+        [classes.fullHeight]: !!fullHeight,
+      }, className) }
+      { ...rest }
     >
       { children }
-    </div>
+    </Grid>
   );
 });
 
@@ -40,9 +51,6 @@ const GridRow = forwardRef(( props, ref )=>{
 GridRow.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
-  center: PropTypes.any,
-  right: PropTypes.any,
-  style: PropTypes.any,
 }
 
 /** Default Props **/

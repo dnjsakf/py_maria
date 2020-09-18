@@ -80,30 +80,47 @@ const ReSign = ( props )=>{
     <form
       { ...rest }
     >
-      <GridRow center>
-        <GridColumn w10>
+      <GridRow
+        justify="center"
+        alignItems="center"
+      >
+        <GridColumn xs={ 10 }>
           <InputText
             fullWidth
             type="text"
             name="id"
+            label="ID"
             placeholder="id"
+            helperText=""
+            varient="filled"
             onChange={ handleChange }
+            error={ false }
           />
         </GridColumn>
       </GridRow>
-      <GridRow center>
-        <GridColumn w10>
+      <GridRow
+        justify="center"
+        alignItems="center"
+      >
+        <GridColumn xs={ 10 }>
           <InputText
             fullWidth
             type="password"
             name="password"
+            label="Password"
             placeholder="password"
+            helperText="6~10자리"
+            varient="filled"
             onChange={ handleChange }
+            error={ false }
           />
         </GridColumn>
       </GridRow>
-      <GridRow center>
-        <GridColumn w6>
+      <GridRow
+        justify="center"
+        alignItems="center"
+      >
+        <GridColumn xs={ 6 }>
           <BaseButton
             fullWidth
             onClick={ handleReSign }

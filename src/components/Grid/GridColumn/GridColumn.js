@@ -2,8 +2,21 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
+/** Material-UI **/
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid/Grid';
+
 /** Others **/
 import clsx from 'clsx';
+
+/** Custom Hooks **/
+const useStyles = makeStyles({
+  root: {
+  },
+  fullHeight: {
+    height: "100%",
+  },
+});
 
 
 /** Main Component **/
@@ -12,39 +25,24 @@ const GridColumn = forwardRef(( props, ref )=>{
   const {
     className,
     children,
-    center,
-    right,
-    style,
+    fullHeight,
     ...rest
   } = props;
-  
+
+  /** Material Hooks: Styles **/
+  const classes = useStyles();
+
   /** Render **/
   return (
-    <div
-      ref={ ref }
-      className={
-        clsx({
-          "col": true,
-          "w1": !!rest.w1,
-          "w2": !!rest.w2,
-          "w3": !!rest.w3,
-          "w4": !!rest.w4,
-          "w5": !!rest.w5,
-          "w6": !!rest.w6,
-          "w7": !!rest.w7,
-          "w8": !!rest.w8,
-          "w9": !!rest.w9,
-          "w10": !!rest.w10,
-          "w11": !!rest.w11,
-          "w12": !!rest.w12,
-          "center": !!center,
-        }, 
-        className)
-      }
-      style={ style }
+    <Grid item
+      className={ clsx({
+        [classes.root]: true,
+        [classes.fullHeight]: !!fullHeight,
+      }, className) }
+      { ...rest }
     >
       { children }
-    </div>
+    </Grid>
   );
 });
 
@@ -52,9 +50,6 @@ const GridColumn = forwardRef(( props, ref )=>{
 GridColumn.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
-  center: PropTypes.any,
-  right: PropTypes.any,
-  style: PropTypes.any,
 }
 
 /** Default Props **/

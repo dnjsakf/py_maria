@@ -16,6 +16,10 @@ import store from '@reducers/store';
 /** Notistack **/
 import { SnackbarProvider } from 'notistack';
 
+/** Material-UI */
+import { ThemeProvider } from "@material-ui/styles";
+import theme from "./theme";
+
 /** Main Component **/
 import App from './App';
 
@@ -29,15 +33,17 @@ function render(Component){
   RouterDomRender((
     <React.StrictMode>
       <StoreProvider store={ store }>
-        <SnackbarProvider
-          maxSnack={3} 
-          anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-          }}
-        >
-          <Component />
-        </SnackbarProvider>
+        <ThemeProvider theme={ theme }>
+          <SnackbarProvider
+            maxSnack={3} 
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+          >
+            <Component />
+          </SnackbarProvider>
+        </ThemeProvider>
       </StoreProvider>
     </React.StrictMode>
    ), document.getElementById("root"));

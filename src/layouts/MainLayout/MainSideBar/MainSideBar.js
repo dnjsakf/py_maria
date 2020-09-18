@@ -22,13 +22,17 @@ const MainSideBar = ( props )=>{
   /** Render **/
   return (
     <div style={ style }>
-      <GridRow center>
+      <GridRow
+        alignItems="center"
+      >
         <GridColumn>
           ProFiles
         </GridColumn>
       </GridRow>
-      <GridRow>
-        <GridColumn center w14>
+      <GridRow 
+        alignItems="center"
+      >
+        <GridColumn xs={ 4 }>
           <ul>
           {
             items && items.map(( item )=>(

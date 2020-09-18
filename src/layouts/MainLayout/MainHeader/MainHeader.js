@@ -72,15 +72,19 @@ const MainHeader = ( props )=>{
       { ...rest }
       className={ className }
     >
-      <GridRow right style={{ height: "100%" }}>
+      <GridRow
+        justify="flex-end"
+        alignItems="center"
+        fullHeight
+      >
       {
         signed
         ? (
             <React.Fragment>
-              <GridColumn w1 center>
+              <GridColumn xs={ 1 }>
                 <span><strong>{ user.nickname }</strong></span>
               </GridColumn>
-              <GridColumn w1 center>
+              <GridColumn xs={ 1 }>
                 <BaseButton onClick={ handleSignOut }>SignOut</BaseButton>
               </GridColumn>
             </React.Fragment>

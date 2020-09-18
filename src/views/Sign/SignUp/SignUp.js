@@ -74,95 +74,143 @@ const SignUp = ( props )=>{
 
   /** Render **/
   return (
-    <form
-      { ...rest }
+    <GridRow
+      fullHeight
+      justify="center"
+      alignItems="center"
     >
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="text"
-            name="id"
-            placeholder="id"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w5>
-          <InputText
-            fullWidth
-            type="password"
-            name="password"
-            placeholder="password"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-        <GridColumn w5>
-          <InputText
-            fullWidth
-            type="password"
-            name="password_chk"
-            placeholder="password check"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="text"
-            name="name"
-            placeholder="name"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="text"
-            name="nickname"
-            placeholder="nickname"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="text"
-            name="email"
-            placeholder="email"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w10>
-          <InputText
-            fullWidth
-            type="text"
-            name="mobile"
-            placeholder="mobile"
-            onChange={ handleChange }
-          />
-        </GridColumn>
-      </GridRow>
-      <GridRow center>
-        <GridColumn w6>
-          <BaseButton
-            fullWidth
-            onClick={ handleSubmit }
+      <GridColumn
+        xs={ 8 }
+        style={{
+          backgroundColor: "white"
+        }}
+      >
+        <form
+          { ...rest }
+        >
+          <GridRow 
+            justify="center"
           >
-            SignUp
-          </BaseButton>
-        </GridColumn>
-      </GridRow>
-    </form>
+            <GridColumn xs={ 10 }>
+              <InputText
+                fullWidth
+                type="text"
+                name="id"
+                placeholder="id"
+                label="ID"
+                helperText="숫자,문자(50자리)"
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow 
+            justify="center"
+          >
+            <GridColumn xs={ 5 }>
+              <InputText
+                fullWidth
+                type="password"
+                name="password"
+                placeholder="password"
+                label="Password"
+                helperText="모든문자(6~10자리)"
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+            <GridColumn xs={ 5 }>
+              <InputText
+                fullWidth
+                type="password"
+                name="password_chk"
+                placeholder="password check"
+                label="Password Check"
+                helperText=""
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow 
+            justify="center"
+          >
+            <GridColumn xs={ 10 }>
+              <InputText
+                fullWidth
+                type="text"
+                name="name"
+                placeholder="name"
+                label="Name"
+                helperText="모든문자(50자리)"
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow 
+            justify="center"
+          >
+            <GridColumn xs={ 10 }>
+              <InputText
+                fullWidth
+                type="text"
+                name="nickname"
+                placeholder="nickname"
+                label="Nickname"
+                helperText="모든문자(50자리)"
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow 
+            justify="center"
+          >
+            <GridColumn xs={ 10 }>
+              <InputText
+                fullWidth
+                type="text"
+                name="email"
+                placeholder="email"
+                label="Email"
+                helperText=""
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow
+            justify="center"
+          >
+            <GridColumn xs={ 10 }>
+              <InputText
+                fullWidth
+                type="text"
+                name="mobile"
+                placeholder="mobile"
+                label="Mobile"
+                helperText=""
+                error={ false }
+                onChange={ handleChange }
+              />
+            </GridColumn>
+          </GridRow>
+          <GridRow 
+            justify="center"
+          >
+            <GridColumn xs={ 5 }>
+              <BaseButton
+                fullWidth
+                onClick={ handleSubmit }
+              >
+                SignUp
+              </BaseButton>
+            </GridColumn>
+          </GridRow>
+        </form>
+    </GridColumn>
+  </GridRow>
   );
 }
 
@@ -176,7 +224,7 @@ SignUp.propTypes = {
   location: PropTypes.any,
   match: PropTypes.any,
   staticContext: PropTypes.any,
-  
+
   action: PropTypes.string,
   method: PropTypes.string,
   onSubmit: PropTypes.func,

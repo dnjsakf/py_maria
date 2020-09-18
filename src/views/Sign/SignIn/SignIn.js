@@ -91,39 +91,59 @@ const SignIn = ( props )=>{
   /** Render **/
   return (
     <GridRow
-      center
-      style={{
-        height: "100%"
-      }}
+      fullHeight
+      justify="center"
+      alignItems="center"
     >
-      <GridColumn w12 center>
-        <form
-          { ...rest }
-        >
-          <GridRow center>
-            <GridColumn w10>
+      <GridColumn
+        xs={ 4 }
+        style={{
+          backgroundColor: "white"
+        }}
+      >
+        <form { ...rest } >
+          <GridRow
+            justify="center"
+            alignItems="center"
+          >
+            <GridColumn xs={ 10 }>
               <InputText
                 fullWidth
                 type="text"
                 name="id"
+                label="ID"
                 placeholder="id"
+                helperText=""
+                varient="filled"
                 onChange={ handleChange }
+                error={ false }
               />
             </GridColumn>
           </GridRow>
-          <GridRow center>
-            <GridColumn w10>
+          <GridRow
+            justify="center"
+            alignItems="center"
+          >
+            <GridColumn xs={ 10 }>
               <InputText
                 fullWidth
                 type="password"
                 name="password"
+                label="Password"
                 placeholder="password"
+                helperText="6~10자리"
+                varient="filled"
                 onChange={ handleChange }
+                error={ false }
               />
             </GridColumn>
           </GridRow>
-          <GridRow center>
-            <GridColumn w6>
+          <GridRow
+            alignItems="center"
+          >
+            <GridColumn xs={ 6 }
+              justify="center"
+            >
               <BaseButton
                 fullWidth
                 onClick={ handleSignIn }
@@ -131,7 +151,9 @@ const SignIn = ( props )=>{
                 SignIn
               </BaseButton>
             </GridColumn>
-            <GridColumn w6>
+            <GridColumn xs={ 6 }
+              justify="center"
+            >
               <BaseButton
                 fullWidth
                 onClick={ handleSignUp }
@@ -156,7 +178,7 @@ SignIn.propTypes = {
   location: PropTypes.any,
   match: PropTypes.any,
   staticContext: PropTypes.any,
-  
+
   action: PropTypes.string,
   method: PropTypes.string,
   onSubmit: PropTypes.func,
