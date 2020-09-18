@@ -55,8 +55,8 @@ class TestSignUp(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "asdf",
-      "user_pwd_chk": "asdf",
+      "user_pw": "asdf",
+      "user_pw_chk": "asdf",
       "user_name": "asdf",
       "user_nick": "asdf",
       "email": "asdf@asdf.com",
@@ -90,7 +90,7 @@ class TestSignIn(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "", 
-      "user_pwd": "" 
+      "user_pw": "" 
     },)
   )
   def test_empty_user_id(self, client, user):
@@ -99,16 +99,16 @@ class TestSignIn(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "" 
+      "user_pw": "" 
     },)
   )
-  def test_empty_user_pwd(self, client, user):
+  def test_empty_user_pw(self, client, user):
     self.signin(client, user)
     
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "a" 
+      "user_pw": "a" 
     },)
   )
   def test_no_matched_password(self, client, user):
@@ -117,7 +117,7 @@ class TestSignIn(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "asdf" 
+      "user_pw": "asdf" 
     },)
   )
   def test_success(self, client, user):
@@ -126,7 +126,7 @@ class TestSignIn(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "asdf" 
+      "user_pw": "asdf" 
     },)
   )
   def test_check_token(self, client, user):
@@ -162,7 +162,7 @@ class TestResign(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": ""
+      "user_pw": ""
     },)
   )
   def test_empty_password(self, client, user):
@@ -171,7 +171,7 @@ class TestResign(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "1234"
+      "user_pw": "1234"
     },)
   )
   def test_no_matched_password(self, client, user):
@@ -180,7 +180,7 @@ class TestResign(object):
   @pytest.mark.parametrize(
     "user", ({ 
       "user_id": "asdf", 
-      "user_pwd": "asdf"
+      "user_pw": "asdf"
     },)
   )
   def test_success(self, client, user):

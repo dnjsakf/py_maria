@@ -33,7 +33,7 @@ def test_case_a():
     "host": "127.0.0.1",
     "port": 3306,
     "database": "DOCHI",
-    "user": "DOCHI",
+    "user": "dochi",
     "password": "dochi"
   }
 

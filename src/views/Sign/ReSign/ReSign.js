@@ -16,9 +16,9 @@ import { BaseButton } from '@components/Button';
 
 
 /** Constants **/
-const initFormData = {
-  user_id: "",
-  user_pwd: ""
+const initLoginData = {
+  id: "",
+  password: ""
 }
 
 /** Main Component **/
@@ -28,9 +28,10 @@ const ReSign = ( props )=>{
     className,
     children,
     style,
-    action,
-    method,
-    onSubmit,
+    history,
+    location,
+    match,
+    staticContext,
     ...rest
   } = props;
 
@@ -38,7 +39,7 @@ const ReSign = ( props )=>{
   const dispatch = useDispatch();
   
   /** State **/
-  const [ formData, setFormData ] = useState(initFormData);
+  const [ formData, setFormData ] = useState(initLoginData);
   
   /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{    
@@ -77,16 +78,14 @@ const ReSign = ( props )=>{
   /** Render **/
   return (
     <form
-      action={ action }
-      method={ method }
-      onSubmit={ onSubmit }
+      { ...rest }
     >
       <GridRow center>
         <GridColumn w10>
           <InputText
             fullWidth
             type="text"
-            name="user_id"
+            name="id"
             placeholder="id"
             onChange={ handleChange }
           />
@@ -97,7 +96,7 @@ const ReSign = ( props )=>{
           <InputText
             fullWidth
             type="password"
-            name="user_pwd"
+            name="password"
             placeholder="password"
             onChange={ handleChange }
           />
@@ -122,6 +121,12 @@ ReSign.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
+  
+  history: PropTypes.any,
+  location: PropTypes.any,
+  match: PropTypes.any,
+  staticContext: PropTypes.any,
+
   action: PropTypes.string,
   method: PropTypes.string,
   onSubmit: PropTypes.func,

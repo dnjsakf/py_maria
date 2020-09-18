@@ -32,8 +32,8 @@ def post_signup():
 @app.route("/security/signin", methods=["POST"])
 def do_signin():
   user = UserService.getSignedUser(
-    user_id=request.form.get("user_id", None),
-    user_pwd=request.form.get("user_pwd", None)
+    user_id=request.form.get("id", None),
+    user_pw=request.form.get("password", None)
   )
   token = Token.make({ "user": user })
   
@@ -79,8 +79,8 @@ def do_token_check(user=None, error=None):
 @app.route("/security/resign", methods=["POST"])
 def post_resign():
   user = UserService.getSignedUser(
-    user_id=request.form.get("user_id", None),
-    user_pwd=request.form.get("user_pwd", None)
+    user_id=request.form.get("id", None),
+    user_pw=request.form.get("password", None)
   )
 
   deleted = UserService.deleteUserInfo(user["user_id"])
@@ -99,7 +99,7 @@ def post_resign():
 @app.route("/security/duplcheck", methods=["POST"])
 def do_dupl_check():
   duplication = UserService.checkDuplication(
-    user_id=request.form.get("user_id", None)
+    id=request.form.get("id", None)
   )
 
   resp = make_response(jsonify({
@@ -112,8 +112,8 @@ def do_dupl_check():
 @app.route("/security/edit", methods=["POST"])
 def post_edit():
   user = UserService.checkMatchPassword(
-    user_id=request.form.get("user_id", None),
-    user_pwd=request.form.get("user_pwd", None)
+    user_id=request.form.get("id", None),
+    user_pw=request.form.get("password", None)
   )
   
   updated, updated_user = UserService.updateUserInfo(form)

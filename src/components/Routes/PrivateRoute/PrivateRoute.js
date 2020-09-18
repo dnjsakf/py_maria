@@ -3,7 +3,7 @@ import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Router **/
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, useHistory } from 'react-router-dom';
 
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
@@ -53,8 +53,11 @@ const PrivateRoute = ( props )=>{
             user: resp.data.user
           })
         );
-        history.push(location.pathname);
 
+        if( history ){
+          history.push(location.pathname);
+        }
+        
       }).catch(( error )=>{
         console.error( error );
         localStorage.removeItem("access_token");
@@ -63,7 +66,7 @@ const PrivateRoute = ( props )=>{
         );
       });
     }
-  },[]);
+  },[ Component ]);
 
   /** Render **/
   return (

@@ -1,3 +1,5 @@
+import json
+
 from flask import g
 
 from marshmallow.exceptions import ValidationError
@@ -17,8 +19,8 @@ class UserService(BaseService):
       SELECT T1.USER_ID
            , T1.USER_NAME
            , T1.USER_NICK
-           , T1.EMAIL
-           , T1.CELL_PHONE
+           , T1.USER_EMAIL
+           , T1.USER_MOBILE
            , T1.REG_USER
            , T1.REG_DTTM
         FROM DOCHI.AT_USER T1
@@ -93,12 +95,12 @@ class UserService(BaseService):
 
   @classmethod
   @with_db
-  def getSignedUser(cls, db, user_id, user_pwd) -> dict:
+  def getSignedUser(cls, db, user_id, user_pw) -> dict:
     if user_id is None or user_id == "": raise EmptyDataError("Empty 'user_id'")
-    if user_pwd is None or user_pwd == "": raise EmptyDataError("Empty 'user_pwd'")
+    if user_pw is None or user_pw == "": raise EmptyDataError("Empty 'user_pw'")
     
     selected = db.select_one('''
-      SELECT T1.USER_PWD
+      SELECT T1.USER_PW
         FROM DOCHI.AT_USER T1
        WHERE 1=1
          AND T1.USER_ID = ?
@@ -107,10 +109,13 @@ class UserService(BaseService):
     if selected is None:
       raise NotFoundUserError
       
-    if Encrypt.compare(user_pwd, selected["user_pwd"]) == False:
+    if Encrypt.compare(user_pw, selected["user_pw"]) == False:
       raise NoMatchedPasswordError("No matched password. ")
-    
-    return cls.selectUserInfo(user_id)
+
+    selected_user = cls.selectUserInfo(user_id)
+    user = UserSchema().dumps(selected_user)
+
+    return json.loads( user )
 
   @classmethod
   @with_db

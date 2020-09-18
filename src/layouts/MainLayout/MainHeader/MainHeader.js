@@ -1,9 +1,12 @@
 /** React **/
-import React, { useCallback }  from 'react';
+import React, { useCallback, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
+
+/** Router **/
+import { useHistory } from 'react-router-dom';
 
 /** Redux: Reducers **/
 import { selectors, actions } from '@reducers/authReducer';
@@ -22,7 +25,6 @@ const MainHeader = ( props )=>{
   const {
     className,
     children,
-    history,
     location,
     ...rest
   } = props;
@@ -31,6 +33,9 @@ const MainHeader = ( props )=>{
   const dispatch = useDispatch();
   const signed = useSelector(selectors.getSigned);
   const user = useSelector(selectors.getUser);
+  
+  /** Hooks: Router **/
+  const history = useHistory();
   
   /** Handlers: Redirect to Sign In Page **/
   const handleRedirectSignIn = useCallback(( event )=>{
@@ -56,6 +61,10 @@ const MainHeader = ( props )=>{
       );
     });
   }, []);
+
+  useEffect(()=>{
+    console.log( user );
+  }, [user]);
   
   /** Render **/
   return (
@@ -69,7 +78,7 @@ const MainHeader = ( props )=>{
         ? (
             <React.Fragment>
               <GridColumn w1 center>
-                <span><strong>{ user.user_nick }</strong></span>
+                <span><strong>{ user.nickname }</strong></span>
               </GridColumn>
               <GridColumn w1 center>
                 <BaseButton onClick={ handleSignOut }>SignOut</BaseButton>

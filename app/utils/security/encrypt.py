@@ -9,13 +9,14 @@ class Encrypt(object):
   @classmethod
   def init(cls, *args, **kwargs):
     cls.__keyfile = kwargs.get("keyfile", "key.key")
+    cls.load_key()
 
   @classmethod
   def write_key(cls):
     cls.__key = Fernet.generate_key()
     
     with open(cls.__keyfile, "wb") as key_file:
-      key_file.write(key)
+      key_file.write(cls.__key)
       
     return cls.__key
     

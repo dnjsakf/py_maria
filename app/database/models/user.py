@@ -11,23 +11,45 @@ class UserSchema(BaseSchema):
   class Meta:
     unknown = "include"
         
-  user_id = fields.Str(required=True, validate=validate.Length(min=4, max=50))
-  user_pwd = fields.Str(required=True)
-  user_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
-  user_nick = fields.Str(validate=validate.Length(max=50))
-  email = fields.Str()
-  cell_phone = fields.Str(validate=validate.Length(max=20))
+  user_id = fields.Str(
+    data_key="id",
+    required=True,
+    validate=validate.Length(min=4, max=50)
+  )
+  user_pw = fields.Str(
+    data_key="password",
+    required=True
+  )
+  user_pw_chk = fields.Str(
+    data_key="password_chk"
+  )
+  user_name = fields.Str(
+    data_key="name",
+    required=True,
+    validate=validate.Length(min=1, max=50)
+  )
+  user_nick = fields.Str(
+    data_key="nickname",
+    validate=validate.Length(max=50)
+  )
+  user_email = fields.Str(
+    data_key="email"
+  )
+  user_mobile = fields.Str(
+    data_key="mobile",
+    validate=validate.Length(max=20)
+  )
   
-  @validates("user_pwd")
-  def validate_user_pwd(self, value):
-    print("="*15, "validate_user_pwd", "="*15)
+  @validates("user_pw")
+  def validate_user_pw(self, value):
+    print("="*15, "validate_user_pw", "="*15)
     pprint({ "data": value }, indent=2 )
     size, min, max = ( len(value), 4, 100 )
     
     if min > size or size > max:
       raise ValidationError("Length must be between %d and %d." % ( min, max ))
 
-  @validates("email")
+  @validates("user_email")
   def validate_email(self, value):
     print("="*15, "validate_email", "="*15)
     pprint({ "data": value }, indent=2 )
@@ -47,9 +69,9 @@ class UserSchema(BaseSchema):
       "kwargs": kwargs
     }, indent=2 )
     
-    user_pwd = data.get("user_pwd", None)
-    user_pwd_chk = data.get("user_pwd_chk", None)
-    if user_pwd_chk is not None and user_pwd != user_pwd_chk:
+    user_pw = data.get("user_pw", None)
+    user_pw_chk = data.get("user_pw_chk", None)
+    if user_pw_chk is not None and user_pw != user_pw_chk:
       raise ValidationError("Not matched password.")
       
   @pre_dump(pass_many=False)
@@ -70,10 +92,10 @@ class UserSchema(BaseSchema):
       "kwargs": kwargs
     }, indent=2 )
     
-    if "user_pwd" in data:
-      data["user_pwd"] = Encrypt.encrypt(data["user_pwd"])
+    if "user_pw" in data:
+      data["user_pw"] = Encrypt.encrypt(data["user_pw"])
 
-    if "user_pwd_chk" in data:
-      data.pop("user_pwd_chk")
-      
+    if "user_pw_chk" in data:
+      data.pop("user_pw_chk")
+
     return data

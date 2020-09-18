@@ -17,7 +17,16 @@ const MainBody = ( props )=>{
   return (
     <div
       className={ className }
-      style={ style }
+      style={{
+        ...style,
+        backgroundImage: "url(/public/images/background.jpg)",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        overflowY: "hidden",
+        overflowX: "hidden",
+      }}
     >
       { children }
     </div>

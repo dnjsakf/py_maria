@@ -16,9 +16,9 @@ import axios from 'axios';
 
 
 /** Constants **/
-const initFormData = {
-  user_id: "",
-  user_pwd: ""
+const initLoginData = {
+  id: "",
+  password: ""
 }
 
 /** Main Component **/
@@ -28,10 +28,10 @@ const SignIn = ( props )=>{
     className,
     children,
     style,
-    action,
-    method,
-    onSubmit,
     history,
+    location,
+    match,
+    staticContext,
     ...rest
   } = props;
 
@@ -39,7 +39,7 @@ const SignIn = ( props )=>{
   const dispatch = useDispatch();
 
   /** State **/
-  const [ formData, setFormData ] = useState(initFormData)
+  const [ formData, setFormData ] = useState(initLoginData)
 
   /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{
@@ -98,16 +98,14 @@ const SignIn = ( props )=>{
     >
       <GridColumn w12 center>
         <form
-          action={ action }
-          method={ method }
-          onSubmit={ onSubmit }
+          { ...rest }
         >
           <GridRow center>
             <GridColumn w10>
               <InputText
                 fullWidth
                 type="text"
-                name="user_id"
+                name="id"
                 placeholder="id"
                 onChange={ handleChange }
               />
@@ -118,7 +116,7 @@ const SignIn = ( props )=>{
               <InputText
                 fullWidth
                 type="password"
-                name="user_pwd"
+                name="password"
                 placeholder="password"
                 onChange={ handleChange }
               />
@@ -153,6 +151,12 @@ SignIn.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
+  
+  history: PropTypes.any,
+  location: PropTypes.any,
+  match: PropTypes.any,
+  staticContext: PropTypes.any,
+  
   action: PropTypes.string,
   method: PropTypes.string,
   onSubmit: PropTypes.func,

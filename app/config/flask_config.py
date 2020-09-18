@@ -59,7 +59,7 @@ class MariaDBConfig(object):
   host = "127.0.0.1"
   port = 3306
   database = "DOCHI"
-  user = "DOCHI"
+  user = "dochi"
   password = "dochi"
 
 
@@ -72,7 +72,7 @@ class TokenConfig(object):
     prefix = "JWT_TOKEN"
   
   SUBJECT = "DochiLoginToken"
-  EXPIRES = 5 # Minutes
+  EXPIRES = 30 # Minutes
   
 '''
   Encrypt Configurations

@@ -28,8 +28,8 @@ module.exports = merge(config, {
           // to: "public",
           globOptions: {
             ignore: [
-              "**/.*",
-              "**/private/**",
+              // "**/.*",
+              // "**/private/**",
             ],
           }
         },

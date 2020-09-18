@@ -12,14 +12,14 @@ import { BaseButton } from '@components/Button';
 
 
 /** Constants **/
-const initFormData = {
-  user_id: "",
-  user_pwd: "",
-  user_pwd_chk: "",
-  user_name: "",
-  user_nick: "",
+const initUserSignUpData = {
+  id: "",
+  password: "",
+  password_chk: "",
+  name: "",
+  nickname: "",
   email: "",
-  cell_phone: "",
+  mobile: "",
 }
 
 /** Main Component **/
@@ -28,15 +28,15 @@ const SignUp = ( props )=>{
     className,
     children,
     style,
-    action,
-    method,
-    onSubmit,
     history,
+    location,
+    match,
+    staticContext,
     ...rest
   } = props;
 
   /** State **/
-  const [ formData, setFormData ] = useState(initFormData);
+  const [ formData, setFormData ] = useState(initUserSignUpData);
 
   /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{  
@@ -82,7 +82,7 @@ const SignUp = ( props )=>{
           <InputText
             fullWidth
             type="text"
-            name="user_id"
+            name="id"
             placeholder="id"
             onChange={ handleChange }
           />
@@ -93,7 +93,7 @@ const SignUp = ( props )=>{
           <InputText
             fullWidth
             type="password"
-            name="user_pwd"
+            name="password"
             placeholder="password"
             onChange={ handleChange }
           />
@@ -102,7 +102,7 @@ const SignUp = ( props )=>{
           <InputText
             fullWidth
             type="password"
-            name="user_pwd_chk"
+            name="password_chk"
             placeholder="password check"
             onChange={ handleChange }
           />
@@ -113,7 +113,7 @@ const SignUp = ( props )=>{
           <InputText
             fullWidth
             type="text"
-            name="user_name"
+            name="name"
             placeholder="name"
             onChange={ handleChange }
           />
@@ -124,7 +124,7 @@ const SignUp = ( props )=>{
           <InputText
             fullWidth
             type="text"
-            name="user_nick"
+            name="nickname"
             placeholder="nickname"
             onChange={ handleChange }
           />
@@ -146,8 +146,8 @@ const SignUp = ( props )=>{
           <InputText
             fullWidth
             type="text"
-            name="user_nick"
-            placeholder="cell_phone"
+            name="mobile"
+            placeholder="mobile"
             onChange={ handleChange }
           />
         </GridColumn>
@@ -171,6 +171,12 @@ SignUp.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
+  
+  history: PropTypes.any,
+  location: PropTypes.any,
+  match: PropTypes.any,
+  staticContext: PropTypes.any,
+  
   action: PropTypes.string,
   method: PropTypes.string,
   onSubmit: PropTypes.func,

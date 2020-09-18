@@ -13,6 +13,18 @@ export const options = {
   namespace: "/",
 }
 
+/** Init State **/
+const initState = {
+  signed: false,
+  user: {
+    id: "",
+    name: "",
+    nickname: "",
+    email: "",
+    mobile: "",
+  }
+}
+
 /** Actions **/
 export const actions = createActions({
     [types.SIGN_SUCCESS]: [
@@ -55,15 +67,6 @@ export default handleActions(
       }
     ],
   ]),
-  { // Default State
-    signed: false,
-    user: {
-      user_id: null,
-      user_name: null,
-      user_nick: null,
-      cell_phone: null,
-      email: null,
-    }
-  },
+  initState,
   options,
 );
