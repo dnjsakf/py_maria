@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@src/*": [ "src/*" ],
+            "@components/*": [ "src/components/*" ],
+            "@graphql/*": [ "src/graphql/*" ],
+            "@layouts/*": [ "src/layouts/*" ],
+            "@public/*": [ "src/public/*" ],
+            "@reducers/*": [ "src/reducers/*" ],
+            "@routes/*": [ "src/routes/*" ],
+            "@theme/*": [ "src/theme/*" ],
+            "@utils/*": [ "src/utils/*" ],
+        }
+    }
+}

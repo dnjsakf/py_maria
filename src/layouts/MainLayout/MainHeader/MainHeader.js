@@ -1,23 +1,56 @@
 /** React **/
-import React, { useCallback, useEffect }  from 'react';
+import React, { useState, useCallback, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
 
 /** Router **/
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 
 /** Redux: Reducers **/
 import { selectors, actions } from '@reducers/authReducer';
 
+/** Styled **/
+import styled from 'styled-components';
+
+/** Material-UI **/
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Badge from '@material-ui/core/Badge';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import InputIcon from '@material-ui/icons/Input';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsIcon from '@material-ui/icons/Settings';
+import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
+
 /** Others **/
 import axios from 'axios';
+import clsx from 'clsx';
 
-/** Custom Components **/
-import { GridRow, GridColumn } from '@components/Grid';
-import { BaseButton } from '@components/Button';
 
+/** Custom Hooks **/
+const useStyles = makeStyles((theme)=>({
+  root: {
+    boxShadow: 'none'
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  signOutButton: {
+    marginLeft: theme.spacing(1)
+  }
+}));
+
+/** Styled Components **/
+const Container = styled.header`
+  width: 100%;
+  height: 65px;
+  background-color: lightgreen;
+`;
 
 /** Main Component **/
 const MainHeader = ( props )=>{
@@ -26,8 +59,15 @@ const MainHeader = ( props )=>{
     className,
     children,
     location,
+    match,
     ...rest
   } = props;
+
+  /** State **/
+  const [ notifications, setNotifications ] = useState([]);
+
+  /** Hooks: Material-UI Styles **/
+  const classes = useStyles();
 
   /** Hooks: Redux **/
   const dispatch = useDispatch();
@@ -36,11 +76,19 @@ const MainHeader = ( props )=>{
   
   /** Hooks: Router **/
   const history = useHistory();
-  
-  /** Handlers: Redirect to Sign In Page **/
+
+  /** Handlers: Redirect to Settings Page **/
+  const handleRedirectSettings = useCallback(( event )=>{
+    console.log({
+      handleRedirectSettings: event
+    });
+  }, [ history ]);
+
+  /** Handlers: Redirect to SignIn Page **/
   const handleRedirectSignIn = useCallback(( event )=>{
+    console.log( history );
     history.push("/signin");
-  }, []);
+  }, [ history ]);
 
   /** Handlers: Sign Out **/
   const handleSignOut = useCallback(( event )=>{
@@ -62,48 +110,89 @@ const MainHeader = ( props )=>{
     });
   }, []);
 
+  /** Handlers: Open SideBarMenus. **/
+  const handleOpenSideBar = useCallback(( event )=>{
+    console.log({ handleOpenSideBar: event });
+  }, []);
+
+  /** Handlers: Open Noti. list popup. **/
+  const handleOpenNoti = useCallback(( event )=>{
+    console.log({ handleOpenNoti: event });
+  }, []);
+
+  /** Side Effects: Updated user. **/
   useEffect(()=>{
     console.log( user );
-  }, [user]);
+  }, [ user ]);
   
   /** Render **/
   return (
-    <header
-      { ...rest }
-      className={ className }
+    <AppBar
+      {...rest}
+      className={ clsx( classes.root, className ) }
     >
-      <GridRow
-        justify="flex-end"
-        alignItems="center"
-        fullHeight
-      >
-      {
-        signed
-        ? (
-            <React.Fragment>
-              <GridColumn xs={ 1 }>
-                <span><strong>{ user.nickname }</strong></span>
-              </GridColumn>
-              <GridColumn xs={ 1 }>
-                <BaseButton onClick={ handleSignOut }>SignOut</BaseButton>
-              </GridColumn>
-            </React.Fragment>
-          )
-        : (
-            <GridColumn w1 center>
-              <BaseButton onClick={ handleRedirectSignIn }>SignIn</BaseButton>
-            </GridColumn>
-          )
-      }
-      {
-        children && (
-          <GridColumn center w2>
-            { children }
-          </GridColumn>
-        )
-      }
-      </GridRow>
-    </header>
+      <Toolbar>
+        <RouterLink to="/">
+          <img
+            alt="Logo"
+            src="/public/images/logos/logo02.png"
+            height="50px"
+          />
+        </RouterLink>
+        <div className={ classes.flexGrow } />
+        <Hidden mdDown>
+          {
+            signed
+            ? (
+                <React.Fragment>
+                  <IconButton 
+                    color="inherit"
+                    onClick={ handleOpenNoti }
+                  >
+                    <Badge
+                      badgeContent={ notifications.length }
+                      color="error"
+                      variant="standard"
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                  <IconButton
+                    color="inherit"
+                    onClick={ handleRedirectSettings }
+                  >
+                    <SettingsIcon />
+                  </IconButton>
+                  <IconButton
+                    color="inherit"
+                    onClick={ handleSignOut }
+                  >
+                    <InputIcon />
+                  </IconButton>
+                </React.Fragment>
+              )
+            : (
+                <React.Fragment>
+                  <IconButton
+                    color="inherit"
+                    onClick={ handleRedirectSignIn }
+                  >
+                    <AccountBoxIcon />
+                  </IconButton>
+                </React.Fragment>
+              )
+          }
+        </Hidden>
+        <Hidden lgUp>
+          <IconButton
+            color="inherit"
+            onClick={ handleOpenSideBar }
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
+      </Toolbar>
+    </AppBar>
   );
 }
 

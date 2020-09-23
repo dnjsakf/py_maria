@@ -91,9 +91,9 @@ const SignIn = ( props )=>{
   /** Render **/
   return (
     <GridRow
-      fullHeight
       justify="center"
       alignItems="center"
+      fullHeight
     >
       <GridColumn
         xs={ 4 }
@@ -141,9 +141,7 @@ const SignIn = ( props )=>{
           <GridRow
             alignItems="center"
           >
-            <GridColumn xs={ 6 }
-              justify="center"
-            >
+            <GridColumn xs={ 6 }>
               <BaseButton
                 fullWidth
                 onClick={ handleSignIn }
@@ -151,9 +149,7 @@ const SignIn = ( props )=>{
                 SignIn
               </BaseButton>
             </GridColumn>
-            <GridColumn xs={ 6 }
-              justify="center"
-            >
+            <GridColumn xs={ 6 }>
               <BaseButton
                 fullWidth
                 onClick={ handleSignUp }

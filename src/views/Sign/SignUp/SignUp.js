@@ -2,6 +2,9 @@
 import React, { useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
+/** Material-UI **/
+import { makeStyles } from '@material-ui/core/styles';
+
 /** Others **/
 import axios from 'axios';
 
@@ -9,7 +12,16 @@ import axios from 'axios';
 import { GridRow, GridColumn } from '@components/Grid';
 import { InputText } from '@components/Input';
 import { BaseButton } from '@components/Button';
+import clsx from 'clsx';
 
+
+/** Custom Hooks **/
+const useStyle = makeStyles(( theme )=>({
+  root: {
+    padding: theme.spacing(5, 0),
+    backgroundColor: "white"
+  }
+}));
 
 /** Constants **/
 const initUserSignUpData = {
@@ -37,6 +49,9 @@ const SignUp = ( props )=>{
 
   /** State **/
   const [ formData, setFormData ] = useState(initUserSignUpData);
+
+  /** Material Hooks: Styles **/
+  const classes = useStyle();
 
   /** Handlers: Set formData state, when updated input value. **/
   const handleChange = useCallback(( event, value )=>{  
@@ -84,6 +99,9 @@ const SignUp = ( props )=>{
         style={{
           backgroundColor: "white"
         }}
+        className={ clsx({
+          [classes.root]: true
+        })}
       >
         <form
           { ...rest }

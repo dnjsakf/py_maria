@@ -51,6 +51,29 @@ const GridRow = forwardRef(( props, ref )=>{
 GridRow.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
+  alignContent: PropTypes.oneOf([
+    'stretch' //default
+    , 'center'
+    , 'flex-start'
+    , 'flex-end'
+    , 'space-between'
+    , 'space-around'
+  ]),
+  alignItems: PropTypes.oneOf([
+    'stretch'   //default
+    , 'flex-start'
+    , 'center'
+    , 'flex-end'
+    , 'baseline'
+  ]),
+  justify: PropTypes.oneOf([
+    'flex-start'  //default
+    , 'center'
+    , 'flex-end'
+    , 'space-between'
+    , 'space-around'
+    , 'space-evenly'
+  ]),
 }
 
 /** Default Props **/

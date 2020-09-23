@@ -8,6 +8,14 @@ import { useHistory } from 'react-router-dom';
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
 
+/** Styled **/
+import styled from 'styled-components';
+
+/** Material-UI **/
+import { makeStyles, useTheme } from '@material-ui/styles';
+import { isWidthUp } from '@material-ui/core/withWidth';
+import { useMediaQuery } from '@material-ui/core';
+
 /** Layout Components **/
 import { MainHeader } from './MainHeader';
 import { MainBody } from './MainBody';
@@ -17,13 +25,46 @@ import { MainSideBar } from './MainSideBar';
 import { GridRow, GridColumn } from '@components/Grid';
 import { BaseButton } from '@components/Button';
 
+/** Ohters **/
+import clsx from 'clsx';
+
+
+/* Custom Hooks */
+const useStyles = makeStyles(( theme )=>({
+  root: {
+    paddingTop: 56,
+    height: '100%',
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 64
+    }
+  },
+  shiftContent: {
+    paddingLeft: 240
+  },
+  main: {
+    height: "100%",
+  },
+  wrapper: {
+    height: "100%",
+  }
+}));
+
+/** Styled Components **/
+const Container = styled.div`
+  height: 100%;
+`;
+
+const Section = styled.section`
+  position: relative;
+  height: 100%;
+`;
+
 /** Main Component **/
 const MainLayout = ( props )=>{
   /** Props **/
   const {
     className,
     children,
-    isDesktop,
     ...rest
   } = props;
 
@@ -33,6 +74,13 @@ const MainLayout = ( props )=>{
   /** State **/
   const [ desktop, setDesktop ] = useState( isDesktop );
   const [ open, setOpen ] = useState( isDesktop != "sm" );
+
+  /** Hooks: Material-UI Styles **/
+  const theme = useTheme();
+  const classes = useStyles();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
+    defaultMatches: true
+  });
 
   /** Handlers: Open Menu **/
   const handleOpenMenu = useCallback(( event )=>{
@@ -62,26 +110,20 @@ const MainLayout = ( props )=>{
   
   /** Render **/
   return (
-    <div 
+    <div
       ref={ layoutRef }
-      style={{
-        height: "100%"
-      }}
+      className={
+        clsx({
+          [classes.root]: true,
+          [classes.shiftContent]: isDesktop
+        }, 
+        className)                 
+      }
     >
-      <MainHeader
-        style={{
-          height: "65px",
-          backgroundColor: "lightgreen",
-        }}
-      >
+      <MainHeader>
         <BaseButton onClick={ handleOpenMenu }>Menu</BaseButton>
       </MainHeader>
-      <section
-        style={{
-          position: "relative",
-          height: "100%",
-        }}
-      >
+      <Section>
         <MainSideBar
           style={{
             zIndex: 200,
@@ -93,19 +135,10 @@ const MainLayout = ( props )=>{
             backgroundColor: "lightcoral"
           }}
         />
-        <MainBody
-          style={{
-            zIndex: 100,
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            paddingLeft: (open ? isDesktop == "sm" ? "0" : "250px" : ""),
-            overflow: "scroll"
-          }}
-        >
+        <MainBody>
           { children }
         </MainBody>
-      </section>
+      </Section>
     </div>  
   );
 }

@@ -5,9 +5,40 @@ import PropTypes from 'prop-types';
 /** Router **/
 import { NavLink } from 'react-router-dom';
 
+/* Styled */
+import styled from 'styled-components';
+
+/** Material-UI **/
+import { makeStyles, useTheme } from '@material-ui/styles';
+import Divider from '@material-ui/core/Divider'; 
+import Drawer from '@material-ui/core/Drawer';
+
 /** Custom Components **/
 import { GridRow, GridColumn } from '@components/Grid';
 
+
+/* Custom Hooks */
+const useStyles = makeStyles(( theme )=>({
+  drawer: {
+    width: 240,
+    [theme.breakpoints.up('lg')]: {
+      marginTop: 64,
+      height: 'calc(100% - 64px)'
+    }
+  },
+  divider: {
+    margin: theme.spacing(2, 0)
+  },
+}));
+
+/* Styled Components */
+const Container = styled.div`
+  background-color: ${({ theme })=> theme.palette.white };
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: ${({ theme })=> theme.spacing(2) }px;
+`;
 
 /** Main Component **/
 const MainSideBar = ( props )=>{
@@ -18,6 +49,10 @@ const MainSideBar = ( props )=>{
     style,
     ...rest
   } = props;
+
+  /** Hooks: Material-UI Styles **/
+  const theme = useTheme();
+  const classes = useStyles();
 
   /** Render **/
   return (
