@@ -1,20 +1,20 @@
-/** React **/
+/* React */
 import React from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
+/* Router */
 import { Link } from 'react-router-dom';
 
-/** Material-UI **/
+/* Material-UI */
 import { makeStyles } from '@material-ui/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 
-/** Others **/
+/* Others */
 import clsx from 'clsx';
 
 
-/** Custom Hooks **/
+/* Custom Hooks */
 const useStyles = makeStyles( theme => ({
   root: {
     display: 'flex',
@@ -31,20 +31,19 @@ const useStyles = makeStyles( theme => ({
   }
 }));
 
-
-/** Main Component **/
+/* Main Component */
 const Profile = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     info,
     ...rest
   } = props;
   
-  /** Hooks: Material-UI Styles **/
+  /* Hooks: Material-UI Styles */
   const classes = useStyles();
 
-  /** Renderer **/
+  /* Render */
   return (
     <div
       className={ clsx(classes.root, className) }
@@ -69,11 +68,12 @@ const Profile = ( props )=>{
   );
 };
 
-/** Main Component Settings **/
+/* Prop Types */
 Profile.propTypes = {
   className: PropTypes.string
 };
 
+/* Default Props */
 Profile.defaultProps = {
   info: {
     name: 'Dochi',
@@ -82,5 +82,5 @@ Profile.defaultProps = {
   }
 }
 
-/** Exrpots **/
+/* Exrpots */
 export default Profile;

@@ -1,20 +1,20 @@
 /** React **/
 import React, { useState, useCallback, useEffect } from 'react';
 
-/** Redux **/
-import { useDispatch, useSelector } from 'react-redux';
-
-/** Redux: Reducers **/
-import { actions, selectors } from '@reducers/authReducer';
-
 /** Router **/
 import { BrowserRouter, Switch, Redirect } from 'react-router-dom';
+
+/** Redux **/
+import { useSelector } from 'react-redux';
+
+/** Redux: Reducer **/
+import { selectors } from '@reducers/authReducer';
 
 /** Styled **/
 import styled, { css } from 'styled-components';
 
 /** Material-UI **/
-import { useTheme } from '@material-ui/styles';
+import theme from '@theme';
 import { useMediaQuery } from '@material-ui/core';
 
 /** Layouts **/
@@ -28,9 +28,6 @@ import { SignIn, SignUp, ReSign } from '@views/Sign';
 
 /** Custom Components **/
 import { PublicRoute, PrivateRoute } from '@components/Routes';
-
-/** Others **/
-import axios from 'axios';
 
 
 /** Styled Components **/
@@ -55,18 +52,16 @@ const Section = styled.section`
 
 /** Main Component **/
 const App = ( props )=>{
-  /** hooks: Redux **/
-  const dispatch = useDispatch();
-  const signed = useSelector( selectors.getSigned );
-
   /** Hooks: Material-UI Styles **/
-  const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
     defaultMatches: true
   });
 
   /** State **/
   const [ isOpenSideBar, setIsOpenSideBar ] = useState( isDesktop );
+
+  /** Hooks: Redux Reducer for signin check. **/
+  const signin = useSelector(selectors.getSigned);
 
   /** Handlers: Close SideBar **/
   const handleCloseSideBar = useCallback(( event )=>{
@@ -77,11 +72,6 @@ const App = ( props )=>{
   useEffect(()=>{
     setIsOpenSideBar( isDesktop );
   }, [ isDesktop ]);
-
-  /** Side Effects: Check session and update user info. **/
-  useEffect(()=>{
-    // console.log( signed );
-  }, [ signed ]);
 
   /** Render **/
   return (

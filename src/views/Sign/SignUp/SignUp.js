@@ -1,21 +1,21 @@
-/** React **/
+/* React */
 import React, { useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Material-UI **/
+/* Material-UI */
 import { makeStyles } from '@material-ui/core/styles';
 
-/** Others **/
+/* Others */
 import axios from 'axios';
 
-/** Custom Components **/
-import { GridRow, GridColumn } from '@components/Grid';
+/* Custom Components */
+import { GridContainer, GridItem } from '@components/Grid';
 import { InputText } from '@components/Input';
 import { BaseButton } from '@components/Button';
 import clsx from 'clsx';
 
 
-/** Custom Hooks **/
+/* Custom Hooks */
 const useStyle = makeStyles(( theme )=>({
   root: {
     padding: theme.spacing(5, 0),
@@ -23,7 +23,7 @@ const useStyle = makeStyles(( theme )=>({
   }
 }));
 
-/** Constants **/
+/* Constants */
 const initUserSignUpData = {
   id: "",
   password: "",
@@ -34,7 +34,7 @@ const initUserSignUpData = {
   mobile: "",
 }
 
-/** Main Component **/
+/* Main Component */
 const SignUp = ( props )=>{
   const {
     className,
@@ -47,13 +47,13 @@ const SignUp = ( props )=>{
     ...rest
   } = props;
 
-  /** State **/
+  /* State */
   const [ formData, setFormData ] = useState(initUserSignUpData);
 
-  /** Material Hooks: Styles **/
+  /* Material Hooks: Styles */
   const classes = useStyle();
 
-  /** Handlers: Set formData state, when updated input value. **/
+  /* Handlers: Set formData state, when updated input value. */
   const handleChange = useCallback(( event, value )=>{  
     const name = event.target.name;
     
@@ -63,16 +63,16 @@ const SignUp = ( props )=>{
     }));
   }, []);
 
-  /** Handlers: Request Event. **/
+  /* Handlers: Request Event. */
   const handleSubmit = useCallback(( event )=>{
     event.preventDefault();
 
     axios({
       method: "POST",
       url: "/security/signup",
-      headers: new Headers({
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
-      }),
+      },
       data: new URLSearchParams( formData )
     }).then(( resp )=>{
       console.log( resp.data );
@@ -87,14 +87,14 @@ const SignUp = ( props )=>{
     });
   }, [ formData ]);
 
-  /** Render **/
+  /* Render */
   return (
-    <GridRow
+    <GridContainer
       fullHeight
       justify="center"
       alignItems="center"
     >
-      <GridColumn
+      <GridItem
         xs={ 8 }
         style={{
           backgroundColor: "white"
@@ -106,10 +106,10 @@ const SignUp = ( props )=>{
         <form
           { ...rest }
         >
-          <GridRow 
+          <GridContainer 
             justify="center"
           >
-            <GridColumn xs={ 10 }>
+            <GridItem xs={ 10 }>
               <InputText
                 fullWidth
                 type="text"
@@ -120,12 +120,12 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-          </GridRow>
-          <GridRow 
+            </GridItem>
+          </GridContainer>
+          <GridContainer 
             justify="center"
           >
-            <GridColumn xs={ 5 }>
+            <GridItem xs={ 5 }>
               <InputText
                 fullWidth
                 type="password"
@@ -136,8 +136,8 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-            <GridColumn xs={ 5 }>
+            </GridItem>
+            <GridItem xs={ 5 }>
               <InputText
                 fullWidth
                 type="password"
@@ -148,12 +148,12 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-          </GridRow>
-          <GridRow 
+            </GridItem>
+          </GridContainer>
+          <GridContainer 
             justify="center"
           >
-            <GridColumn xs={ 10 }>
+            <GridItem xs={ 10 }>
               <InputText
                 fullWidth
                 type="text"
@@ -164,12 +164,12 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-          </GridRow>
-          <GridRow 
+            </GridItem>
+          </GridContainer>
+          <GridContainer 
             justify="center"
           >
-            <GridColumn xs={ 10 }>
+            <GridItem xs={ 10 }>
               <InputText
                 fullWidth
                 type="text"
@@ -180,12 +180,12 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-          </GridRow>
-          <GridRow 
+            </GridItem>
+          </GridContainer>
+          <GridContainer 
             justify="center"
           >
-            <GridColumn xs={ 10 }>
+            <GridItem xs={ 10 }>
               <InputText
                 fullWidth
                 type="text"
@@ -196,12 +196,12 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-          </GridRow>
-          <GridRow
+            </GridItem>
+          </GridContainer>
+          <GridContainer
             justify="center"
           >
-            <GridColumn xs={ 10 }>
+            <GridItem xs={ 10 }>
               <InputText
                 fullWidth
                 type="text"
@@ -212,27 +212,27 @@ const SignUp = ( props )=>{
                 error={ false }
                 onChange={ handleChange }
               />
-            </GridColumn>
-          </GridRow>
-          <GridRow 
+            </GridItem>
+          </GridContainer>
+          <GridContainer 
             justify="center"
           >
-            <GridColumn xs={ 5 }>
+            <GridItem xs={ 5 }>
               <BaseButton
                 fullWidth
                 onClick={ handleSubmit }
               >
                 SignUp
               </BaseButton>
-            </GridColumn>
-          </GridRow>
+            </GridItem>
+          </GridContainer>
         </form>
-    </GridColumn>
-  </GridRow>
+    </GridItem>
+  </GridContainer>
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 SignUp.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
@@ -248,8 +248,8 @@ SignUp.propTypes = {
   onSubmit: PropTypes.func,
 }
 
-/** Default Props **/
+/* Default Props */
 SignUp.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default SignUp;

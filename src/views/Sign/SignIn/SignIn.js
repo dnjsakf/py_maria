@@ -1,38 +1,39 @@
-/** React **/
-import React, { useState, useCallback, useEffect }  from 'react';
+/* React */
+import React, { useCallback, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Redux **/
+/* Redux */
 import { useDispatch } from 'react-redux';
+
+/* Redux: Reducer */
 import { actions } from '@reducers/authReducer';
 
-/** Styled **/
+/* Styled */
 import theme from '@theme';
 import styled from 'styled-components';
-
-/** Material-UI **/
-import Input from '@material-ui/core/Input';
-
-/** Formik **/
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+/* Formik */
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-/** Custom Components **/
+/* Custom Components */
 import Box from '@material-ui/core/Box';
-import { GridRow, GridColumn } from '@components/Grid';
+import { BaseButton } from '@components/Button';
+import { GridContainer, GridItem } from '@components/Grid';
+import { OutlinedInput } from '@components/Formik/Input/OutlinedInput';
+import { SubmitButton } from '@components/Formik/Button/SubmitButton';
 
-/** Others **/
+/* Others */
 import axios from 'axios';
 
 
-/** Styled Components **/
+/* Styled Components */
 const FormBox = styled(Box)`
-  padding: ${ theme.spacing(3, 2) };
+  padding: ${ theme.spacing(4, 4, 2, 4) };
   box-shadow: 0 0 5px 5px darkgray;
 `;
 
-/** Custom Functions **/
-function validateID(value) {
+/* Custom Functions */
+function validateID( value ) {
   if ( !value ) {
     return "ID is required";
   } else if ( value.length < 4 ) {
@@ -42,7 +43,7 @@ function validateID(value) {
   }
   return false;
 }
-function validatePassword(value) {
+function validatePassword( value ) {
   if ( !value ) {
     return "Password is required";
   } else if ( value.length < 4 ) {
@@ -53,16 +54,15 @@ function validatePassword(value) {
   return false;
 }
 
-
-/** Constants **/
+/* Constants */
 const initLoginData = {
   id: "",
   password: ""
 }
 
-/** Main Component **/
+/* Main Component */
 const SignIn = ( props )=>{
-  /** Props 
+  /* Props 
    * history: Redirect로 이동된 경우, useHistory를 사용하면 undefined.
    */
   const {
@@ -76,30 +76,37 @@ const SignIn = ( props )=>{
     ...rest
   } = props;
 
-  /** Hooks: Redux **/
+  /* Hooks: Redux */
   const dispatch = useDispatch();
 
-  /** Handlers: Submit form. **/
+  /* Handlers: Submit form. */
   const handleSubmit = useCallback(( formData, { setSubmitting } )=>{
     axios({
       method: "POST",
       url: "/security/signin",
-      headers: new Headers({
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
-      }),
+      },
       data: new URLSearchParams( formData )
     }).then(( resp )=>{
-      console.log( resp.data );
       if( !resp.data.success ){
-        throw new Error("Signed Failure");
+        throw new Error(resp.data.message||"Signed Failure");
       }
-      localStorage.setItem("access_token", resp.data.access_token);
-      dispatch(
-        actions.signSuccess({
-          user: resp.data.user
-        })
-      );
-      history.push("/");
+
+      // Save access token to localStorage.
+      const access_token = resp.data.access_token;
+      if( access_token ){
+        localStorage.setItem("access_token", access_token);
+        dispatch(
+          actions.signSuccess({
+            user: resp.data.user
+          })
+        );
+        // Move to Home.
+        history.push("/");
+      } else {
+        throw new Eerror("No access token");
+      }
     }).catch(( error )=>{
       console.error( error );
       localStorage.removeItem("access_token");
@@ -107,26 +114,21 @@ const SignIn = ( props )=>{
         actions.signFailure()
       );
     });
-  });
+  }, [ history ]);
 
-  /** Handlers: Change route to SignUp Page. **/
+  /* Handlers: Change route to SignUp Page. */
   const handleSignUp = useCallback(( event )=>{
     history.push("/signup");
-  }, []);
+  }, [ history ]);
 
-  /** Side Effect: Mount & Unmount **/
-  useEffect(()=>{
-    // console.log( "Mounted Sign" );
-  }, []);
-
-  /** Render **/
+  /* Render */
   return (
-    <GridRow
+    <GridContainer
       justify="center"
       alignItems="center"
       fullHeight
     >
-      <GridColumn xs={ 4 }>
+      <GridItem xs={ 4 }>
         <FormBox
           color="black"
           bgcolor="white"
@@ -138,69 +140,62 @@ const SignIn = ( props )=>{
             {
               ({ errors, touched  })=>(
                 <Form>
-                  <GridRow
+                  <GridContainer
                     justify="center"
                     alignItems="center"
+                    direction="row"
                   >
-                    <GridColumn xs={ 10 }>
+                    <GridItem xs={ 12 }>
                       <Field
+                        component={ OutlinedInput }
+                        validate={ validateID }
                         name="id"
                         placeholder="Enter ID"
-                        className={`form-control ${
-                          touched.id && errors.id ? "is-invalid" : ""
-                        }`}
-                        validate={ validateID }
+                        variant="outlined"
+                        label="ID"
+                        error={ !!(touched.id && errors.id) }
+                        helperText={ touched.id && errors.id }
+                        fullWidth
                       />
-                    </GridColumn>
-                  </GridRow>
-                  <GridRow>
-                    <GridColumn xs={ 12 }>
-                      <ErrorMessage name="id" />
-                    </GridColumn>
-                  </GridRow>
-                  <GridRow
-                    justify="center"
-                    alignItems="center"
-                  >
-                    <GridColumn xs={ 10 }>
-                      <Field 
-                        name="password"
-                        type="password"
-                        placeholder="Enter password"
-                        className={
-                          `form-control ${
-                            touched.id && errors.id ? "is-invalid" : ""
-                        }`}
+                    </GridItem>
+                    <GridItem xs={ 12 }>
+                      <Field
+                        component={ OutlinedInput }
                         validate={ validatePassword }
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        variant="outlined"
+                        label="Password"
+                        // Submit 했을때 오류 확인.
+                        error={ !!(touched.password && errors.password) }
+                        helperText={ touched.password && errors.password }
+                        fullWidth
                       />
-                    </GridColumn>
-                  </GridRow>
-                  <GridRow>
-                    <GridColumn xs={ 12 }>
-                      <ErrorMessage name="password" />
-                    </GridColumn>
-                  </GridRow>
-                  <GridRow
+                    </GridItem>
+                  </GridContainer>
+                  <GridContainer
                     alignItems="center"
+                    justify="center"
                   >
-                    <GridColumn xs={ 6 }>
-                      <button type="submit">SignIn</button>
-                    </GridColumn>
-                    <GridColumn xs={ 6 }>
-                      <button>SignUp</button>
-                    </GridColumn>
-                  </GridRow>
+                    <GridItem>
+                      <SubmitButton>Sign In</SubmitButton>
+                    </GridItem>
+                    <GridItem>
+                      <BaseButton onClick={ handleSignUp }>Sign Up</BaseButton>
+                    </GridItem>
+                  </GridContainer>
                 </Form>
               )
             }
           </Formik>
         </FormBox>
-      </GridColumn>
-    </GridRow>
+      </GridItem>
+    </GridContainer>
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 SignIn.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
@@ -216,8 +211,8 @@ SignIn.propTypes = {
   onSubmit: PropTypes.func,
 }
 
-/** Default Props **/
+/* Default Props */
 SignIn.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default SignIn;

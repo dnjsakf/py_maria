@@ -1,14 +1,14 @@
-/** React **/
+/* React */
 import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
+/* Router */
 import { Link } from 'react-router-dom';
 
 
-/** Main Component **/
+/* Main Component */
 const Home = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     classname,
     children,
@@ -16,7 +16,7 @@ const Home = ( props )=>{
     ...rest
   } = props;
 
-  /** Render **/
+  /* Render */
   return (
     <React.Fragment>
       <h3>Home</h3>
@@ -28,15 +28,15 @@ const Home = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 Home.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 Home.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default Home;

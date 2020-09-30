@@ -18,7 +18,7 @@ const useStyles = makeStyles(( theme )=>({
 }));
 
 /* Main Component */
-const BaseButton = ( props )=>{
+const SubmitButton = ( props )=>{
   /* Props */
   const {
     className,
@@ -39,6 +39,7 @@ const BaseButton = ( props )=>{
           [classes.fullWidth]: !!fullWidth,
         }, className)
       }
+      type="submit"
     >
       { children }
     </Button>
@@ -46,14 +47,14 @@ const BaseButton = ( props )=>{
 }
 
 /* Prop Types */
-BaseButton.propTypes = {
+SubmitButton.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   fullWidth: PropTypes.any,
 }
 
 /* Default Props */
-BaseButton.defaultProps = { }
+SubmitButton.defaultProps = { }
 
 /* Exports */
-export default BaseButton;
+export default SubmitButton;

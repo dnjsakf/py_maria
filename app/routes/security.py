@@ -66,7 +66,7 @@ def do_signout(user=None, error=None):
 
   
 @app.route("/security/signcheck", methods=["POST"])
-@check_token(attr=["user"])
+@check_token(attr="user")
 def do_token_check(user=None, error=None):
   resp = make_response(jsonify({
     "success": user is not None,

@@ -32,8 +32,8 @@ def check_token(attr=None):
     @wraps(func)
     def wrapper(*args, **kwargs):
       token = request.cookies.get("access_token", None)
-      
       auth = request.headers.get("Authorization", None)
+
       if token is None and auth is not None:
         token = auth.split(" ")[-1]
     

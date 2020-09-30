@@ -1,37 +1,38 @@
-/** React **/
+/* React */
 import React from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
+/* Router */
 import { Link } from 'react-router-dom';
 
-/** Styled **/
+/* Styled */
 import styled from 'styled-components';
 
-/** Material-UI **/
+/* Material-UI */
 import IconButton from '@material-ui/core/IconButton';
 
 
-/** Styled Components **/
+/* Styled Components */
 const LinkIcon = styled(Link)`
   color: inherit;
 `;
 
+/* Custom Components */
 const BaseIconButton = ({ icon: Icon, ...props })=>(
   <IconButton { ...props }>
     <Icon />
   </IconButton>
-)
+);
 
-/** Main Component **/
+/* Main Component */
 const LinkIconButton = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     to,
     ...rest
   } = props;
 
-  /** Render **/
+  /* Render */
   if( to ){
     return (
       <LinkIcon to={ to }>
@@ -45,14 +46,14 @@ const LinkIconButton = ( props )=>{
   }
 };
 
-/** Prop Types **/
+/* Prop Types */
 LinkIconButton.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 LinkIconButton.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default LinkIconButton;

@@ -1,48 +1,48 @@
-/** React **/
+/* React */
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-/** Redux **/
+/* Redux */
 import { useSelector } from 'react-redux';
 
-/** Redux: Reducers **/
+/* Redux: Reducers */
 import { selectors } from '@reducers/authReducer';
 
-/** Socket **/
+/* Socket */
 import io from 'socket.io-client';
 
-/** Custom Components **/
-import { GridRow, GridColumn } from '@components/Grid';
+/* Custom Components */
+import { GridContainer, GridItem } from '@components/Grid';
 import { InputText } from '@components/Input';
 import { BaseButton } from '@components/Button';
 
 
-/** Main Component **/
+/* Main Component */
 const Chat = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     ...rest
   } = props;
 
-  /** Refs **/
+  /* Refs */
   const scrollRef = useRef();
   
-  /** State **/
+  /* State */
   const [ value, setValue ] = useState("");
   const [ messages, setMessages ] = useState([]);  // ToDo: Reducer
   const [ socket, setSocket ] = useState();
 
-  /** Hooks: Redux **/
+  /* Hooks: Redux */
   const user = useSelector(selectors.getUser);
 
-  /** Handlers: Set input value state, when changed input. **/
+  /* Handlers: Set input value state, when changed input. */
   const handleChange = useCallback(( event )=>{
     setValue(event.target.value);
   }, []);
 
-  /** Handlers: Socket Emit Event */
-  /** Send message, when clicked button or pressed Enter Key. **/
+  /* Handlers: Socket Emit Event */
+  /* Send message, when clicked button or pressed Enter Key. */
   const handleSendMessage = useCallback(( event )=>{
     event.preventDefault();
 
@@ -60,7 +60,7 @@ const Chat = ( props )=>{
     });
   }, [ socket, value, user ]);
 
-  /** Side Effects: When mounted, then connect socket. When unmounted, then disconnect socket. **/
+  /* Side Effects: When mounted, then connect socket. When unmounted, then disconnect socket. */
   useEffect(()=>{
     console.log("Mounted Chatting", socket);
     if( !socket ){
@@ -75,8 +75,8 @@ const Chat = ( props )=>{
     }
   }, []);
   
-  /** Side Effects: Socket On Event **/
-  /** Receive message **/
+  /* Side Effects: Socket On Event */
+  /* Receive message */
   useEffect(()=>{
     socket.on("receive_message", ( data )=>{
       setMessages(( state )=>(
@@ -92,21 +92,21 @@ const Chat = ( props )=>{
     }
   }, [ socket ]);
 
-  /** Side Effects: Scroll down, when updated messages. **/
+  /* Side Effects: Scroll down, when updated messages. */
   useEffect(()=>{
     return ()=>{
       // scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [ messages ]);
 
-  /** Render **/
+  /* Render */
   return (
     <div className="chat-container">
-      <GridRow
+      <GridContainer
         justify="center"
         alignItems="center"
       >
-        <GridColumn xs={ 6 } ref={ scrollRef }>
+        <GridItem xs={ 6 } ref={ scrollRef }>
           <ul className="chat-msg-list">
             {
               messages && messages.map(( message, idx )=>(
@@ -114,13 +114,13 @@ const Chat = ( props )=>{
               ))
             }
           </ul>
-        </GridColumn>
-      </GridRow>
-      <GridRow>
-        <GridColumn xs={ 12 }>
+        </GridItem>
+      </GridContainer>
+      <GridContainer>
+        <GridItem xs={ 12 }>
           <form id="message_form" className="w12">
-            <GridRow>
-              <GridColumn xs={ 10 }>
+            <GridContainer>
+              <GridItem xs={ 10 }>
                 <InputText
                   fullWidth
                   type="text"
@@ -129,32 +129,32 @@ const Chat = ( props )=>{
                   value={ value }
                   onChange={ handleChange }
                 />
-              </GridColumn>
-              <GridColumn xs={ 2 }>
+              </GridItem>
+              <GridItem xs={ 2 }>
                 <BaseButton
                   fullWidth
                   type="submit"
                   onClick={ handleSendMessage }>
                     send
                 </BaseButton>
-              </GridColumn>
-            </GridRow>
+              </GridItem>
+            </GridContainer>
           </form>
-        </GridColumn>
-      </GridRow>
+        </GridItem>
+      </GridContainer>
     </div>
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 Chat.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 Chat.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default Chat;

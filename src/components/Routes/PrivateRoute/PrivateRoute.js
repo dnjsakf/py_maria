@@ -1,53 +1,58 @@
-/** React **/
+/* React */
 import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
+/* Router */
 import { Route, Redirect } from 'react-router-dom';
 
-/** Redux **/
+/* Redux */
 import { useDispatch, useSelector } from 'react-redux';
 
-/** Redux: Reducer **/
+/* Redux: Reducer */
 import { selectors, actions } from '@reducers/authReducer';
 
-/** Others **/
+/* Others */
 import axios from 'axios';
 
-/** Main Component **/
+
+/* Main Component */
 const PrivateRoute = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     component: Component,
     exact,
     ...rest
   } = props;
 
-  /** Hooks: Redux **/
+  /* Hooks: Redux */
   const dispatch = useDispatch();
   const signed = useSelector(selectors.getSigned);
 
-  /** Side Effects **/
+  /* Side Effects: Check signed. */
   useEffect(()=>{
     const access_token = localStorage.getItem("access_token");
     if( access_token ){
       axios({
         method: "POST",
         url: "/security/signcheck",
-        headers: new Headers({
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
+        headers: {
           "Authorization": "Bearer "+access_token
-        }),
+        },
       }).then(( resp )=>{
         if( !resp.data.success ){
           throw new Error(resp.data.message||"Signed Failure");
         }
-        localStorage.setItem("access_token", resp.data.access_token);
-        dispatch(
-          actions.signSuccess({
-            user: resp.data.user
-          })
-        );
+        const refresh_token = resp.data.access_token||access_token;
+        if( refresh_token ){
+          localStorage.setItem("access_token", refresh_token);
+          dispatch(
+            actions.signSuccess({
+              user: resp.data.user
+            })
+          );
+        } else {
+          throw new Error("No refresh token.");
+        }
       }).catch(( error )=>{
         console.error( error );
         localStorage.removeItem("access_token");
@@ -58,7 +63,7 @@ const PrivateRoute = ( props )=>{
     }
   },[ Component ]);
 
-  /** Render **/
+  /* Render */
   return (
     <Route 
       exact={ exact }
@@ -80,13 +85,13 @@ const PrivateRoute = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 PrivateRoute.propTypes = {
   component: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 PrivateRoute.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default PrivateRoute;

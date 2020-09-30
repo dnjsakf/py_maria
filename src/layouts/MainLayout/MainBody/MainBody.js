@@ -1,12 +1,12 @@
-/** React **/
+/* React */
 import React from 'react';
 import PropTypes from 'prop-types';
 
-/** Steyld **/
+/* Steyld */
 import styled from 'styled-components';
 
 
-/** Styled Components **/
+/* Styled Components */
 const Container = styled.div`
   z-index: 100;
   position: relative;
@@ -21,16 +21,16 @@ const Container = styled.div`
   // background-attachment: fixed;
 `;
 
-/** Main Component **/
+/* Main Component */
 const MainBody = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     children,
     ...rest
   } = props;
 
-  /** Render **/
+  /* Render */
   return (
     <Container className={ className }>
       { children }
@@ -38,14 +38,14 @@ const MainBody = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 MainBody.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 MainBody.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default MainBody;

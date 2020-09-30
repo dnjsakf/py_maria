@@ -1,11 +1,11 @@
-/** React **/
+/* React */
 import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 
-/** Main Component **/
+/* Main Component */
 const Board = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     children,
@@ -13,21 +13,21 @@ const Board = ( props )=>{
     ...rest
   } = props;
 
-  /** Render **/
+  /* Render */
   return (
     <h3>Board</h3>
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 Board.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 Board.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default Board;

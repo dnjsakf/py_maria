@@ -1,29 +1,29 @@
-/** React **/
+/* React */
 import React, { useRef, useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Redux **/
+/* Redux */
 import { useDispatch } from 'react-redux';
 import { actions } from '@reducers/authReducer';
 
-/** Others **/
+/* Others */
 import axios from 'axios';
 
-/** Custom Components **/
-import { GridRow, GridColumn } from '@components/Grid';
+/* Custom Components */
+import { GridContainer, GridItem } from '@components/Grid';
 import { InputText } from '@components/Input';
 import { BaseButton } from '@components/Button';
 
 
-/** Constants **/
+/* Constants */
 const initLoginData = {
   id: "",
   password: ""
 }
 
-/** Main Component **/
+/* Main Component */
 const ReSign = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     children,
@@ -35,13 +35,13 @@ const ReSign = ( props )=>{
     ...rest
   } = props;
 
-  /** Hooks: Router **/
+  /* Hooks: Router */
   const dispatch = useDispatch();
   
-  /** State **/
+  /* State */
   const [ formData, setFormData ] = useState(initLoginData);
   
-  /** Handlers: Set formData state, when updated input value. **/
+  /* Handlers: Set formData state, when updated input value. */
   const handleChange = useCallback(( event, value )=>{    
     const name = event.target.name;
     setFormData(( state )=>({
@@ -50,19 +50,18 @@ const ReSign = ( props )=>{
     }));
   }, []);
 
-  /** Handlers: Request Event. **/
+  /* Handlers: Request Event. */
   const handleReSign = useCallback( async ( event )=>{
     event.preventDefault();
 
     axios({
       method: "POST",
       url: "/security/resign",
-      headers: new Headers({
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8;",
-      }),
+      },
       data: new URLSearchParams( formData )
     }).then(( resp )=>{
-      console.log( resp.data );
       localStorage.removeItem("access_token");
       dispatch(
         actions.signFailure()
@@ -75,16 +74,16 @@ const ReSign = ( props )=>{
     });
   }, [ formData ]);
   
-  /** Render **/
+  /* Render */
   return (
     <form
       { ...rest }
     >
-      <GridRow
+      <GridContainer
         justify="center"
         alignItems="center"
       >
-        <GridColumn xs={ 10 }>
+        <GridItem xs={ 10 }>
           <InputText
             fullWidth
             type="text"
@@ -96,13 +95,13 @@ const ReSign = ( props )=>{
             onChange={ handleChange }
             error={ false }
           />
-        </GridColumn>
-      </GridRow>
-      <GridRow
+        </GridItem>
+      </GridContainer>
+      <GridContainer
         justify="center"
         alignItems="center"
       >
-        <GridColumn xs={ 10 }>
+        <GridItem xs={ 10 }>
           <InputText
             fullWidth
             type="password"
@@ -114,26 +113,26 @@ const ReSign = ( props )=>{
             onChange={ handleChange }
             error={ false }
           />
-        </GridColumn>
-      </GridRow>
-      <GridRow
+        </GridItem>
+      </GridContainer>
+      <GridContainer
         justify="center"
         alignItems="center"
       >
-        <GridColumn xs={ 6 }>
+        <GridItem xs={ 6 }>
           <BaseButton
             fullWidth
             onClick={ handleReSign }
           >
             ReSign
           </BaseButton>
-        </GridColumn>
-      </GridRow>
+        </GridItem>
+      </GridContainer>
     </form>
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 ReSign.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
@@ -149,8 +148,8 @@ ReSign.propTypes = {
   onSubmit: PropTypes.func,
 }
 
-/** Default Props **/
+/* Default Props */
 ReSign.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default ReSign;

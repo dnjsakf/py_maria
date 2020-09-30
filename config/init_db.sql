@@ -1,5 +1,5 @@
 -- DATABASE 생성
-CREATE DATABASE IF NOT EXISTS dochi
+CREATE DATABASE IF NOT EXISTS DOCHI
   CHARACTER SET = 'utf8'
   COLLATE = 'utf8_general_ci'
 ;
@@ -11,8 +11,9 @@ CREATE OR REPLACE USER 'dochi'@'localhost' IDENTIFIED BY 'dochi';
 CREATE OR REPLACE USER 'dochi'@'%' IDENTIFIED BY 'dochi';
 
 -- 권한 부여
-GRANT ALL PRIVILEGES ON dochi.* TO 'dochi'@'localhost';
-GRANT ALL PRIVILEGES ON dochi.* TO 'dochi'@'%';
+GRANT ALL PRIVILEGES ON DOCHI.* TO 'dochi'@'localhost';
+GRANT ALL PRIVILEGES ON DOCHI.* TO 'dochi'@'%';
+
 -- 권한 적용
 FLUSH PRIVILEGES;
 
@@ -84,7 +85,7 @@ INSERT INTO DOCHI.AT_USER (
   REG_DTTM
 ) VALUES (
   'admin',
-  'gAAAAABfcWRQyykIA6nAIL5Iq4yNI-mNC6s01Qm6siS1QZN4R3SLD07vHYWe6lh4rXGLClAgWSfb-8x2QI5UYtFAkzZuIX6wqQ==',
+  'gAAAAABfdDMvl9L8MBTxkjMrk2RfsuVomB1Tbr0QxPaG2xP2zeQtZlTez9WY5RAxH-02mrxW3JhdrdhoLnT77ej8gmxZaIbdxg==',
   '허정운',
   '관리자',
   'dochi@dochi.com',

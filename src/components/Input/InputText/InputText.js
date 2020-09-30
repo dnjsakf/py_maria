@@ -1,12 +1,12 @@
-/** React **/
+/* React */
 import React, { useState, useCallback }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Material-UI **/
+/* Material-UI */
 import { makeStyles } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 
-/** Others **/
+/* Others */
 import clsx from 'clsx';
 
 
@@ -27,22 +27,22 @@ const useStyles = makeStyles( theme => ({
   }
 }));
 
-/** Main Component **/
+/* Main Component */
 const InputText = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     onChange,
     ...rest
   } = props;
   
-  /** State **/
+  /* State */
   const [value, setValue] = useState("");
 
-  /** Hooks: Material-UI Styles **/
+  /* Hooks: Material-UI Styles */
   const classes = useStyles();
   
-  /** Handlers: Update input value. **/
+  /* Handlers: Update input value. */
   const handleChange = useCallback(( event )=>{
     const v = event.target.value;
     
@@ -53,7 +53,7 @@ const InputText = ( props )=>{
     }
   }, []);
 
-  /** Render **/
+  /* Render */
   return (
     <TextField
       InputProps={{
@@ -75,17 +75,17 @@ const InputText = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 InputText.propTypes = {
   className: PropTypes.string,
   fullWidth: PropTypes.bool,
   onChange: PropTypes.func
 }
 
-/** Default Props **/
+/* Default Props */
 InputText.defaultProps = {
   fullWidth: false,
 }
 
-/** Exports **/
+/* Exports */
 export default InputText;

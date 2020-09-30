@@ -1,20 +1,20 @@
-/** React **/
+/* React */
 import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
+/* Router */
 import { Route } from 'react-router-dom';
 
 
-/** Main Component **/
+/* Main Component */
 const PublicRoute = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     component: Component,
     ...rest
   } = props;
   
-  /** Render **/
+  /* Render */
   return (
     <Route
       { ...rest }
@@ -27,13 +27,13 @@ const PublicRoute = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 PublicRoute.propTypes = {
   component: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 PublicRoute.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default PublicRoute;

@@ -1,15 +1,16 @@
-/** React **/
+/* React */
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
-/** Material-UI **/
+/* Material-UI */
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid/Grid';
 
-/** Others **/
+/* Others */
 import clsx from 'clsx';
 
-/** Custom Hooks **/
+
+/* Custom Hooks */
 const useStyles = makeStyles({
   root: {
   },
@@ -18,10 +19,9 @@ const useStyles = makeStyles({
   },
 });
 
-
-/** Main Component **/
-const GridColumn = forwardRef(( props, ref )=>{
-  /** Props **/
+/* Main Component */
+const GridContainer = forwardRef(( props, ref )=>{
+  /* Props */
   const {
     className,
     children,
@@ -29,12 +29,13 @@ const GridColumn = forwardRef(( props, ref )=>{
     ...rest
   } = props;
 
-  /** Material Hooks: Styles **/
+  /* Hooks: Material-UI Styles */
   const classes = useStyles();
-
-  /** Render **/
+  
+  /* Render */
   return (
-    <Grid item
+    <Grid
+      container
       className={ clsx({
         [classes.root]: true,
         [classes.fullHeight]: !!fullHeight,
@@ -46,10 +47,16 @@ const GridColumn = forwardRef(( props, ref )=>{
   );
 });
 
-/** Prop Types **/
-GridColumn.propTypes = {
+/* Prop Types */
+GridContainer.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
+  direction: PropTypes.oneOf([
+    "row",  //default
+    "row-reverse",
+    "column",
+    "column-reverse"
+  ]),
   alignContent: PropTypes.oneOf([
     'stretch' //default
     , 'center'
@@ -73,18 +80,12 @@ GridColumn.propTypes = {
     , 'space-around'
     , 'space-evenly'
   ]),
-  lg: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  md: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  sm: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  xl: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  xs: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  xs: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  spacing: PropTypes.oneOf(Array.from(Array(12).keys()).map(n=>++n)),
-  
 }
 
-/** Default Props **/
-GridColumn.defaultProps = { }
+/* Default Props */
+GridContainer.defaultProps = {
+  direction: "row",
+}
 
-/** Exports **/
-export default GridColumn;
+/* Exports */
+export default GridContainer;

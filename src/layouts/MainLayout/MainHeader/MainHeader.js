@@ -1,20 +1,20 @@
-/** React **/
+/* React */
 import React, { useState, useCallback, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Redux **/
-import { useDispatch, useSelector } from 'react-redux';
-
-/** Router **/
+/* Router */
 import { Link } from 'react-router-dom';
 
-/** Redux: Reducers **/
+/* Redux */
+import { useDispatch, useSelector } from 'react-redux';
+
+/* Redux: Reducers */
 import { selectors, actions } from '@reducers/authReducer';
 
-/** Styled **/
+/* Styled */
 import styled from 'styled-components';
 
-/** Material-UI **/
+/* Material-UI */
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -27,15 +27,15 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 
-/** Others **/
+/* Others */
 import axios from 'axios';
 import clsx from 'clsx';
 
-/** Custom Components */
+/* Custom Components */
 import { LinkIconButton } from '@components/Button/LinkIconButton';
 
 
-/** Custom Hooks **/
+/* Custom Hooks */
 const useStyles = makeStyles((theme)=>({
   root: {
     boxShadow: 'none'
@@ -45,12 +45,12 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
-/** Styled Components **/
+/* Styled Components */
 const FlexGrow = styled.div`
   flex-grow: 1;
 `;
 
-/** Custom Components **/
+/* Custom Components */
 const SignInButton = ( props )=>(
   <LinkIconButton icon={ AccountBoxIcon } { ...props } />
 )
@@ -61,29 +61,29 @@ const SettingsButton = ( props )=>(
   <LinkIconButton icon={ SettingsIcon } { ...props } />
 );
 
-/** Main Component **/
+/* Main Component */
 const MainHeader = ( props )=>{
-  /** Props **/
+  /* Props */
   const {
     className,
     children,
     ...rest
   } = props;
 
-  /** State **/
+  /* State */
   const [ notifications, setNotifications ] = useState([
     "noti_ids"
   ]);
 
-  /** Hooks: Material-UI Styles **/
+  /* Hooks: Material-UI Styles */
   const classes = useStyles();
 
-  /** Hooks: Redux **/
+  /* Hooks: Redux */
   const dispatch = useDispatch();
   const signed = useSelector(selectors.getSigned);
   const user = useSelector(selectors.getUser);
 
-  /** Handlers: Sign Out **/
+  /* Handlers: Sign Out */
   const handleSignOut = useCallback(( event )=>{
     event.preventDefault();
     
@@ -103,22 +103,22 @@ const MainHeader = ( props )=>{
     });
   }, []);
 
-  /** Handlers: Open SideBarMenus. **/
+  /* Handlers: Open SideBarMenus. */
   const handleOpenSideBar = useCallback(( event )=>{
     console.log({ handleOpenSideBar: event });
   }, []);
 
-  /** Handlers: Open Noti. list popup. **/
+  /* Handlers: Open Noti. list popup. */
   const handleOpenNoti = useCallback(( event )=>{
     console.log({ handleOpenNoti: event });
   }, []);
 
-  /** Side Effects: Updated user. **/
+  /* Side Effects: Updated user. */
   useEffect(()=>{
     // console.log( user );
   }, [ user ]);
   
-  /** Render **/
+  /* Render */
   return (
     <AppBar
       { ...rest }
@@ -180,15 +180,15 @@ const MainHeader = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 MainHeader.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
   style: PropTypes.any,
 }
 
-/** Default Props **/
+/* Default Props */
 MainHeader.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default MainHeader;
