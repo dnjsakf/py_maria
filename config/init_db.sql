@@ -1,17 +1,19 @@
 -- DATABASE 생성
-CREATE DATABASE IF NOT EXISTS DOCHI;
+CREATE DATABASE IF NOT EXISTS dochi
+  CHARACTER SET = 'utf8'
+  COLLATE = 'utf8_general_ci'
+;
 
 -- DATABASE USER 생성
----- 로컬에서만 접속 가능한 계정.
+-- 로컬에서만 접속 가능한 계정.
 CREATE OR REPLACE USER 'dochi'@'localhost' IDENTIFIED BY 'dochi';
-  -- 외부에서 접속 가능한 계정.
+-- 외부에서 접속 가능한 계정.
 CREATE OR REPLACE USER 'dochi'@'%' IDENTIFIED BY 'dochi';
 
----- 권한 부여
-GRANT ALL PRIVILEGES ON DOCHI.* TO 'dochi'@'localhost';
-GRANT ALL PRIVILEGES ON DOCHI.* TO 'dochi'@'%';
-
----- 권한 적용
+-- 권한 부여
+GRANT ALL PRIVILEGES ON dochi.* TO 'dochi'@'localhost';
+GRANT ALL PRIVILEGES ON dochi.* TO 'dochi'@'%';
+-- 권한 적용
 FLUSH PRIVILEGES;
 
 
@@ -82,7 +84,7 @@ INSERT INTO DOCHI.AT_USER (
   REG_DTTM
 ) VALUES (
   'admin',
-  'admin',
+  'gAAAAABfcWRQyykIA6nAIL5Iq4yNI-mNC6s01Qm6siS1QZN4R3SLD07vHYWe6lh4rXGLClAgWSfb-8x2QI5UYtFAkzZuIX6wqQ==',
   '허정운',
   '관리자',
   'dochi@dochi.com',
@@ -118,11 +120,5 @@ INSERT INTO DOCHI.AT_USER_AUTH_MAP (
   'SYSTEM',
   DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
 );
-
--- UPDATE 'admin' PASSWORD TO ENCRYPTED PASSWORD
-UPDATE DOCHI.AT_USER
-   SET USER_PW = 'gAAAAABfZDnQlCcoUNABP31hqiJROzEwoC2JlwU7YWdLuS0gpSvvaTdTuGQFo90Ilm5Vs82mgwvIOGRIGiI3uclI8GXl6qzDDg=='
- WHERE 1=1
-;
 
 COMMIT;

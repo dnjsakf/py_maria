@@ -10,11 +10,7 @@ import { Route } from 'react-router-dom';
 const PublicRoute = ( props )=>{
   /** Props **/
   const {
-    path,
-    layout: Layout,
     component: Component,
-    exact,
-    isDesktop,
     ...rest
   } = props;
   
@@ -22,13 +18,9 @@ const PublicRoute = ( props )=>{
   return (
     <Route
       { ...rest }
-      path={ path }
-      exact={ exact }
       render={
         ( matchProps )=>(
-          <Layout isDesktop={ isDesktop }>
-            <Component {...matchProps}/>
-          </Layout>
+          <Component { ...matchProps }/>
         )
       }
     />
@@ -37,7 +29,6 @@ const PublicRoute = ( props )=>{
 
 /** Prop Types **/
 PublicRoute.propTypes = {
-  layout: PropTypes.any,
   component: PropTypes.any,
 }
 

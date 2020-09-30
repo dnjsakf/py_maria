@@ -2,12 +2,6 @@
 import React, { useRef, useState, useCallback, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-/** Router **/
-import { useHistory } from 'react-router-dom';
-
-/** Redux **/
-import { useDispatch, useSelector } from 'react-redux';
-
 /** Styled **/
 import styled from 'styled-components';
 
@@ -22,7 +16,6 @@ import { MainBody } from './MainBody';
 import { MainSideBar } from './MainSideBar';
 
 /** Custom Components **/
-import { GridRow, GridColumn } from '@components/Grid';
 import { BaseButton } from '@components/Button';
 
 /** Ohters **/
@@ -89,7 +82,6 @@ const MainLayout = ( props )=>{
   
   /** Handlers: Close Menu **/
   const handleCloseMenu = useCallback(( event )=>{
-    console.log( desktop );
     if( desktop == "sm" ){
       setOpen(false); 
     }
@@ -107,7 +99,6 @@ const MainLayout = ( props )=>{
     setOpen( desktop != "sm" );
   }, [ desktop ]);
   
-  
   /** Render **/
   return (
     <div
@@ -120,21 +111,9 @@ const MainLayout = ( props )=>{
         className)                 
       }
     >
-      <MainHeader>
-        <BaseButton onClick={ handleOpenMenu }>Menu</BaseButton>
-      </MainHeader>
+      <MainHeader />
       <Section>
-        <MainSideBar
-          style={{
-            zIndex: 200,
-            position: "absolute",
-            width: "250px",
-            top: (open ? ( isDesktop == "sm" ? "-65px": "0" ) : "0"),
-            left: (open ? "0" : "-250px"),
-            height: "100%",
-            backgroundColor: "lightcoral"
-          }}
-        />
+        <MainSideBar />
         <MainBody>
           { children }
         </MainBody>

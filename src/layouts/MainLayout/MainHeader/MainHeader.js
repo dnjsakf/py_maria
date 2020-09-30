@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 /** Router **/
-import { useHistory, Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 /** Redux: Reducers **/
 import { selectors, actions } from '@reducers/authReducer';
@@ -31,14 +31,14 @@ import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import axios from 'axios';
 import clsx from 'clsx';
 
+/** Custom Components */
+import { LinkIconButton } from '@components/Button/LinkIconButton';
+
 
 /** Custom Hooks **/
 const useStyles = makeStyles((theme)=>({
   root: {
     boxShadow: 'none'
-  },
-  flexGrow: {
-    flexGrow: 1
   },
   signOutButton: {
     marginLeft: theme.spacing(1)
@@ -46,11 +46,20 @@ const useStyles = makeStyles((theme)=>({
 }));
 
 /** Styled Components **/
-const Container = styled.header`
-  width: 100%;
-  height: 65px;
-  background-color: lightgreen;
+const FlexGrow = styled.div`
+  flex-grow: 1;
 `;
+
+/** Custom Components **/
+const SignInButton = ( props )=>(
+  <LinkIconButton icon={ AccountBoxIcon } { ...props } />
+)
+const SignOutButton = ( props )=>(
+  <LinkIconButton icon={ InputIcon } { ...props } />
+);
+const SettingsButton = ( props )=>(
+  <LinkIconButton icon={ SettingsIcon } { ...props } />
+);
 
 /** Main Component **/
 const MainHeader = ( props )=>{
@@ -58,13 +67,13 @@ const MainHeader = ( props )=>{
   const {
     className,
     children,
-    location,
-    match,
     ...rest
   } = props;
 
   /** State **/
-  const [ notifications, setNotifications ] = useState([]);
+  const [ notifications, setNotifications ] = useState([
+    "noti_ids"
+  ]);
 
   /** Hooks: Material-UI Styles **/
   const classes = useStyles();
@@ -73,22 +82,6 @@ const MainHeader = ( props )=>{
   const dispatch = useDispatch();
   const signed = useSelector(selectors.getSigned);
   const user = useSelector(selectors.getUser);
-  
-  /** Hooks: Router **/
-  const history = useHistory();
-
-  /** Handlers: Redirect to Settings Page **/
-  const handleRedirectSettings = useCallback(( event )=>{
-    console.log({
-      handleRedirectSettings: event
-    });
-  }, [ history ]);
-
-  /** Handlers: Redirect to SignIn Page **/
-  const handleRedirectSignIn = useCallback(( event )=>{
-    console.log( history );
-    history.push("/signin");
-  }, [ history ]);
 
   /** Handlers: Sign Out **/
   const handleSignOut = useCallback(( event )=>{
@@ -122,24 +115,24 @@ const MainHeader = ( props )=>{
 
   /** Side Effects: Updated user. **/
   useEffect(()=>{
-    console.log( user );
+    // console.log( user );
   }, [ user ]);
   
   /** Render **/
   return (
     <AppBar
-      {...rest}
+      { ...rest }
       className={ clsx( classes.root, className ) }
     >
       <Toolbar>
-        <RouterLink to="/">
+        <Link to="/">
           <img
             alt="Logo"
             src="/public/images/logos/logo02.png"
             height="50px"
           />
-        </RouterLink>
-        <div className={ classes.flexGrow } />
+        </Link>
+        <FlexGrow />
         <Hidden mdDown>
           {
             signed
@@ -157,28 +150,19 @@ const MainHeader = ( props )=>{
                       <NotificationsIcon />
                     </Badge>
                   </IconButton>
-                  <IconButton
+                  <SettingsButton
+                    to="/settings"
                     color="inherit"
-                    onClick={ handleRedirectSettings }
-                  >
-                    <SettingsIcon />
-                  </IconButton>
-                  <IconButton
+                  />
+                  <SignOutButton
                     color="inherit"
                     onClick={ handleSignOut }
-                  >
-                    <InputIcon />
-                  </IconButton>
+                  />
                 </React.Fragment>
               )
             : (
                 <React.Fragment>
-                  <IconButton
-                    color="inherit"
-                    onClick={ handleRedirectSignIn }
-                  >
-                    <AccountBoxIcon />
-                  </IconButton>
+                  <SignInButton to="/signin" color="inherit"/>
                 </React.Fragment>
               )
           }

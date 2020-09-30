@@ -31,9 +31,7 @@ const Chat = ( props )=>{
   /** State **/
   const [ value, setValue ] = useState("");
   const [ messages, setMessages ] = useState([]);  // ToDo: Reducer
-  const [ socket, setSocket ] = useState(()=>{
-    return io("/chat");
-  });
+  const [ socket, setSocket ] = useState();
 
   /** Hooks: Redux **/
   const user = useSelector(selectors.getUser);
@@ -62,6 +60,21 @@ const Chat = ( props )=>{
     });
   }, [ socket, value, user ]);
 
+  /** Side Effects: When mounted, then connect socket. When unmounted, then disconnect socket. **/
+  useEffect(()=>{
+    console.log("Mounted Chatting", socket);
+    if( !socket ){
+      setSocket(io("/chat"));
+    }
+
+    return ()=>{
+      console.log("Unmounted Chatting", socket);
+      if( socket ){
+        socket.disconnect();
+      }
+    }
+  }, []);
+  
   /** Side Effects: Socket On Event **/
   /** Receive message **/
   useEffect(()=>{
@@ -82,21 +95,18 @@ const Chat = ( props )=>{
   /** Side Effects: Scroll down, when updated messages. **/
   useEffect(()=>{
     return ()=>{
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      // scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [ messages ]);
 
   /** Render **/
   return (
     <div className="chat-container">
-      <GridRow>
-        <GridColumn w4
-          ref={ scrollRef }
-          style={{
-            height: "300px",
-            overflowY: "scroll",
-          }}
-        >
+      <GridRow
+        justify="center"
+        alignItems="center"
+      >
+        <GridColumn xs={ 6 } ref={ scrollRef }>
           <ul className="chat-msg-list">
             {
               messages && messages.map(( message, idx )=>(
@@ -107,10 +117,10 @@ const Chat = ( props )=>{
         </GridColumn>
       </GridRow>
       <GridRow>
-        <GridColumn w4>
+        <GridColumn xs={ 12 }>
           <form id="message_form" className="w12">
             <GridRow>
-              <GridColumn w10>
+              <GridColumn xs={ 10 }>
                 <InputText
                   fullWidth
                   type="text"
@@ -120,7 +130,7 @@ const Chat = ( props )=>{
                   onChange={ handleChange }
                 />
               </GridColumn>
-              <GridColumn w2>
+              <GridColumn xs={ 2 }>
                 <BaseButton
                   fullWidth
                   type="submit"

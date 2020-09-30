@@ -1,21 +1,10 @@
 /** React **/
-import React, { useEffect }  from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 /** Steyld **/
 import styled from 'styled-components';
 
-/** Material-UI **/
-import { makeStyles } from '@material-ui/core/styles';
-
-/** Others **/
-import clsx from 'clsx';
-
-
-/** Custom Hooks **/
-const useStyles = makeStyles((theme)=>({
-  root: { }
-}));
 
 /** Styled Components **/
 const Container = styled.div`
@@ -29,7 +18,7 @@ const Container = styled.div`
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
-  background-attachment: fixed;
+  // background-attachment: fixed;
 `;
 
 /** Main Component **/
@@ -38,22 +27,12 @@ const MainBody = ( props )=>{
   const {
     className,
     children,
-    style,
     ...rest
   } = props;
 
-  /** Material-UI Hook: Styles **/
-  const classes = useStyles();
-
   /** Render **/
   return (
-    <Container
-      className={
-        clsx({
-          [classes.root]: true
-        }, className)
-      }
-    >
+    <Container className={ className }>
       { children }
     </Container>
   );
@@ -63,7 +42,6 @@ const MainBody = ( props )=>{
 MainBody.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any,
-  style: PropTypes.any,
 }
 
 /** Default Props **/

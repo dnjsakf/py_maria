@@ -3,7 +3,7 @@ import React, { useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Router **/
-import { Route, Redirect, useHistory } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 /** Redux **/
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,17 +14,12 @@ import { selectors, actions } from '@reducers/authReducer';
 /** Others **/
 import axios from 'axios';
 
-
 /** Main Component **/
 const PrivateRoute = ( props )=>{
   /** Props **/
   const {
-    layout: Layout,
     component: Component,
     exact,
-    isDesktop,
-    history,
-    location,
     ...rest
   } = props;
 
@@ -53,11 +48,6 @@ const PrivateRoute = ( props )=>{
             user: resp.data.user
           })
         );
-
-        if( history ){
-          history.push(location.pathname);
-        }
-        
       }).catch(( error )=>{
         console.error( error );
         localStorage.removeItem("access_token");
@@ -75,14 +65,12 @@ const PrivateRoute = ( props )=>{
       render={
         ( matchProps )=>(
           signed
-          ? <Layout isDesktop={ isDesktop }>
-              <Component { ...matchProps }/>
-            </Layout>
+          ? <Component { ...matchProps } />
           : <Redirect
               to={{
                 pathname: "/signin", 
                 state: { 
-                  from: matchProps.location 
+                  from: matchProps.location,
                 }
               }}
             />
@@ -94,7 +82,6 @@ const PrivateRoute = ( props )=>{
 
 /** Prop Types **/
 PrivateRoute.propTypes = {
-  layout: PropTypes.any,
   component: PropTypes.any,
 }
 

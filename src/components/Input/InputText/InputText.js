@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 
 /** Material-UI **/
 import { makeStyles } from '@material-ui/styles';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 
 /** Others **/
 import clsx from 'clsx';
 
-/* Custom Hooka */
+
+/* Custom Hooks */
 const useStyles = makeStyles( theme => ({
   root: {
     marginTop: theme.spacing(1),
@@ -27,7 +27,6 @@ const useStyles = makeStyles( theme => ({
   }
 }));
 
-
 /** Main Component **/
 const InputText = ( props )=>{
   /** Props **/
@@ -40,10 +39,10 @@ const InputText = ( props )=>{
   /** State **/
   const [value, setValue] = useState("");
 
-  /** Material Hook: Styles **/
+  /** Hooks: Material-UI Styles **/
   const classes = useStyles();
   
-  /** Handlers **/
+  /** Handlers: Update input value. **/
   const handleChange = useCallback(( event )=>{
     const v = event.target.value;
     

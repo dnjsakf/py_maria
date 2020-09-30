@@ -1,11 +1,26 @@
 /** React **/
 import React, { useState, useCallback, useEffect } from 'react';
 
+/** Redux **/
+import { useDispatch, useSelector } from 'react-redux';
+
+/** Redux: Reducers **/
+import { actions, selectors } from '@reducers/authReducer';
+
 /** Router **/
-import { BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Redirect } from 'react-router-dom';
+
+/** Styled **/
+import styled, { css } from 'styled-components';
+
+/** Material-UI **/
+import { useTheme } from '@material-ui/styles';
+import { useMediaQuery } from '@material-ui/core';
 
 /** Layouts **/
-import { MainLayout } from '@layouts';
+import { MainHeader } from '@layouts/MainLayout/MainHeader';
+import { MainBody } from '@layouts/MainLayout/MainBody';
+import { MainSideBar } from '@layouts/MainLayout/MainSideBar';
 
 /** Views **/
 import { Home, Board, Chat } from '@views';
@@ -14,75 +29,106 @@ import { SignIn, SignUp, ReSign } from '@views/Sign';
 /** Custom Components **/
 import { PublicRoute, PrivateRoute } from '@components/Routes';
 
+/** Others **/
+import axios from 'axios';
 
-/** Functions: Check Windows Width **/
-const checkWidth = ( width )=>{
-  if( width >= 1200 ){
-    return "lg";
-  } else if ( width >= 800 ){
-    return "md";
-  } else {
-    return "sm";
-  }
-}
+
+/** Styled Components **/
+const Container = styled.div`
+  padding-top: 56px;
+  height: 100%;
+  padding-left: ${({ shift })=>( shift )}px;
+  
+  ${({ media })=>(
+    css`
+      ${ media } {
+        padding-top: 64px;
+      }
+    `
+  )}
+`;
+
+const Section = styled.section`
+  position: relative;
+  height: 100%;
+`;
 
 /** Main Component **/
 const App = ( props )=>{
+  /** hooks: Redux **/
+  const dispatch = useDispatch();
+  const signed = useSelector( selectors.getSigned );
+
+  /** Hooks: Material-UI Styles **/
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
+    defaultMatches: true
+  });
+
   /** State **/
-  const [ isDesktop, setIsDesktop ] = useState(checkWidth(window.outerWidth));
+  const [ isOpenSideBar, setIsOpenSideBar ] = useState( isDesktop );
 
-  /** Handlers: Set isDesktop state, when updated window size. **/
-  const handleResizeWindow = useCallback(( event )=>{
-    setIsDesktop(checkWidth(window.outerWidth));
-  }, []);
+  /** Handlers: Close SideBar **/
+  const handleCloseSideBar = useCallback(( event )=>{
+    setIsOpenSideBar( false );
+  }, [ isOpenSideBar ]);
 
-  /** Side Effects: Binding window resize event to window object. **/
+  /** Side Effects: When windows resize to large width, then open sidebar. **/
   useEffect(()=>{
-    window.addEventListener("resize", handleResizeWindow, false);
-  }, []);
+    setIsOpenSideBar( isDesktop );
+  }, [ isDesktop ]);
+
+  /** Side Effects: Check session and update user info. **/
+  useEffect(()=>{
+    // console.log( signed );
+  }, [ signed ]);
 
   /** Render **/
   return (
-    <Router>
-      <Switch>
-        <PublicRoute
-          exact
-          path="/signin"
-          layout={ MainLayout }
-          component={ SignIn }
-          isDesktop={ isDesktop }
-        />
-        <PublicRoute
-          exact
-          path="/signup"
-          layout={ MainLayout }
-          component={ SignUp }
-          isDesktop={ isDesktop }
-        />
-        <PublicRoute
-          exact
-          path="/"
-          layout={ MainLayout }
-          component={ Home }
-          isDesktop={ isDesktop }
-        />
-        <PrivateRoute
-          exact
-          path="/board"
-          layout={ MainLayout }
-          component={ Board }
-          isDesktop={ isDesktop }
-        />
-        <PrivateRoute
-          exact
-          path="/chat"
-          layout={ MainLayout }
-          component={ Chat }
-          isDesktop={ isDesktop }
-        />
-        <Redirect from="*" to="/" />
-      </Switch>
-    </Router>
+    <BrowserRouter>
+      <Container
+        shift={ isDesktop && 240 }
+        media={ theme.breakpoints.up('sm') }
+      >
+        <MainHeader />
+        <Section>
+          <MainSideBar
+            open={ isOpenSideBar }
+            onClose={ handleCloseSideBar }
+          />
+          <MainBody>
+            <Switch>
+              <PublicRoute
+                exact
+                path="/signin"
+                component={ SignIn }
+              />
+              <PublicRoute
+                exact
+                path="/signup"
+                component={ SignUp }
+              />
+              <PublicRoute
+                exact
+                path="/"
+                component={ Home }
+              />
+              <PrivateRoute
+                exact
+                path="/board"
+                component={ Board }
+              />
+              <PrivateRoute
+                exact
+                path="/chat"
+                component={ Chat }
+              />
+              <Redirect from="*" to="/" />
+            </Switch>
+          </MainBody>
+        </Section>
+      </Container>
+    </BrowserRouter>
   );
 }
 

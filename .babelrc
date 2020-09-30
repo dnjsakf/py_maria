@@ -13,6 +13,7 @@
           "@public": "./src/public",
           "@reducers": "./src/reducers",
           "@views": "./src/views",
+          "@theme": "./src/theme"
         }
       }
     ],

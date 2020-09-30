@@ -1,18 +1,57 @@
 /** React **/
-import React, { useRef, useState, useCallback }  from 'react';
+import React, { useState, useCallback, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 /** Redux **/
 import { useDispatch } from 'react-redux';
 import { actions } from '@reducers/authReducer';
 
+/** Styled **/
+import theme from '@theme';
+import styled from 'styled-components';
+
+/** Material-UI **/
+import Input from '@material-ui/core/Input';
+
+/** Formik **/
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
 /** Custom Components **/
+import Box from '@material-ui/core/Box';
 import { GridRow, GridColumn } from '@components/Grid';
-import { InputText } from '@components/Input';
-import { BaseButton } from '@components/Button';
 
 /** Others **/
 import axios from 'axios';
+
+
+/** Styled Components **/
+const FormBox = styled(Box)`
+  padding: ${ theme.spacing(3, 2) };
+  box-shadow: 0 0 5px 5px darkgray;
+`;
+
+/** Custom Functions **/
+function validateID(value) {
+  if ( !value ) {
+    return "ID is required";
+  } else if ( value.length < 4 ) {
+    return "ID must be 4 characters at minimum";
+  } else if ( value.length > 25 ){
+    return "ID must be 25 characters at maximum";
+  }
+  return false;
+}
+function validatePassword(value) {
+  if ( !value ) {
+    return "Password is required";
+  } else if ( value.length < 4 ) {
+    return "Password must be 4 characters at minimum";
+  } else if ( value.length > 12 ){
+    return "Password must be 12 characters at maximum";
+  }
+  return false;
+}
 
 
 /** Constants **/
@@ -23,7 +62,9 @@ const initLoginData = {
 
 /** Main Component **/
 const SignIn = ( props )=>{
-  /** Props **/
+  /** Props 
+   * history: Redirect로 이동된 경우, useHistory를 사용하면 undefined.
+   */
   const {
     className,
     children,
@@ -38,22 +79,8 @@ const SignIn = ( props )=>{
   /** Hooks: Redux **/
   const dispatch = useDispatch();
 
-  /** State **/
-  const [ formData, setFormData ] = useState(initLoginData)
-
-  /** Handlers: Set formData state, when updated input value. **/
-  const handleChange = useCallback(( event, value )=>{
-    const name = event.target.name;
-    setFormData(( state )=>({
-      ...state,
-      [name]: value
-    }));
-  }, []);
-
-  /** Handlers: Request Event. **/
-  const handleSignIn = useCallback( async ( event )=>{
-    event.preventDefault();
-
+  /** Handlers: Submit form. **/
+  const handleSubmit = useCallback(( formData, { setSubmitting } )=>{
     axios({
       method: "POST",
       url: "/security/signin",
@@ -73,7 +100,6 @@ const SignIn = ( props )=>{
         })
       );
       history.push("/");
-
     }).catch(( error )=>{
       console.error( error );
       localStorage.removeItem("access_token");
@@ -81,11 +107,16 @@ const SignIn = ( props )=>{
         actions.signFailure()
       );
     });
-  }, [ formData ]);
-  
+  });
+
   /** Handlers: Change route to SignUp Page. **/
-  const handleSignUp = useCallback( async ( event )=>{
+  const handleSignUp = useCallback(( event )=>{
     history.push("/signup");
+  }, []);
+
+  /** Side Effect: Mount & Unmount **/
+  useEffect(()=>{
+    // console.log( "Mounted Sign" );
   }, []);
 
   /** Render **/
@@ -95,70 +126,75 @@ const SignIn = ( props )=>{
       alignItems="center"
       fullHeight
     >
-      <GridColumn
-        xs={ 4 }
-        style={{
-          backgroundColor: "white"
-        }}
-      >
-        <form { ...rest } >
-          <GridRow
-            justify="center"
-            alignItems="center"
+      <GridColumn xs={ 4 }>
+        <FormBox
+          color="black"
+          bgcolor="white"
+        >
+          <Formik
+            initialValues={ initLoginData }
+            onSubmit={ handleSubmit }
           >
-            <GridColumn xs={ 10 }>
-              <InputText
-                fullWidth
-                type="text"
-                name="id"
-                label="ID"
-                placeholder="id"
-                helperText=""
-                varient="filled"
-                onChange={ handleChange }
-                error={ false }
-              />
-            </GridColumn>
-          </GridRow>
-          <GridRow
-            justify="center"
-            alignItems="center"
-          >
-            <GridColumn xs={ 10 }>
-              <InputText
-                fullWidth
-                type="password"
-                name="password"
-                label="Password"
-                placeholder="password"
-                helperText="6~10자리"
-                varient="filled"
-                onChange={ handleChange }
-                error={ false }
-              />
-            </GridColumn>
-          </GridRow>
-          <GridRow
-            alignItems="center"
-          >
-            <GridColumn xs={ 6 }>
-              <BaseButton
-                fullWidth
-                onClick={ handleSignIn }
-              >
-                SignIn
-              </BaseButton>
-            </GridColumn>
-            <GridColumn xs={ 6 }>
-              <BaseButton
-                fullWidth
-                onClick={ handleSignUp }
-              >
-                SignUp
-              </BaseButton>
-            </GridColumn>
-          </GridRow>
-        </form>
+            {
+              ({ errors, touched  })=>(
+                <Form>
+                  <GridRow
+                    justify="center"
+                    alignItems="center"
+                  >
+                    <GridColumn xs={ 10 }>
+                      <Field
+                        name="id"
+                        placeholder="Enter ID"
+                        className={`form-control ${
+                          touched.id && errors.id ? "is-invalid" : ""
+                        }`}
+                        validate={ validateID }
+                      />
+                    </GridColumn>
+                  </GridRow>
+                  <GridRow>
+                    <GridColumn xs={ 12 }>
+                      <ErrorMessage name="id" />
+                    </GridColumn>
+                  </GridRow>
+                  <GridRow
+                    justify="center"
+                    alignItems="center"
+                  >
+                    <GridColumn xs={ 10 }>
+                      <Field 
+                        name="password"
+                        type="password"
+                        placeholder="Enter password"
+                        className={
+                          `form-control ${
+                            touched.id && errors.id ? "is-invalid" : ""
+                        }`}
+                        validate={ validatePassword }
+                      />
+                    </GridColumn>
+                  </GridRow>
+                  <GridRow>
+                    <GridColumn xs={ 12 }>
+                      <ErrorMessage name="password" />
+                    </GridColumn>
+                  </GridRow>
+                  <GridRow
+                    alignItems="center"
+                  >
+                    <GridColumn xs={ 6 }>
+                      <button type="submit">SignIn</button>
+                    </GridColumn>
+                    <GridColumn xs={ 6 }>
+                      <button>SignUp</button>
+                    </GridColumn>
+                  </GridRow>
+                </Form>
+              )
+            }
+          </Formik>
+        </FormBox>
       </GridColumn>
     </GridRow>
   );
