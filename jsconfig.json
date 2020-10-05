@@ -4,6 +4,7 @@
         "paths": {
             "@src/*": [ "src/*" ],
             "@components/*": [ "src/components/*" ],
+            "@hooks/*": [ "src/hooks/*" ],
             "@graphql/*": [ "src/graphql/*" ],
             "@layouts/*": [ "src/layouts/*" ],
             "@public/*": [ "src/public/*" ],

@@ -5,9 +5,6 @@ import PropTypes from 'prop-types';
 /* Material-UI */
 import { makeStyles } from '@material-ui/core/styles';
 
-/* Notistack */
-import { useSnackbar } from 'notistack';
-
 /* Others */
 import axios from 'axios';
 
@@ -17,6 +14,9 @@ import { InputText } from '@components/Input';
 import { BaseButton } from '@components/Button';
 import clsx from 'clsx';
 
+/* Custom Hooks */
+import { useResultAlert } from '@hooks/Alert';
+
 
 /* Custom Hooks */
 const useStyle = makeStyles(( theme )=>({
@@ -25,30 +25,6 @@ const useStyle = makeStyles(( theme )=>({
     backgroundColor: "white"
   }
 }));
-
-/* Custom Hook */
-const useResultAlert = props => {
-  /* Hooks: Notistack */
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  
-  /* Handlers: Close snackbar. */
-  const handleClose = () => {
-    closeSnackbar();
-  }
-  
-  /* Handlers: Open snackbar. */
-  const handleOpen = (type, message) => {
-    enqueueSnackbar(message, { 
-      variant: type,
-      autoHideDuration: 1500,
-      transitionDuration: 150,
-      action: ( <CloseButton onClose={ handleClose }/> ),
-    })
-  }
-  
-  /* Retruns */
-  return handleOpen;
-}
 
 /* Constants */
 const initUserSignUpData = {
