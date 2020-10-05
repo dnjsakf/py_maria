@@ -1,36 +1,36 @@
-/** React **/
+/* React */
 import React, { useState, useCallback, useEffect } from 'react';
 
-/** Router **/
+/* Router */
 import { BrowserRouter, Switch, Redirect } from 'react-router-dom';
 
-/** Redux **/
+/* Redux */
 import { useSelector } from 'react-redux';
 
-/** Redux: Reducer **/
+/* Redux: Reducer */
 import { selectors } from '@reducers/authReducer';
 
-/** Styled **/
+/* Styled */
 import styled, { css } from 'styled-components';
 
-/** Material-UI **/
+/* Material-UI */
 import theme from '@theme';
 import { useMediaQuery } from '@material-ui/core';
 
-/** Layouts **/
+/* Layouts */
 import { MainHeader } from '@layouts/MainLayout/MainHeader';
 import { MainBody } from '@layouts/MainLayout/MainBody';
 import { MainSideBar } from '@layouts/MainLayout/MainSideBar';
 
-/** Views **/
+/* Views */
 import { Home, Board, Chat } from '@views';
 import { SignIn, SignUp, ReSign } from '@views/Sign';
 
-/** Custom Components **/
+/* Custom Components */
 import { PublicRoute, PrivateRoute } from '@components/Routes';
 
 
-/** Styled Components **/
+/* Styled Components */
 const Container = styled.div`
   padding-top: 56px;
   height: 100%;
@@ -50,30 +50,35 @@ const Section = styled.section`
   height: 100%;
 `;
 
-/** Main Component **/
+/* Main Component */
 const App = ( props )=>{
-  /** Hooks: Material-UI Styles **/
+  /* Hooks: Material-UI Styles */
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
     defaultMatches: true
   });
 
-  /** State **/
+  /* State */
   const [ isOpenSideBar, setIsOpenSideBar ] = useState( isDesktop );
 
-  /** Hooks: Redux Reducer for signin check. **/
-  const signin = useSelector(selectors.getSigned);
+  /* Hooks: Redux Reducer for sign check. */
+  const signed = useSelector( selectors.getSigned );
 
-  /** Handlers: Close SideBar **/
+  /* Handlers: Close SideBar */
   const handleCloseSideBar = useCallback(( event )=>{
     setIsOpenSideBar( false );
   }, [ isOpenSideBar ]);
 
-  /** Side Effects: When windows resize to large width, then open sidebar. **/
+  /* Side Effects: When windows resize to large width, then open sidebar. */
   useEffect(()=>{
     setIsOpenSideBar( isDesktop );
   }, [ isDesktop ]);
 
-  /** Render **/
+  /* Side Effects: Signed user. */
+  useEffect(()=>{
+    // console.log("signed", signed);
+  }, [ signed ]);
+
+  /* Render */
   return (
     <BrowserRouter>
       <Container
@@ -122,11 +127,11 @@ const App = ( props )=>{
   );
 }
 
-/** Prop Types **/
+/* Prop Types */
 App.propTypes = { }
 
-/** Default Props **/
+/* Default Props */
 App.defaultProps = { }
 
-/** Exports **/
+/* Exports */
 export default App;

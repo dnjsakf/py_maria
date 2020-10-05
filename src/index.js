@@ -1,30 +1,30 @@
 /* Webpack */
 import { hot } from 'react-hot-loader/root';
 
-/** React **/
+/* React */
 import React from 'react';
 
-/** React Dom **/
+/* React Dom */
 import { render as RouterDomRender } from "react-dom";
 
-/** Redux **/
+/* Redux */
 import { Provider as StoreProvider } from 'react-redux';
 
-/** Redux: store **/
+/* Redux: store */
 import store from '@reducers/store';
 
-/** Notistack **/
+/* Notistack */
 import { SnackbarProvider } from 'notistack';
 
-/** Material-UI */
+/* Material-UI */
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./theme";
 
-/** Main Component **/
+/* Main Component */
 import App from './App';
 
 
-/** Functions: Renderer **/
+/* Functions: Renderer */
 function render(Component){
   const root = document.getElementById("root");
   
@@ -35,7 +35,7 @@ function render(Component){
       <StoreProvider store={ store }>
         <ThemeProvider theme={ theme }>
           <SnackbarProvider
-            maxSnack={3} 
+            maxSnack={ 3 }
             anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
@@ -49,5 +49,5 @@ function render(Component){
    ), document.getElementById("root"));
 }
 
-/** Render Application **/
+/* Render Application */
 render(App);

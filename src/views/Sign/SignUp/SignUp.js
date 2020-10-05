@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 /* Material-UI */
 import { makeStyles } from '@material-ui/core/styles';
 
+/* Notistack */
+import { useSnackbar } from 'notistack';
+
 /* Others */
 import axios from 'axios';
 
@@ -22,6 +25,30 @@ const useStyle = makeStyles(( theme )=>({
     backgroundColor: "white"
   }
 }));
+
+/* Custom Hook */
+const useResultAlert = props => {
+  /* Hooks: Notistack */
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  
+  /* Handlers: Close snackbar. */
+  const handleClose = () => {
+    closeSnackbar();
+  }
+  
+  /* Handlers: Open snackbar. */
+  const handleOpen = (type, message) => {
+    enqueueSnackbar(message, { 
+      variant: type,
+      autoHideDuration: 1500,
+      transitionDuration: 150,
+      action: ( <CloseButton onClose={ handleClose }/> ),
+    })
+  }
+  
+  /* Retruns */
+  return handleOpen;
+}
 
 /* Constants */
 const initUserSignUpData = {
@@ -50,8 +77,11 @@ const SignUp = ( props )=>{
   /* State */
   const [ formData, setFormData ] = useState(initUserSignUpData);
 
-  /* Material Hooks: Styles */
+  /* Hooks: Material-UI Styles */
   const classes = useStyle();
+
+  /* Hooks: Notistack */
+  const handleSnackbar = useResultAlert();
 
   /* Handlers: Set formData state, when updated input value. */
   const handleChange = useCallback(( event, value )=>{  
